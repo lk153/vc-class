@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Topics Library | Aura Lexicon</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;0,700;1,400&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "outline-variant": "#c7c4d7",
+              "surface-container-highest": "#d9e3f6",
+              "on-tertiary-fixed-variant": "#920028",
+              "surface-container-low": "#eff4ff",
+              "tertiary-container": "#a6002f",
+              "surface-dim": "#d0dbed",
+              "surface-container": "#e6eeff",
+              "on-primary-fixed": "#100069",
+              "primary-container": "#4338ca",
+              "on-tertiary": "#ffffff",
+              "on-primary": "#ffffff",
+              "error": "#ba1a1a",
+              "on-surface-variant": "#464554",
+              "on-secondary": "#ffffff",
+              "on-primary-container": "#c1beff",
+              "error-container": "#ffdad6",
+              "on-secondary-fixed": "#002116",
+              "surface-bright": "#f8f9ff",
+              "on-secondary-container": "#237157",
+              "inverse-on-surface": "#eaf1ff",
+              "inverse-surface": "#27313f",
+              "tertiary-fixed-dim": "#ffb3b6",
+              "surface-tint": "#5148d7",
+              "primary-fixed-dim": "#c3c0ff",
+              "primary": "#2a14b4",
+              "inverse-primary": "#c3c0ff",
+              "background": "#f8f9ff",
+              "tertiary": "#7b0020",
+              "on-error-container": "#93000a",
+              "secondary-container": "#a6f2d1",
+              "secondary-fixed-dim": "#8bd6b6",
+              "on-surface": "#121c2a",
+              "on-primary-fixed-variant": "#372abf",
+              "on-background": "#121c2a",
+              "tertiary-fixed": "#ffdada",
+              "on-secondary-fixed-variant": "#00513b",
+              "secondary-fixed": "#a6f2d1",
+              "surface": "#f8f9ff",
+              "primary-fixed": "#e3dfff",
+              "surface-container-high": "#dee9fc",
+              "surface-variant": "#d9e3f6",
+              "on-error": "#ffffff",
+              "surface-container-lowest": "#ffffff",
+              "secondary": "#1b6b51",
+              "outline": "#777586",
+              "on-tertiary-container": "#ffb0b4",
+              "on-tertiary-fixed": "#40000c"
+            },
+            fontFamily: {
+              "headline": ["Newsreader"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-shadow {
+            box-shadow: 0px 20px 40px rgba(18, 28, 42, 0.06);
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-background selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full flex flex-col py-8 h-screen w-64 bg-[#f8f9ff] dark:bg-[#1a1c1e] z-50">
+<div class="px-8 mb-12">
+<h1 class="text-2xl font-headline italic text-[#4338CA] dark:text-[#818CF8] tracking-tight">Aura Lexicon</h1>
+<p class="text-xs font-label uppercase tracking-widest text-slate-500 mt-1">Teacher Portal</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Dashboard -->
+<a class="flex items-center gap-3 px-8 py-3 text-[#27313f] dark:text-[#e2e2e6] font-medium opacity-70 hover:bg-white/80 dark:hover:bg-[#27313f]/80 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label">Dashboard</span>
+</a>
+<!-- Students -->
+<a class="flex items-center gap-3 px-8 py-3 text-[#27313f] dark:text-[#e2e2e6] font-medium opacity-70 hover:bg-white/80 dark:hover:bg-[#27313f]/80 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label">Students</span>
+</a>
+<!-- Topics Library (ACTIVE) -->
+<a class="flex items-center gap-3 px-8 py-3 text-[#4338CA] dark:text-[#818CF8] font-bold bg-white dark:bg-[#27313f] rounded-r-full shadow-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">library_books</span>
+<span class="font-label">Topics Library</span>
+</a>
+<!-- Assignments -->
+<a class="flex items-center gap-3 px-8 py-3 text-[#27313f] dark:text-[#e2e2e6] font-medium opacity-70 hover:bg-white/80 dark:hover:bg-[#27313f]/80 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label">Assignments</span>
+</a>
+<!-- Practice Tests -->
+<a class="flex items-center gap-3 px-8 py-3 text-[#27313f] dark:text-[#e2e2e6] font-medium opacity-70 hover:bg-white/80 dark:hover:bg-[#27313f]/80 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">quiz</span>
+<span class="font-label">Practice Tests</span>
+</a>
+</nav>
+<div class="mt-auto px-8 space-y-6">
+<button class="w-full py-4 bg-primary text-on-primary rounded-full font-label font-bold text-sm tracking-wide shadow-lg hover:opacity-90 transition-all active:scale-95">
+                Create New Topic
+            </button>
+<div class="space-y-4 pt-4 border-t border-slate-200/50">
+<a class="flex items-center gap-3 text-slate-500 font-medium hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label text-sm">Settings</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 font-medium hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-label text-sm">Support</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Shell -->
+<main class="ml-64 min-h-screen">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-12 py-10 bg-transparent backdrop-blur-xl sticky top-0 z-40">
+<div class="space-y-1">
+<h2 class="text-4xl font-headline font-bold text-on-surface tracking-tight">Topics Library</h2>
+<p class="font-label text-sm text-outline tracking-wider uppercase">Curation &amp; Knowledge Base</p>
+</div>
+<div class="flex items-center gap-8">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="pl-12 pr-6 py-3 bg-surface-variant border-none rounded-full w-72 font-label text-sm focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all" placeholder="Search topics..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-full">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-full">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+<button class="ml-4 px-6 py-3 bg-secondary-container text-on-secondary-container font-bold rounded-full font-label text-sm flex items-center gap-2 hover:opacity-90 transition-all">
+<span class="material-symbols-outlined text-lg">add</span>
+                        New Assignment
+                    </button>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="px-12 pb-20">
+<!-- Filter Bar / Asymmetric Intro -->
+<div class="flex items-end justify-between mb-16">
+<div class="max-w-xl">
+<p class="font-headline text-xl text-on-surface-variant italic leading-relaxed">
+                        Organize your curriculum by creating thematic vocabulary clusters. These topics serve as the foundation for students' daily practice and personalized learning journeys.
+                    </p>
+</div>
+<div class="flex gap-3">
+<div class="px-4 py-2 bg-surface-container-highest text-on-surface-variant font-label text-xs font-bold rounded-full uppercase tracking-widest cursor-pointer hover:bg-primary hover:text-on-primary transition-all">All Languages</div>
+<div class="px-4 py-2 bg-surface-container-lowest border border-outline-variant/30 text-outline font-label text-xs font-bold rounded-full uppercase tracking-widest cursor-pointer hover:bg-primary hover:text-on-primary transition-all">French</div>
+<div class="px-4 py-2 bg-surface-container-lowest border border-outline-variant/30 text-outline font-label text-xs font-bold rounded-full uppercase tracking-widest cursor-pointer hover:bg-primary hover:text-on-primary transition-all">Spanish</div>
+</div>
+</div>
+<!-- Topics Grid: Bento/Editorial Layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
+<!-- Topic Card 1 -->
+<div class="group bg-surface-container-lowest editorial-shadow rounded-xl p-8 flex flex-col h-full border border-transparent hover:border-primary/10 transition-all duration-500">
+<div class="flex justify-between items-start mb-8">
+<div class="w-16 h-16 rounded-xl bg-primary-container/10 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-3xl">park</span>
+</div>
+<span class="px-3 py-1 bg-secondary-container/50 text-on-secondary-container text-[10px] font-bold uppercase tracking-tighter rounded-full font-label">English • B1</span>
+</div>
+<h3 class="text-3xl font-headline font-bold mb-3 text-on-surface">At the Park</h3>
+<p class="text-on-surface-variant font-body leading-relaxed mb-8 flex-grow">
+                        Essential vocabulary for outdoor leisure activities, nature descriptions, and social interactions in public spaces.
+                    </p>
+<div class="pt-6 mt-auto border-t border-outline-variant/20 flex items-center justify-between">
+<div class="flex gap-6">
+<div class="flex flex-col">
+<span class="text-on-surface font-bold font-label">42</span>
+<span class="text-[10px] text-outline uppercase font-bold tracking-widest font-label">Words</span>
+</div>
+<div class="flex flex-col">
+<span class="text-on-surface font-bold font-label">128</span>
+<span class="text-[10px] text-outline uppercase font-bold tracking-widest font-label">Learners</span>
+</div>
+</div>
+<button class="p-3 rounded-full bg-surface-container-low text-primary hover:bg-primary hover:text-on-primary transition-all active:scale-90">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Topic Card 2 -->
+<div class="group bg-surface-container-lowest editorial-shadow rounded-xl p-8 flex flex-col h-full border border-transparent hover:border-primary/10 transition-all duration-500">
+<div class="flex justify-between items-start mb-8">
+<div class="w-16 h-16 rounded-xl bg-tertiary/10 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-3xl">restaurant</span>
+</div>
+<span class="px-3 py-1 bg-secondary-container/50 text-on-secondary-container text-[10px] font-bold uppercase tracking-tighter rounded-full font-label">French • A2</span>
+</div>
+<h3 class="text-3xl font-headline font-bold mb-3 text-on-surface">Le Restaurant</h3>
+<p class="text-on-surface-variant font-body leading-relaxed mb-8 flex-grow">
+                        Master the art of dining out. From making reservations to describing flavors and specific culinary techniques.
+                    </p>
+<div class="pt-6 mt-auto border-t border-outline-variant/20 flex items-center justify-between">
+<div class="flex gap-6">
+<div class="flex flex-col">
+<span class="text-on-surface font-bold font-label">56</span>
+<span class="text-[10px] text-outline uppercase font-bold tracking-widest font-label">Words</span>
+</div>
+<div class="flex flex-col">
+<span class="text-on-surface font-bold font-label">84</span>
+<span class="text-[10px] text-outline uppercase font-bold tracking-widest font-label">Learners</span>
+</div>
+</div>
+<button class="p-3 rounded-full bg-surface-container-low text-primary hover:bg-primary hover:text-on-primary transition-all active:scale-90">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Topic Card 3 (Image Focused / Editorial Break) -->
+<div class="relative overflow-hidden group bg-surface-container-lowest editorial-shadow rounded-xl h-full border border-transparent flex flex-col">
+<div class="h-48 w-full overflow-hidden relative">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Abstract notebook and pens on a desk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCt2EDjoNNsXGHTsLAAIRxtC8azenItnUs6YazInMDzlPWXHhL4INJGHdIeyRPxTCDO4cvr47MLnar65op_oi4CjXKBmcKjCe4Y7_ZkLSuKtJ4FPLSOgnHFJrOSvoxsY5cFRw6gi6d9JHnfrQLsqyyDF8Ob3SdPOQRj85lCv2f3tZMoDc8pkezStfeuHbimgzyTjUksZ2zfH_M4V64WvBxot-whJANSUY0Q_7ztcQrAk5hVrmytVL-EUMekCEciFlPhPyPdo5podP4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-4 left-6">
+<span class="px-3 py-1 bg-white/20 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-tighter rounded-full font-label">Spanish • B2</span>
+</div>
+</div>
+<div class="p-8 flex flex-col flex-grow">
+<h3 class="text-3xl font-headline font-bold mb-3 text-on-surface">Negocios Globales</h3>
+<p class="text-on-surface-variant font-body leading-relaxed mb-8 flex-grow text-sm">
+                            Advanced professional Spanish for international markets, including contract negotiation and formal presentations.
+                        </p>
+<div class="pt-4 flex items-center justify-between">
+<div class="flex -space-x-3">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-200"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-300"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-400"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-primary text-[10px] text-white flex items-center justify-center font-bold font-label">+12</div>
+</div>
+<button class="px-5 py-2 rounded-full border border-primary text-primary font-label text-xs font-bold hover:bg-primary hover:text-on-primary transition-all">View Detail</button>
+</div>
+</div>
+</div>
+<!-- Topic Card 4 -->
+<div class="group bg-surface-container-lowest editorial-shadow rounded-xl p-8 flex flex-col h-full border border-transparent hover:border-primary/10 transition-all duration-500">
+<div class="flex justify-between items-start mb-8">
+<div class="w-16 h-16 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-3xl">flight_takeoff</span>
+</div>
+<span class="px-3 py-1 bg-secondary-container/50 text-on-secondary-container text-[10px] font-bold uppercase tracking-tighter rounded-full font-label">Italian • A1</span>
+</div>
+<h3 class="text-3xl font-headline font-bold mb-3 text-on-surface">In Aeroporto</h3>
+<p class="text-on-surface-variant font-body leading-relaxed mb-8 flex-grow">
+                        Survival Italian for travelers. Navigating check-ins, security, and baggage claim with confidence and ease.
+                    </p>
+<div class="pt-6 mt-auto border-t border-outline-variant/20 flex items-center justify-between">
+<div class="flex gap-6">
+<div class="flex flex-col">
+<span class="text-on-surface font-bold font-label">30</span>
+<span class="text-[10px] text-outline uppercase font-bold tracking-widest font-label">Words</span>
+</div>
+<div class="flex flex-col">
+<span class="text-on-surface font-bold font-label">215</span>
+<span class="text-[10px] text-outline uppercase font-bold tracking-widest font-label">Learners</span>
+</div>
+</div>
+<button class="p-3 rounded-full bg-surface-container-low text-primary hover:bg-primary hover:text-on-primary transition-all active:scale-90">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Topic Card 5 (Featured Card) -->
+<div class="col-span-1 md:col-span-2 group bg-primary editorial-shadow rounded-xl p-10 flex flex-col md:flex-row gap-12 border border-transparent relative overflow-hidden">
+<div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
+<div class="absolute bottom-0 left-0 w-32 h-32 bg-secondary/20 rounded-full -ml-10 -mb-10 blur-2xl"></div>
+<div class="flex-1 z-10">
+<div class="mb-8">
+<span class="px-4 py-2 bg-white/20 backdrop-blur-md text-white text-xs font-bold uppercase tracking-widest rounded-full font-label">New Curriculum Focus</span>
+</div>
+<h3 class="text-5xl font-headline font-bold mb-6 text-white leading-tight">Digital Wellbeing &amp; Ethics</h3>
+<p class="text-on-primary-container text-lg font-body leading-relaxed mb-10 max-w-lg opacity-90">
+                            An advanced module exploring the intersection of technology and human psychology in the modern age.
+                        </p>
+<div class="flex gap-4">
+<button class="px-8 py-4 bg-white text-primary rounded-full font-label font-bold text-sm hover:bg-surface-container-low transition-all">Review Modules</button>
+<button class="px-8 py-4 bg-transparent border border-white/30 text-white rounded-full font-label font-bold text-sm hover:bg-white/10 transition-all">Edit Content</button>
+</div>
+</div>
+<div class="w-full md:w-64 flex flex-col justify-center items-center bg-white/10 backdrop-blur-xl rounded-2xl p-8 z-10 border border-white/10">
+<div class="text-center mb-8">
+<span class="text-5xl font-headline font-bold text-white">88</span>
+<p class="text-[10px] text-white/60 uppercase font-bold tracking-widest mt-1">Vocabulary Units</p>
+</div>
+<div class="w-full h-1 bg-white/20 rounded-full overflow-hidden">
+<div class="w-3/4 h-full bg-white rounded-full"></div>
+</div>
+<p class="text-[10px] text-white/60 font-bold uppercase tracking-widest mt-4">Draft Progress</p>
+</div>
+</div>
+<!-- Add New Placeholder -->
+<div class="group bg-surface-container-low border-2 border-dashed border-outline-variant/50 rounded-xl p-8 flex flex-col items-center justify-center text-center hover:bg-white hover:border-primary/30 transition-all duration-300 cursor-pointer h-full">
+<div class="w-20 h-20 rounded-full bg-white flex items-center justify-center text-outline group-hover:text-primary group-hover:shadow-md transition-all mb-6">
+<span class="material-symbols-outlined text-4xl">add</span>
+</div>
+<h3 class="text-xl font-headline font-bold text-on-surface mb-2">Create New Topic</h3>
+<p class="text-outline font-body text-sm max-w-[200px]">Start building a new thematic library for your students.</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual FAB (Suppressing on management page as primary action is in Header/Sidebar, but adding a small subtle one for quick mobile access if needed) -->
+<button class="md:hidden fixed bottom-8 right-8 w-16 h-16 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center z-50">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</body></html>

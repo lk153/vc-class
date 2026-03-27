@@ -1,0 +1,21 @@
+question_number,content,question_type,answer_1,answer_2,answer_3,answer_4,correct_answer,timer
+1,Is a barn used for storing crops or housing animals?,YES_NO,Yes,No,,,Yes,30
+2,What is a meadow?,MULTIPLE_CHOICE,A type of flower,A field of grass for hay or grazing,A small river,A farm building,A field of grass for hay or grazing,30
+3,The farmer drives the ___ across the field.,GAP_FILL,tractor,,,,tractor,30
+4,What is the purpose of a scarecrow?,MULTIPLE_CHOICE,To water crops,To scare birds away from crops,To feed animals,To mark the farm boundary,To scare birds away from crops,30
+5,Is a rooster an adult female chicken?,YES_NO,Yes,No,,,No,30
+6,A piece of land planted with fruit trees is called an ___.,GAP_FILL,orchard,,,,orchard,30
+7,What does a windmill use to grind grain or pump water?,MULTIPLE_CHOICE,Electricity,Water power,Wind power,Solar power,Wind power,30
+8,The ___ keeps the sheep from wandering off.,GAP_FILL,fence,,,,fence,30
+9,What is a stream?,MULTIPLE_CHOICE,A large lake,A small narrow river,A deep well,A wide ocean,A small narrow river,30
+10,Is hay used as animal feed?,YES_NO,Yes,No,,,Yes,30
+11,Grass that has been cut and dried for animal feed is called ___.,GAP_FILL,hay,,,,hay,30
+12,Where are horses kept at night?,MULTIPLE_CHOICE,In the barn,In the orchard,In the stable,In the meadow,In the stable,30
+13,The harvest begins in early ___.,GAP_FILL,autumn,,,,autumn,30
+14,What is a plough used for?,MULTIPLE_CHOICE,Cutting trees,Turning over soil before planting,Watering crops,Feeding animals,Turning over soil before planting,30
+15,Is the countryside known for being noisy and crowded?,YES_NO,Yes,No,,,No,30
+16,What is a crop?,MULTIPLE_CHOICE,A farm building,A type of fence,A plant grown in large quantities for food,A farming tool,A plant grown in large quantities for food,30
+17,The ___ crows at dawn every morning.,GAP_FILL,rooster,,,,rooster,30
+18,We picked apples from the ___.,GAP_FILL,orchard,,,,orchard,30
+19,What is a barn?,MULTIPLE_CHOICE,A small river,A large farm building for storing crops or housing animals,A field of grass,A piece of land with fruit trees,A large farm building for storing crops or housing animals,30
+20,The old ___ still turns when the wind blows.,GAP_FILL,windmill,,,,windmill,30

@@ -1,0 +1,256 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  STUDENT
+  TEACHER
+}
+
+enum AccountStatus {
+  INACTIVE
+  ACTIVE
+}
+
+enum QuestionType {
+  YES_NO
+  MULTIPLE_CHOICE
+  GAP_FILL
+}
+
+enum ClassStatus {
+  SCHEDULING
+  ACTIVE
+  ENDED
+  ARCHIVED
+}
+
+model User {
+  id              String        @id @default(cuid())
+  email           String        @unique
+  name            String
+  passwordHash    String        @map("password_hash")
+  role            UserRole      @default(STUDENT)
+  status          AccountStatus @default(INACTIVE)
+  learnLanguageId String?       @map("learn_language_id")
+  learnLanguage   Language?     @relation(fields: [learnLanguageId], references: [id])
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  classEnrollments  ClassEnrollment[]
+  practiceResults   PracticeResult[]
+  studentAnswers    StudentAnswer[]
+  flashcardProgress FlashcardProgress[]
+  comments          Comment[]
+  createdTopics     Topic[]        @relation("TopicCreator")
+  createdTests      PracticeTest[] @relation("TestCreator")
+  teachingClasses   Class[]        @relation("ClassTeacher")
+  media             Media[]
+
+  @@map("users")
+}
+
+model Language {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  users   User[]
+  topics  Topic[]
+  classes Class[]
+
+  @@map("languages")
+}
+
+model Class {
+  id           String      @id @default(cuid())
+  name         String
+  languageId   String      @map("language_id")
+  language     Language    @relation(fields: [languageId], references: [id])
+  level        String
+  schedule     String
+  startDate    DateTime    @map("start_date")
+  endDate      DateTime    @map("end_date")
+  teacherId    String      @map("teacher_id")
+  teacher      User        @relation("ClassTeacher", fields: [teacherId], references: [id])
+  maxStudents  Int         @default(10) @map("max_students")
+  specialNotes String?     @map("special_notes")
+  status       ClassStatus @default(SCHEDULING)
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+
+  enrollments      ClassEnrollment[]
+  topicAssignments TopicAssignment[]
+
+  @@map("classes")
+}
+
+model ClassEnrollment {
+  id         String   @id @default(cuid())
+  classId    String   @map("class_id")
+  class      Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  userId     String   @map("user_id")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enrolledAt DateTime @default(now()) @map("enrolled_at")
+
+  @@unique([classId, userId])
+  @@map("class_enrollments")
+}
+
+model Topic {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  languageId  String   @map("language_id")
+  language    Language @relation(fields: [languageId], references: [id])
+  createdById String   @map("created_by_id")
+  createdBy   User     @relation("TopicCreator", fields: [createdById], references: [id])
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  vocabulary       Vocabulary[]
+  topicAssignments TopicAssignment[]
+  practiceTests    PracticeTest[]
+
+  @@map("topics")
+}
+
+model Vocabulary {
+  id        String   @id @default(cuid())
+  word      String
+  meaning   String
+  example   String?
+  topicId   String   @map("topic_id")
+  topic     Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  flashcardProgress FlashcardProgress[]
+
+  @@map("vocabularies")
+}
+
+model FlashcardProgress {
+  id           String     @id @default(cuid())
+  userId       String     @map("user_id")
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vocabularyId String     @map("vocabulary_id")
+  vocabulary   Vocabulary @relation(fields: [vocabularyId], references: [id], onDelete: Cascade)
+  learned      Boolean    @default(false)
+  learnedAt    DateTime?  @map("learned_at")
+
+  @@unique([userId, vocabularyId])
+  @@map("flashcard_progress")
+}
+
+model TopicAssignment {
+  id         String   @id @default(cuid())
+  classId    String   @map("class_id")
+  class      Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  topicId    String   @map("topic_id")
+  topic      Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  assignedAt DateTime @default(now()) @map("assigned_at")
+
+  @@unique([classId, topicId])
+  @@map("topic_assignments")
+}
+
+model PracticeTest {
+  id          String   @id @default(cuid())
+  title       String
+  topicId     String   @map("topic_id")
+  topic       Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  createdById String   @map("created_by_id")
+  createdBy   User     @relation("TestCreator", fields: [createdById], references: [id])
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  questions       Question[]
+  practiceResults PracticeResult[]
+
+  @@map("practice_tests")
+}
+
+model Question {
+  id             String       @id @default(cuid())
+  practiceTestId String       @map("practice_test_id")
+  practiceTest   PracticeTest @relation(fields: [practiceTestId], references: [id], onDelete: Cascade)
+  questionNumber Int          @map("question_number")
+  content        String
+  questionType   QuestionType @map("question_type")
+  answer1        String       @map("answer_1")
+  answer2        String?      @map("answer_2")
+  answer3        String?      @map("answer_3")
+  answer4        String?      @map("answer_4")
+  correctAnswer  String       @map("correct_answer")
+  timer          Int          @default(30)
+  createdAt      DateTime     @default(now()) @map("created_at")
+
+  studentAnswers StudentAnswer[]
+
+  @@unique([practiceTestId, questionNumber])
+  @@map("questions")
+}
+
+model PracticeResult {
+  id             String       @id @default(cuid())
+  userId         String       @map("user_id")
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  practiceTestId String       @map("practice_test_id")
+  practiceTest   PracticeTest @relation(fields: [practiceTestId], references: [id], onDelete: Cascade)
+  totalQuestions Int          @map("total_questions")
+  correctCount   Int          @map("correct_count")
+  incorrectCount Int          @map("incorrect_count")
+  score          Float
+  completedAt    DateTime     @default(now()) @map("completed_at")
+
+  studentAnswers StudentAnswer[]
+  comments       Comment[]
+
+  @@map("practice_results")
+}
+
+model StudentAnswer {
+  id               String         @id @default(cuid())
+  practiceResultId String         @map("practice_result_id")
+  practiceResult   PracticeResult @relation(fields: [practiceResultId], references: [id], onDelete: Cascade)
+  questionId       String         @map("question_id")
+  question         Question       @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  userId           String         @map("user_id")
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  selectedAnswer   String         @map("selected_answer")
+  isCorrect        Boolean        @map("is_correct")
+  attemptNumber    Int            @default(1) @map("attempt_number")
+  answeredAt       DateTime       @default(now()) @map("answered_at")
+
+  @@map("student_answers")
+}
+
+model Comment {
+  id               String         @id @default(cuid())
+  content          String
+  userId           String         @map("user_id")
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  practiceResultId String         @map("practice_result_id")
+  practiceResult   PracticeResult @relation(fields: [practiceResultId], references: [id], onDelete: Cascade)
+  createdAt        DateTime       @default(now()) @map("created_at")
+
+  @@map("comments")
+}
+
+model Media {
+  id           String   @id @default(cuid())
+  fileName     String   @map("file_name")
+  fileUrl      String   @map("file_url")
+  fileType     String   @map("file_type")
+  fileSize     Int      @map("file_size")
+  uploadedById String   @map("uploaded_by_id")
+  uploadedBy   User     @relation(fields: [uploadedById], references: [id])
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("media")
+}

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Manrope:wght@200..800&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "outline": "#777586",
+              "error-container": "#ffdad6",
+              "background": "#f8f9ff",
+              "on-tertiary-fixed-variant": "#920028",
+              "inverse-primary": "#c3c0ff",
+              "inverse-surface": "#27313f",
+              "on-surface-variant": "#464554",
+              "secondary-container": "#a6f2d1",
+              "tertiary": "#7b0020",
+              "on-background": "#121c2a",
+              "error": "#ba1a1a",
+              "primary-container": "#4338ca",
+              "on-primary-container": "#c1beff",
+              "surface-dim": "#d0dbed",
+              "surface-container-high": "#dee9fc",
+              "surface-variant": "#d9e3f6",
+              "surface-bright": "#f8f9ff",
+              "secondary-fixed-dim": "#8bd6b6",
+              "secondary-fixed": "#a6f2d1",
+              "inverse-on-surface": "#eaf1ff",
+              "on-primary-fixed-variant": "#372abf",
+              "on-secondary-fixed": "#002116",
+              "surface-container-lowest": "#ffffff",
+              "tertiary-container": "#a6002f",
+              "on-secondary": "#ffffff",
+              "primary": "#2a14b4",
+              "surface-container-low": "#eff4ff",
+              "primary-fixed": "#e3dfff",
+              "secondary": "#1b6b51",
+              "on-secondary-fixed-variant": "#00513b",
+              "primary-fixed-dim": "#c3c0ff",
+              "on-primary-fixed": "#100069",
+              "on-primary": "#ffffff",
+              "surface": "#f8f9ff",
+              "on-secondary-container": "#237157",
+              "surface-container": "#e6eeff",
+              "tertiary-fixed-dim": "#ffb3b6",
+              "on-tertiary-fixed": "#40000c",
+              "surface-tint": "#5148d7",
+              "on-tertiary": "#ffffff",
+              "surface-container-highest": "#d9e3f6",
+              "on-error-container": "#93000a",
+              "on-surface": "#121c2a",
+              "tertiary-fixed": "#ffdada",
+              "outline-variant": "#c7c4d7",
+              "on-tertiary-container": "#ffb0b4",
+              "on-error": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Newsreader", "serif"],
+              "body": ["Manrope", "sans-serif"],
+              "label": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+      }
+      .ambient-shadow {
+        box-shadow: 0px 20px 40px rgba(18, 28, 42, 0.06);
+      }
+      .text-glow {
+        text-shadow: 0 0 20px rgba(42, 20, 180, 0.1);
+      }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<nav class="fixed top-0 z-50 w-full bg-[#f8f9ff] dark:bg-[#121c2a] tonal-shift bg-surface-container-low dark:bg-slate-900">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-serif italic text-[#2a14b4] dark:text-[#4338CA]">Aura Lexicon</span>
+<div class="hidden md:flex items-center space-x-6">
+<a class="text-[#27313f] dark:text-slate-400 font-medium uppercase tracking-wider text-xs hover:text-[#2a14b4] dark:hover:text-[#4338CA] transition-colors duration-300" href="#">Gallery</a>
+<a class="text-[#2a14b4] dark:text-[#4338CA] font-bold border-b-2 border-[#2a14b4] pb-1 hover:text-[#2a14b4] dark:hover:text-[#4338CA] transition-colors duration-300" href="#">Review</a>
+<a class="text-[#27313f] dark:text-slate-400 font-medium uppercase tracking-wider text-xs hover:text-[#2a14b4] dark:hover:text-[#4338CA] transition-colors duration-300" href="#">Explore</a>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">account_circle</button>
+</div>
+</div>
+<!-- Subtle Progress Bar Anchor -->
+<div class="w-full h-[2px] bg-surface-variant overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-primary-container" style="width: 12.5%;"></div>
+</div>
+</nav>
+<main class="pt-24 pb-12 min-h-screen flex flex-col items-center px-6">
+<!-- Context Header -->
+<header class="w-full max-w-2xl mb-12 flex flex-col items-center">
+<div class="flex items-center gap-2 mb-2">
+<span class="text-xs font-label uppercase tracking-[0.2em] text-outline">Topic</span>
+<span class="h-1 w-1 rounded-full bg-outline-variant"></span>
+<span class="text-xs font-label uppercase tracking-[0.2em] text-on-surface font-semibold">At the Park</span>
+</div>
+<p class="text-sm font-label text-outline tracking-wider">1 of 8 CARDS</p>
+</header>
+<!-- Flashcard Hero Section -->
+<section class="relative w-full max-w-xl aspect-[4/5] md:aspect-[3/4]">
+<!-- Asymmetric Accent Element -->
+<div class="absolute -top-12 -left-12 w-48 h-48 bg-secondary-container/20 rounded-full blur-3xl -z-10"></div>
+<div class="absolute -bottom-12 -right-12 w-64 h-64 bg-primary-container/10 rounded-full blur-3xl -z-10"></div>
+<!-- The Card -->
+<div class="glass-card w-full h-full rounded-[2rem] border border-white/40 ambient-shadow flex flex-col items-center justify-between p-10 overflow-hidden group cursor-pointer active:scale-[0.98] transition-all duration-300">
+<!-- Card Header/Visual -->
+<div class="w-full flex-1 flex flex-col items-center justify-center">
+<div class="relative w-full max-w-xs aspect-square rounded-3xl overflow-hidden mb-8">
+<img class="w-full h-full object-cover grayscale-[20%] hover:scale-105 transition-transform duration-700" data-alt="Minimalist wooden swing set in a misty park" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdnWXGjmgjJSO0yJ7Wzv97YNjCVMHXm0Uj9OqtgDHG1J1uqR9xHjmg9y1hZ368ls7raCP843FESkgVXQgxSVZsGzb4zC2fhLveh206r5tKNM2D2-cXkNbDvj2PWELK6CmWJoo1PJWtzOmo5rZIlleABVP9jxgGBF2eDgu1iOfFZVPhIjiK3nGmyz-KI7iQZTlWeg8wDOzdhnFVRBhY5hCucgdFAxUtOTlK4ejPj5Y2mYzpUl5TQjFgKUZ75Q1hXGtDzjwv2K2vOE4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/40 to-transparent"></div>
+</div>
+<!-- Content -->
+<div class="text-center">
+<h1 class="font-headline text-6xl md:text-7xl italic text-on-surface tracking-tight mb-2">Swing</h1>
+<p class="font-body text-outline tracking-widest text-lg">/swɪŋ/</p>
+</div>
+</div>
+<!-- Footer Hint -->
+<div class="mt-8 flex items-center gap-3 text-outline/60 group-hover:text-primary transition-colors duration-300">
+<span class="material-symbols-outlined text-sm">sync</span>
+<span class="text-[10px] uppercase font-label tracking-[0.2em] font-bold">Tap to flip for definition</span>
+</div>
+</div>
+</section>
+<!-- Control Actions -->
+<section class="mt-16 w-full max-w-md flex justify-between items-center gap-8">
+<!-- Not Learned -->
+<button class="flex-1 flex flex-col items-center gap-4 group">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center group-hover:bg-tertiary-fixed transition-all duration-300 active:scale-95 shadow-sm">
+<span class="material-symbols-outlined text-tertiary text-2xl" data-icon="close">close</span>
+</div>
+<span class="text-[10px] font-label uppercase tracking-widest text-outline group-hover:text-tertiary font-bold transition-colors">Still Learning</span>
+</button>
+<!-- Learned -->
+<button class="flex-1 flex flex-col items-center gap-4 group">
+<div class="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center group-hover:bg-secondary-fixed transition-all duration-300 active:scale-95 shadow-sm">
+<span class="material-symbols-outlined text-on-secondary-container text-2xl" data-icon="check" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="text-[10px] font-label uppercase tracking-widest text-outline group-hover:text-secondary font-bold transition-colors">Mastered</span>
+</button>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-[#f8f9ff] dark:bg-[#121c2a] full-width py-12 tonal-shift border-t border-[#f8f9ff]/10">
+<div class="flex flex-col md:flex-row justify-between items-center px-12 w-full max-w-screen-2xl mx-auto mt-20">
+<div class="mb-8 md:mb-0">
+<span class="text-lg font-serif text-[#27313f] dark:text-slate-200">Aura Lexicon</span>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-body mt-2">© 2024 Aura Lexicon. The Luxury of Focus.</p>
+</div>
+<div class="flex gap-10">
+<a class="text-slate-500 dark:text-slate-400 text-sm font-body hover:text-[#2a14b4] underline-offset-4 hover:underline transition-all" href="#">Privacy</a>
+<a class="text-slate-500 dark:text-slate-400 text-sm font-body hover:text-[#2a14b4] underline-offset-4 hover:underline transition-all" href="#">Terms</a>
+<a class="text-slate-500 dark:text-slate-400 text-sm font-body hover:text-[#2a14b4] underline-offset-4 hover:underline transition-all" href="#">Institutional Access</a>
+</div>
+</div>
+</footer>
+</body></html>

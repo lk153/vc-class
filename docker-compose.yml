@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: vc_class
+      POSTGRES_PASSWORD: vc_class
+      POSTGRES_DB: vc_class
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    ports:
+      - "8434:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:

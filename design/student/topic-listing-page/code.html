@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Manrope:wght@200..800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-dim": "#d0dbed",
+              "on-secondary-container": "#237157",
+              "on-primary": "#ffffff",
+              "surface-container-highest": "#d9e3f6",
+              "on-secondary-fixed-variant": "#00513b",
+              "on-secondary": "#ffffff",
+              "on-primary-fixed-variant": "#372abf",
+              "on-error-container": "#93000a",
+              "surface-container": "#e6eeff",
+              "secondary": "#1b6b51",
+              "outline-variant": "#c7c4d7",
+              "on-surface": "#121c2a",
+              "inverse-primary": "#c3c0ff",
+              "tertiary-container": "#a6002f",
+              "on-secondary-fixed": "#002116",
+              "on-primary-fixed": "#100069",
+              "tertiary-fixed": "#ffdada",
+              "surface-container-high": "#dee9fc",
+              "inverse-surface": "#27313f",
+              "primary-container": "#4338ca",
+              "tertiary-fixed-dim": "#ffb3b6",
+              "error-container": "#ffdad6",
+              "surface-container-low": "#eff4ff",
+              "on-tertiary": "#ffffff",
+              "surface-tint": "#5148d7",
+              "error": "#ba1a1a",
+              "secondary-container": "#a6f2d1",
+              "on-tertiary-fixed-variant": "#920028",
+              "secondary-fixed": "#a6f2d1",
+              "on-tertiary-container": "#ffb0b4",
+              "inverse-on-surface": "#eaf1ff",
+              "background": "#f8f9ff",
+              "on-tertiary-fixed": "#40000c",
+              "on-error": "#ffffff",
+              "tertiary": "#7b0020",
+              "secondary-fixed-dim": "#8bd6b6",
+              "surface": "#f8f9ff",
+              "primary-fixed": "#e3dfff",
+              "surface-variant": "#d9e3f6",
+              "surface-container-lowest": "#ffffff",
+              "surface-bright": "#f8f9ff",
+              "primary-fixed-dim": "#c3c0ff",
+              "on-surface-variant": "#464554",
+              "outline": "#777586",
+              "primary": "#2a14b4",
+              "on-primary-container": "#c1beff",
+              "on-background": "#121c2a"
+            },
+            fontFamily: {
+              "headline": ["Newsreader", "serif"],
+              "body": ["Manrope", "sans-serif"],
+              "label": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-shadow {
+            box-shadow: 0px 20px 40px rgba(18, 28, 42, 0.06);
+        }
+        .glass-nav {
+            backdrop-filter: blur(24px);
+            background-color: rgba(248, 249, 255, 0.8);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 left-0 right-0 z-50 glass-nav bg-surface-container-low">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-serif italic text-[#2a14b4] dark:text-[#4338CA]">Aura Lexicon</div>
+<div class="hidden md:flex items-center space-x-10">
+<a class="text-[#27313f] dark:text-slate-400 font-medium uppercase tracking-wider text-xs hover:text-[#2a14b4] transition-colors duration-300" href="#">Gallery</a>
+<a class="text-[#27313f] dark:text-slate-400 font-medium uppercase tracking-wider text-xs hover:text-[#2a14b4] transition-colors duration-300" href="#">Review</a>
+<a class="text-[#2a14b4] dark:text-[#4338CA] font-bold border-b-2 border-[#2a14b4] pb-1 uppercase tracking-wider text-xs" href="#">Explore</a>
+</div>
+<div class="flex items-center space-x-4">
+<button class="text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="pt-32 pb-20 px-8 max-w-screen-2xl mx-auto">
+<!-- Editorial Header Section -->
+<header class="mb-16 max-w-4xl">
+<div class="inline-block px-3 py-1 mb-4 bg-surface-container-highest text-on-surface-variant font-label text-[10px] uppercase tracking-[0.2em] rounded-full">
+                Curated Collection
+            </div>
+<h1 class="font-headline text-6xl md:text-7xl text-on-surface tracking-tight leading-tight">My Topics</h1>
+<p class="mt-6 text-on-surface-variant text-lg max-w-2xl font-light leading-relaxed">
+                A personal library of linguistic explorations. Each collection is designed to bridge the gap between technical mastery and natural fluency.
+            </p>
+</header>
+<!-- Topic Grid (Asymmetric Feel via Spacing) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+<!-- Card 1: At the Park -->
+<div class="group flex flex-col bg-surface-container-lowest rounded-xl editorial-shadow overflow-hidden transition-all duration-300 hover:-translate-y-2">
+<div class="relative aspect-[16/10] overflow-hidden">
+<img alt="Serene park scene with green trees and sunlight" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Serene park scene with green trees and sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-enTeQK718CVDadVVtE8r9ZMyp6axqOEJau4MVVITQT5iIv6WaEi0D4Jewn7_AdTu7uZMswNtQnTYaSGx5y9HgfOgz8Zh3QoXDGuZrCqns9mAFw_c8G-x-h6AYsHHvwaR8cBQmMj2rQQ_wh_R_dVI5X-1nVGSHh7EzIbTPcmsyCFzJTQURVm27HrNH4qZj7esB7hkZkI6_5RJVwLvAAVb9rq8xlj0keddQZmOXWulZGWVEyzJtA9RxJH1mLD-Lnx5MJ2PNlqGj4s"/>
+<div class="absolute top-4 left-4">
+<span class="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-md text-[#2a14b4] font-label text-[10px] uppercase tracking-wider rounded-full shadow-sm">English</span>
+</div>
+</div>
+<div class="p-8 flex flex-col flex-grow">
+<h3 class="font-headline text-2xl text-on-surface mb-2">At the Park</h3>
+<p class="text-on-surface-variant text-sm mb-8 leading-relaxed">Essential vocabulary for outdoor strolls, nature observation, and leisure activities.</p>
+<div class="mt-auto">
+<div class="flex justify-between items-end mb-2">
+<span class="font-label text-[11px] uppercase tracking-widest text-on-surface-variant">8 of 8 words learned</span>
+<span class="font-headline italic text-primary text-lg">100%</span>
+</div>
+<div class="h-1 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 100%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2: Morning Rituals -->
+<div class="group flex flex-col bg-surface-container-lowest rounded-xl editorial-shadow overflow-hidden transition-all duration-300 hover:-translate-y-2 lg:mt-12">
+<div class="relative aspect-[16/10] overflow-hidden">
+<img alt="Morning coffee cup on a wooden table with soft light" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Morning coffee cup on a wooden table with soft light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfcWLLBGKgW0qVChSMjqFYhUlTomcifZ3KEOhWWVysyG2ixonNooZQlpjQwZ2U8US2EX4fiIOWbzRHz7-7Ilu-QOiqXdSj8wb_qjaM4m0Ebk5wcAG6fV-1PuLwg8Sfac0ep9cWoKXUbddewUamwy0OJOhoEf9nWwVf4CNBXADHotLE5zZBnGMLjzKv28z8OP46sCAWaBTAUmgVKBoaq2jcd1_HK1r0IVAn82J_ewp-RRdQ7SEllqf8ifwbJD142f69HbCADWgxznw"/>
+<div class="absolute top-4 left-4">
+<span class="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-md text-[#2a14b4] font-label text-[10px] uppercase tracking-wider rounded-full shadow-sm">English</span>
+</div>
+</div>
+<div class="p-8 flex flex-col flex-grow">
+<h3 class="font-headline text-2xl text-on-surface mb-2">Morning Rituals</h3>
+<p class="text-on-surface-variant text-sm mb-8 leading-relaxed">The quiet vocabulary of beginnings—brewing coffee, early light, and setting intentions.</p>
+<div class="mt-auto">
+<div class="flex justify-between items-end mb-2">
+<span class="font-label text-[11px] uppercase tracking-widest text-on-surface-variant">12 of 15 words learned</span>
+<span class="font-headline italic text-primary text-lg">80%</span>
+</div>
+<div class="h-1 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 80%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3: Urban Architecture -->
+<div class="group flex flex-col bg-surface-container-lowest rounded-xl editorial-shadow overflow-hidden transition-all duration-300 hover:-translate-y-2">
+<div class="relative aspect-[16/10] overflow-hidden">
+<img alt="Modern architectural lines of a skyscraper against blue sky" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Modern architectural lines of a skyscraper against blue sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJGUHsU7PooTEwAjnibso8qYQJgRcj6dgx3vG8yKAtDwhDGTKlGH7R36VO3vwMaCHLrT8vazXRCPBw4d7rmq3jiBg13NutUfKWsm4MyoNNKBsvrWIIMKp0XXpe6mdUThz6VAMTockyPwlrQtlSFq5cl9yPJDegL-30l_ioaSnmOumZg4-3fZJLxF_dHN0uS8Dw-1nQCwupz8n6FuO6av7GPl6_S9kV0jG2Je0InB2HVKJvAa_kYY2W7S0n5a620P3pOt-aDAbyohI"/>
+<div class="absolute top-4 left-4">
+<span class="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-md text-[#2a14b4] font-label text-[10px] uppercase tracking-wider rounded-full shadow-sm">English</span>
+</div>
+</div>
+<div class="p-8 flex flex-col flex-grow">
+<h3 class="font-headline text-2xl text-on-surface mb-2">Urban Architecture</h3>
+<p class="text-on-surface-variant text-sm mb-8 leading-relaxed">Structural terms and descriptive adjectives for the modern cityscape and its design.</p>
+<div class="mt-auto">
+<div class="flex justify-between items-end mb-2">
+<span class="font-label text-[11px] uppercase tracking-widest text-on-surface-variant">4 of 20 words learned</span>
+<span class="font-headline italic text-primary text-lg">20%</span>
+</div>
+<div class="h-1 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 20%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 4: Culinary Arts -->
+<div class="group flex flex-col bg-surface-container-lowest rounded-xl editorial-shadow overflow-hidden transition-all duration-300 hover:-translate-y-2">
+<div class="relative aspect-[16/10] overflow-hidden">
+<img alt="Rustic kitchen setting with fresh ingredients" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Rustic kitchen setting with fresh ingredients" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEJAmRZW3aTRBdsiBfnqadrS7fokiXt_JKsKIyaCQjj2_mZZDUqwgjBDPopvwb7ORRLAGxwre-jgXSRRxFB34gLY9hhYMshLe95-LJcmnLZaanJIpZ4EXrfSaCMIANFnhxvwT65KINygpPEKQU3ke1yJnMlFTV9X7zx2pW5vM_mJKSWnVLAPxptoCsxqrTIflsN48ijivRKDOccew7IkPdpfggATuizd6x1clv2OMAFQXe9H09n0GayrR-OIOfoHFzKuzdcs9xz4A"/>
+<div class="absolute top-4 left-4">
+<span class="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-md text-[#2a14b4] font-label text-[10px] uppercase tracking-wider rounded-full shadow-sm">English</span>
+</div>
+</div>
+<div class="p-8 flex flex-col flex-grow">
+<h3 class="font-headline text-2xl text-on-surface mb-2">Culinary Arts</h3>
+<p class="text-on-surface-variant text-sm mb-8 leading-relaxed">From prep work to presentation—mastering the language of the gourmet kitchen.</p>
+<div class="mt-auto">
+<div class="flex justify-between items-end mb-2">
+<span class="font-label text-[11px] uppercase tracking-widest text-on-surface-variant">22 of 22 words learned</span>
+<span class="font-headline italic text-primary text-lg">100%</span>
+</div>
+<div class="h-1 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 100%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 5: Botanical Study -->
+<div class="group flex flex-col bg-surface-container-lowest rounded-xl editorial-shadow overflow-hidden transition-all duration-300 hover:-translate-y-2 lg:-mt-12">
+<div class="relative aspect-[16/10] overflow-hidden">
+<img alt="Macro shot of botanical leaves with intricate details" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Macro shot of botanical leaves with intricate details" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6DPQa3t8E_Rv15pqL-TFFU3ZAJOdg-fEAK1Y53lVKlPNO0UkUVk6tGTaWDgvCRNpxshlODrFisZbNKjT-efMQSSAgaPAto1eixZfqv6cdMC05FjUdpzxtB7M_K1KHpQVl3i6_wKXPKITVFWA2A_7m2ANhSeDliSEHMtfAjsZcGiFg4kmgrxvk288hrI3w3iC0SEwoXG1gA3PW2xsi54gUcNIP9TCKGB4PngjBxc3aYjNtWi27t-dScm1ZyO905VB6BLB6VsJLzPU"/>
+<div class="absolute top-4 left-4">
+<span class="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-md text-[#2a14b4] font-label text-[10px] uppercase tracking-wider rounded-full shadow-sm">English</span>
+</div>
+</div>
+<div class="p-8 flex flex-col flex-grow">
+<h3 class="font-headline text-2xl text-on-surface mb-2">Botanical Study</h3>
+<p class="text-on-surface-variant text-sm mb-8 leading-relaxed">Delicate terminology for plant life, garden maintenance, and floral anatomy.</p>
+<div class="mt-auto">
+<div class="flex justify-between items-end mb-2">
+<span class="font-label text-[11px] uppercase tracking-widest text-on-surface-variant">15 of 25 words learned</span>
+<span class="font-headline italic text-primary text-lg">60%</span>
+</div>
+<div class="h-1 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 60%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 6: Night Sky -->
+<div class="group flex flex-col bg-surface-container-lowest rounded-xl editorial-shadow overflow-hidden transition-all duration-300 hover:-translate-y-2">
+<div class="relative aspect-[16/10] overflow-hidden">
+<img alt="Deep blue night sky filled with stars and constellations" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Deep blue night sky filled with stars and constellations" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBQhh6wW7HWD7Wihvza9BB-Twd1FKiCuHATzUQkIs3cfgWG3-PI8s-MyMB_HLwrqBN3KvnKk5Iif3nKG5zRDdxkfdIXkk4uulDBaSNDp4aF2-6nLCqSahjeOlWeVAMZwIsYEZ46U008KsPuVLegwpAnXnwm-jnjF8GhPhiXlkEb_cmHI60yX2q8IC3_BRj6pyTTtGZdR5ndDmEoCDw31BVVbs8ksLair53HwVTPOT1m_kahvnVDKOGGaqWQOXWrBtIlKD-fJ_qNT8"/>
+<div class="absolute top-4 left-4">
+<span class="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-md text-[#2a14b4] font-label text-[10px] uppercase tracking-wider rounded-full shadow-sm">English</span>
+</div>
+</div>
+<div class="p-8 flex flex-col flex-grow">
+<h3 class="font-headline text-2xl text-on-surface mb-2">Night Sky</h3>
+<p class="text-on-surface-variant text-sm mb-8 leading-relaxed">Celestial vocabulary for astronomical wonders and the mysteries of the cosmos.</p>
+<div class="mt-auto">
+<div class="flex justify-between items-end mb-2">
+<span class="font-label text-[11px] uppercase tracking-widest text-on-surface-variant">2 of 12 words learned</span>
+<span class="font-headline italic text-primary text-lg">16%</span>
+</div>
+<div class="h-1 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 16%;"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Add Topic CTA (Editorial Style) -->
+<section class="mt-32 flex flex-col items-center text-center">
+<h2 class="font-headline text-3xl text-on-surface mb-6">Missing something specific?</h2>
+<button class="px-12 py-4 bg-primary text-on-primary rounded-full font-label text-sm uppercase tracking-widest hover:bg-primary-container hover:scale-105 transition-all duration-300 shadow-xl shadow-primary/20">
+                Explore New Modules
+            </button>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-[#f8f9ff] dark:bg-[#121c2a] py-12 border-t border-[#f8f9ff]/10">
+<div class="flex flex-col md:flex-row justify-between items-center px-12 w-full max-w-screen-2xl mx-auto">
+<div class="mb-8 md:mb-0">
+<div class="text-lg font-serif text-[#27313f] dark:text-slate-200">Aura Lexicon</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-2">© 2024 Aura Lexicon. The Luxury of Focus.</p>
+</div>
+<div class="flex space-x-8">
+<a class="text-slate-500 dark:text-slate-400 text-sm font-label uppercase tracking-wider hover:text-[#2a14b4] underline-offset-4 hover:underline transition-all" href="#">Privacy</a>
+<a class="text-slate-500 dark:text-slate-400 text-sm font-label uppercase tracking-wider hover:text-[#2a14b4] underline-offset-4 hover:underline transition-all" href="#">Terms</a>
+<a class="text-slate-500 dark:text-slate-400 text-sm font-label uppercase tracking-wider hover:text-[#2a14b4] underline-offset-4 hover:underline transition-all" href="#">Institutional Access</a>
+</div>
+</div>
+</footer>
+</body></html>

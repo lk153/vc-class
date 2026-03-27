@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aura Lexicon | Module Assessment</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-primary-fixed-variant": "#372abf",
+              "secondary": "#1b6b51",
+              "surface-bright": "#f8f9ff",
+              "surface-tint": "#5148d7",
+              "surface-container-highest": "#d9e3f6",
+              "tertiary-fixed-dim": "#ffb3b6",
+              "on-error": "#ffffff",
+              "on-primary-container": "#c1beff",
+              "background": "#f8f9ff",
+              "tertiary-container": "#a6002f",
+              "primary-fixed": "#e3dfff",
+              "tertiary-fixed": "#ffdada",
+              "secondary-fixed-dim": "#8bd6b6",
+              "on-tertiary-fixed": "#40000c",
+              "error-container": "#ffdad6",
+              "primary": "#2a14b4",
+              "tertiary": "#7b0020",
+              "on-surface-variant": "#464554",
+              "surface-variant": "#d9e3f6",
+              "surface": "#f8f9ff",
+              "primary-fixed-dim": "#c3c0ff",
+              "outline": "#777586",
+              "surface-container-high": "#dee9fc",
+              "surface-container": "#e6eeff",
+              "on-primary-fixed": "#100069",
+              "on-tertiary": "#ffffff",
+              "on-tertiary-container": "#ffb0b4",
+              "inverse-surface": "#27313f",
+              "surface-container-lowest": "#ffffff",
+              "on-error-container": "#93000a",
+              "error": "#ba1a1a",
+              "secondary-fixed": "#a6f2d1",
+              "secondary-container": "#a6f2d1",
+              "on-secondary": "#ffffff",
+              "on-tertiary-fixed-variant": "#920028",
+              "on-primary": "#ffffff",
+              "on-background": "#121c2a",
+              "primary-container": "#4338ca",
+              "inverse-on-surface": "#eaf1ff",
+              "on-secondary-fixed-variant": "#00513b",
+              "on-secondary-container": "#237157",
+              "on-surface": "#121c2a",
+              "outline-variant": "#c7c4d7",
+              "on-secondary-fixed": "#002116",
+              "surface-dim": "#d0dbed",
+              "inverse-primary": "#c3c0ff",
+              "surface-container-low": "#eff4ff"
+            },
+            fontFamily: {
+              "headline": ["Newsreader", "serif"],
+              "body": ["Manrope", "sans-serif"],
+              "label": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .font-serif { font-family: 'Newsreader', serif; }
+        .font-sans { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-sans selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<header class="bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-xl shadow-sm shadow-indigo-900/5 docked full-width top-0 sticky z-50">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-serif italic text-indigo-900 dark:text-indigo-100">Aura Lexicon</div>
+<nav class="hidden md:flex gap-8 items-center">
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors" href="#">Curriculum</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors" href="#">Library</a>
+<a class="text-indigo-700 dark:text-indigo-400 font-semibold border-b-2 border-indigo-600" href="#">Progress</a>
+</nav>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-slate-500 hover:text-indigo-600 cursor-pointer transition-colors" data-icon="timer">timer</span>
+<span class="material-symbols-outlined text-slate-500 hover:text-indigo-600 cursor-pointer transition-colors" data-icon="history">history</span>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container shadow-sm border border-outline-variant/20">
+<img alt="Scholar Profile" class="w-full h-full object-cover" data-alt="Close up portrait of a scholar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiVEUODZdqimDFVM9Mhzn5b3YvWo0ZyxaKvuXz6acoB3IzbW-xQZ2mXtLeolt6ImBh1rHMilb36tgpMSaG6OZdTUkztLoOThhcGtEyx0KKcfDv8NAwoC0ifm_KM2OAVRYhGAtzOwv1CPNe7etOIA0NsRQBsvrzZnA4GOmOJ-aE4i27GoUUQi29GlPwTopd_eSoDCz8obwYN829kEa_-oV-MkdGRpEC0h9mzd2PCS7MaT5UiGD9rPzpLoduHqYGpmGZjVWbs5Edizk"/>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-screen-2xl mx-auto px-8 md:px-12 py-12 min-h-[calc(100vh-160px)]">
+<!-- Module Header -->
+<div class="mb-16">
+<span class="font-sans text-xs uppercase tracking-widest text-primary font-bold mb-2 block">Advanced Linguistics — Module 04</span>
+<h1 class="font-serif italic text-5xl md:text-6xl text-on-surface tracking-tight">Module Assessment</h1>
+</div>
+<div class="flex flex-col lg:flex-row gap-16 items-start">
+<!-- Left Column: Context & Question -->
+<section class="w-full lg:w-3/5 space-y-12">
+<div class="bg-surface-container-low p-8 md:p-12 rounded-xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-20 -mt-20 blur-3xl transition-all group-hover:bg-primary/10"></div>
+<div class="relative z-10">
+<label class="font-sans text-[10px] uppercase tracking-[0.2em] text-outline font-bold block mb-8">Question 07 of 20</label>
+<h2 class="font-serif italic text-4xl md:text-5xl text-on-surface leading-snug mb-12">
+                            Is the sky blue?
+                        </h2>
+<div class="aspect-video w-full rounded-xl overflow-hidden shadow-2xl shadow-on-surface/5 border border-outline-variant/10">
+<img alt="Blue Sky" class="w-full h-full object-cover" data-alt="Wide expansive view of a deep blue sky with soft clouds" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDumVsScYgeYIlwDsfOpiyXx4aknsS0bMMCR5iT8Z2VsaYD0RQnkcRSCclyW-ntIEaBfxhMbdrE9mIuvJ_ZMzoPMOp2Qy5ncbPSdfwSj4NeyHJSLKGp-qecVttjyv20n4bhB7VlHM_I-5GAxGjCUU-J080mgb-9XZAc_dyNxo-qJysA6AvmRe7oQ-82fj7wxSjHWliUAOzTOMKITW4YLOp9HQztU-O36evDzfmMZoISl8x-JvDLQj-veLzSTBZ-Xdbzt1FO-wzTZhw"/>
+</div>
+<div class="mt-8 prose prose-slate">
+<p class="font-sans text-on-surface-variant leading-relaxed text-lg">
+                                Considering the Rayleigh scattering effect where shorter wavelengths of light are dispersed more efficiently by the atmosphere. Examine the visual evidence provided.
+                            </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Column: Controls & Progress -->
+<aside class="w-full lg:w-2/5 sticky top-32 space-y-8">
+<!-- Status Dashboard Card -->
+<div class="bg-surface-container-low p-8 rounded-xl border border-outline-variant/10">
+<div class="grid grid-cols-2 gap-8 mb-8">
+<div>
+<span class="block text-[10px] uppercase tracking-widest text-outline mb-1">Time Remaining</span>
+<span class="text-2xl font-serif italic text-primary">14:22</span>
+</div>
+<div class="text-right">
+<span class="block text-[10px] uppercase tracking-widest text-outline mb-1">Accuracy</span>
+<span class="text-2xl font-serif italic text-secondary">94%</span>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[10px] uppercase tracking-widest text-outline font-bold">
+<span>Progress</span>
+<span>35% Complete</span>
+</div>
+<div class="h-1 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-primary-container w-[35%]"></div>
+</div>
+</div>
+</div>
+<!-- Options List -->
+<div class="space-y-4">
+<button class="w-full text-left p-6 rounded-full bg-surface-container-lowest border border-outline-variant/20 hover:border-primary/40 hover:bg-primary/5 group transition-all duration-200 active:scale-95 flex items-center justify-between">
+<div class="flex items-center gap-6">
+<span class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high text-on-surface-variant font-serif italic group-hover:bg-primary group-hover:text-on-primary transition-colors">A</span>
+<span class="font-sans text-lg font-medium text-on-surface">Yes, it is scattering.</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity" data-icon="check_circle">check_circle</span>
+</button>
+<button class="w-full text-left p-6 rounded-full bg-surface-container-lowest border border-outline-variant/20 hover:border-primary/40 hover:bg-primary/5 group transition-all duration-200 active:scale-95 flex items-center justify-between">
+<div class="flex items-center gap-6">
+<span class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high text-on-surface-variant font-serif italic group-hover:bg-primary group-hover:text-on-primary transition-colors">B</span>
+<span class="font-sans text-lg font-medium text-on-surface">No, it is an optical illusion.</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity" data-icon="check_circle">check_circle</span>
+</button>
+<button class="w-full text-left p-6 rounded-full bg-surface-container-lowest border border-outline-variant/20 hover:border-primary/40 hover:bg-primary/5 group transition-all duration-200 active:scale-95 flex items-center justify-between">
+<div class="flex items-center gap-6">
+<span class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high text-on-surface-variant font-serif italic group-hover:bg-primary group-hover:text-on-primary transition-colors">C</span>
+<span class="font-sans text-lg font-medium text-on-surface">Only during the day.</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity" data-icon="check_circle">check_circle</span>
+</button>
+</div>
+<!-- Primary Action -->
+<div class="pt-8 flex gap-4">
+<button class="flex-1 bg-primary text-on-primary h-16 rounded-full font-sans font-bold tracking-tight hover:shadow-lg hover:shadow-primary/20 active:scale-95 transition-all">
+                        Submit Answer
+                    </button>
+<button class="w-16 h-16 bg-surface-container-high text-on-surface-variant rounded-full flex items-center justify-center hover:bg-surface-container-highest transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="flag">flag</span>
+</button>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-50 dark:bg-slate-950">
+<div class="flex flex-col md:flex-row justify-between items-center px-12 py-8 w-full max-w-screen-2xl mx-auto">
+<div class="font-sans Manrope text-xs uppercase tracking-widest text-slate-400 mb-4 md:mb-0">
+                © 2024 Aura Lexicon. The Luxury of Focus.
+            </div>
+<div class="flex gap-8">
+<a class="font-sans Manrope text-xs uppercase tracking-widest text-slate-400 hover:text-indigo-500 transition-all opacity-80 hover:opacity-100" href="#">Etymology Index</a>
+<a class="font-sans Manrope text-xs uppercase tracking-widest text-slate-400 hover:text-indigo-500 transition-all opacity-80 hover:opacity-100" href="#">Academic Integrity</a>
+<a class="font-sans Manrope text-xs uppercase tracking-widest text-slate-400 hover:text-indigo-500 transition-all opacity-80 hover:opacity-100" href="#">Privacy</a>
+<a class="font-sans Manrope text-xs uppercase tracking-widest text-slate-400 hover:text-indigo-500 transition-all opacity-80 hover:opacity-100" href="#">Support</a>
+</div>
+</div>
+</footer>
+</body></html>

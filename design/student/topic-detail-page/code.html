@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>At the Park - Aura Lexicon</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;0,700;1,400&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-tertiary-fixed": "#40000c",
+                        "secondary-fixed": "#a6f2d1",
+                        "on-tertiary-container": "#ffb0b4",
+                        "on-primary-fixed-variant": "#372abf",
+                        "tertiary-fixed": "#ffdada",
+                        "on-tertiary-fixed-variant": "#920028",
+                        "secondary-container": "#a6f2d1",
+                        "inverse-surface": "#27313f",
+                        "on-primary-fixed": "#100069",
+                        "surface-tint": "#5148d7",
+                        "tertiary-container": "#a6002f",
+                        "primary": "#2a14b4",
+                        "outline-variant": "#c7c4d7",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#7b0020",
+                        "secondary-fixed-dim": "#8bd6b6",
+                        "on-surface": "#121c2a",
+                        "on-error": "#ffffff",
+                        "surface-container": "#e6eeff",
+                        "on-primary-container": "#c1beff",
+                        "inverse-primary": "#c3c0ff",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "surface-container-low": "#eff4ff",
+                        "on-background": "#121c2a",
+                        "on-secondary-container": "#237157",
+                        "primary-fixed": "#e3dfff",
+                        "surface-container-highest": "#d9e3f6",
+                        "on-surface-variant": "#464554",
+                        "on-secondary-fixed": "#002116",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#4338ca",
+                        "surface-dim": "#d0dbed",
+                        "surface-bright": "#f8f9ff",
+                        "outline": "#777586",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-high": "#dee9fc",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb3b6",
+                        "surface-variant": "#d9e3f6",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "background": "#f8f9ff",
+                        "on-secondary-fixed-variant": "#00513b",
+                        "surface": "#f8f9ff",
+                        "secondary": "#1b6b51"
+                    },
+                    fontFamily: {
+                        "headline": ["Newsreader", "serif"],
+                        "body": ["Manrope", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .serif-italic { font-style: italic; }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation Shell -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl shadow-[0px_20px_40px_rgba(18,28,42,0.06)]">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-headline italic text-indigo-900 dark:text-indigo-100">Aura Lexicon</span>
+<div class="hidden md:flex items-center gap-6">
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors duration-300" href="#">Gallery</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors duration-300" href="#">Review</a>
+<a class="text-indigo-700 dark:text-indigo-400 font-bold border-b-2 border-indigo-600" href="#">Explore</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex items-center bg-surface-container-low rounded-full px-4 py-1.5 gap-2 border border-outline-variant/10">
+<span class="material-symbols-outlined text-indigo-700 text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm font-medium w-32" placeholder="Search lexemes..." type="text"/>
+</div>
+<button class="text-slate-600 hover:text-indigo-700 transition-all scale-98 active:opacity-80">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</nav>
+<main class="pt-32 pb-24 px-6 max-w-7xl mx-auto">
+<!-- Hero Editorial Header -->
+<header class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-20 items-end">
+<div class="lg:col-span-7">
+<nav class="flex items-center gap-2 mb-6 text-sm font-label uppercase tracking-widest text-on-surface-variant">
+<a class="hover:text-primary transition-colors" href="#">Catalog</a>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-primary font-bold">Public Spaces</span>
+</nav>
+<h1 class="text-7xl md:text-8xl font-headline text-on-surface leading-none mb-6">At the Park</h1>
+<p class="text-xl md:text-2xl text-on-surface-variant font-headline italic leading-relaxed max-w-2xl">
+                    Discover the essential vocabulary found within communal greenspaces, from architectural details to nature's everyday elements.
+                </p>
+</div>
+<div class="lg:col-span-5 flex flex-col gap-8">
+<div class="bg-surface-container-low p-8 rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)]">
+<div class="flex justify-between items-end mb-4">
+<span class="text-sm font-label uppercase tracking-widest text-on-surface-variant">Progress</span>
+<span class="text-3xl font-headline text-primary">75%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-variant rounded-full overflow-hidden mb-4">
+<div class="h-full bg-gradient-to-r from-primary to-primary-container" style="width: 75%"></div>
+</div>
+<p class="text-sm text-on-surface-variant font-medium">6 of 8 words mastered in this collection</p>
+</div>
+<button class="w-full py-5 bg-primary text-on-primary rounded-full font-label font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-3 shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+<span class="material-symbols-outlined">style</span>
+                    Study Flashcards
+                </button>
+</div>
+</header>
+<!-- Flashcard Grid (Bento Style) -->
+<section class="mb-24">
+<div class="flex items-baseline justify-between mb-10">
+<h2 class="text-4xl font-headline text-on-surface">Vocabulary Collection</h2>
+<div class="h-px flex-grow mx-8 bg-outline-variant/20 hidden md:block"></div>
+<span class="text-sm font-label uppercase tracking-widest text-on-surface-variant">8 Items</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Word 1: Swing (Learned) -->
+<div class="group bg-surface-container-lowest p-8 rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.06)] hover:shadow-[0px_30px_60px_rgba(18,28,42,0.1)] transition-all duration-500 relative overflow-hidden">
+<div class="absolute top-6 right-6">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h3 class="text-2xl font-headline text-on-surface mb-4">Swing</h3>
+<p class="text-sm text-on-surface-variant mb-6 leading-relaxed">A seat suspended by chains or ropes, used for moving back and forth for pleasure.</p>
+<p class="text-xs font-label uppercase tracking-wider text-primary mb-2 opacity-60">Example</p>
+<p class="text-sm font-headline italic text-on-surface">"The children waited their turn for the red swing."</p>
+</div>
+<!-- Word 2: Slide (Learned) -->
+<div class="group bg-surface-container-lowest p-8 rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.06)] hover:shadow-[0px_30px_60px_rgba(18,28,42,0.1)] transition-all duration-500 relative overflow-hidden">
+<div class="absolute top-6 right-6">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h3 class="text-2xl font-headline text-on-surface mb-4">Slide</h3>
+<p class="text-sm text-on-surface-variant mb-6 leading-relaxed">A smooth sloping surface for children to go down for play.</p>
+<p class="text-xs font-label uppercase tracking-wider text-primary mb-2 opacity-60">Example</p>
+<p class="text-sm font-headline italic text-on-surface">"The metal slide was hot in the summer sun."</p>
+</div>
+<!-- Word 3: Bench (Learned) -->
+<div class="group bg-surface-container-lowest p-8 rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.06)] hover:shadow-[0px_30px_60px_rgba(18,28,42,0.1)] transition-all duration-500 relative overflow-hidden">
+<div class="absolute top-6 right-6">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h3 class="text-2xl font-headline text-on-surface mb-4">Bench</h3>
+<p class="text-sm text-on-surface-variant mb-6 leading-relaxed">A long seat for several people, typically made of wood or stone.</p>
+<p class="text-xs font-label uppercase tracking-wider text-primary mb-2 opacity-60">Example</p>
+<p class="text-sm font-headline italic text-on-surface">"They sat on a park bench to watch the sunset."</p>
+</div>
+<!-- Word 4: Fountain (Learning) -->
+<div class="group bg-surface-container-low/40 border border-outline-variant/10 p-8 rounded-xl shadow-[0px_10px_20px_rgba(18,28,42,0.02)] transition-all duration-500 relative overflow-hidden">
+<div class="absolute top-6 right-6">
+<span class="material-symbols-outlined text-outline-variant">radio_button_unchecked</span>
+</div>
+<h3 class="text-2xl font-headline text-on-surface mb-4">Fountain</h3>
+<p class="text-sm text-on-surface-variant mb-6 leading-relaxed">A structure that sends a stream of water into the air.</p>
+<p class="text-xs font-label uppercase tracking-wider text-primary mb-2 opacity-60">Example</p>
+<p class="text-sm font-headline italic text-on-surface">"Pigeons gathered around the central fountain."</p>
+</div>
+<!-- Word 5: Path (Learned) -->
+<div class="group bg-surface-container-lowest p-8 rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.06)] hover:shadow-[0px_30px_60px_rgba(18,28,42,0.1)] transition-all duration-500 relative overflow-hidden">
+<div class="absolute top-6 right-6">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h3 class="text-2xl font-headline text-on-surface mb-4">Path</h3>
+<p class="text-sm text-on-surface-variant mb-6 leading-relaxed">A track that is made by people or animals walking.</p>
+<p class="text-xs font-label uppercase tracking-wider text-primary mb-2 opacity-60">Example</p>
+<p class="text-sm font-headline italic text-on-surface">"The winding path led through the flower garden."</p>
+</div>
+<!-- Word 6: Pond (Learned) -->
+<div class="group bg-surface-container-lowest p-8 rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.06)] hover:shadow-[0px_30px_60px_rgba(18,28,42,0.1)] transition-all duration-500 relative overflow-hidden">
+<div class="absolute top-6 right-6">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h3 class="text-2xl font-headline text-on-surface mb-4">Pond</h3>
+<p class="text-sm text-on-surface-variant mb-6 leading-relaxed">A small body of still water formed naturally or by hollowing.</p>
+<p class="text-xs font-label uppercase tracking-wider text-primary mb-2 opacity-60">Example</p>
+<p class="text-sm font-headline italic text-on-surface">"Ducks were swimming peacefully in the pond."</p>
+</div>
+<!-- Word 7: Grass (Learned) -->
+<div class="group bg-surface-container-lowest p-8 rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.06)] hover:shadow-[0px_30px_60px_rgba(18,28,42,0.1)] transition-all duration-500 relative overflow-hidden">
+<div class="absolute top-6 right-6">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h3 class="text-2xl font-headline text-on-surface mb-4">Grass</h3>
+<p class="text-sm text-on-surface-variant mb-6 leading-relaxed">Vegetation consisting of short plants with long narrow leaves.</p>
+<p class="text-xs font-label uppercase tracking-wider text-primary mb-2 opacity-60">Example</p>
+<p class="text-sm font-headline italic text-on-surface">"The fresh green grass felt cool under their feet."</p>
+</div>
+<!-- Word 8: Tree (Learning) -->
+<div class="group bg-surface-container-low/40 border border-outline-variant/10 p-8 rounded-xl shadow-[0px_10px_20px_rgba(18,28,42,0.02)] transition-all duration-500 relative overflow-hidden">
+<div class="absolute top-6 right-6">
+<span class="material-symbols-outlined text-outline-variant">radio_button_unchecked</span>
+</div>
+<h3 class="text-2xl font-headline text-on-surface mb-4">Tree</h3>
+<p class="text-sm text-on-surface-variant mb-6 leading-relaxed">A woody perennial plant, typically having a single stem or trunk.</p>
+<p class="text-xs font-label uppercase tracking-wider text-primary mb-2 opacity-60">Example</p>
+<p class="text-sm font-headline italic text-on-surface">"The old oak tree provided plenty of shade."</p>
+</div>
+</div>
+</section>
+<!-- Practice Section -->
+<section class="bg-surface-container-low rounded-3xl p-12 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
+<div class="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-12">
+<div class="max-w-xl">
+<h2 class="text-4xl font-headline text-on-surface mb-4">Test your knowledge</h2>
+<p class="text-lg font-headline italic text-on-surface-variant">Validate your mastery of these park-related terms through our curated assessment modules.</p>
+</div>
+<div class="w-full lg:w-96 flex flex-col gap-4">
+<div class="bg-surface-container-lowest p-6 rounded-2xl flex items-center justify-between border border-outline-variant/10 group hover:scale-[1.01] transition-all">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-container/30 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">quiz</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface">Test 1</h4>
+<p class="text-xs font-label uppercase tracking-widest text-on-surface-variant">General Vocabulary</p>
+</div>
+</div>
+<div class="text-right">
+<span class="block text-2xl font-headline text-primary">67%</span>
+<span class="text-[10px] font-label uppercase text-on-surface-variant">Best Attempt</span>
+</div>
+</div>
+<button class="w-full py-4 bg-on-surface text-surface rounded-xl font-label font-bold uppercase tracking-widest text-xs hover:opacity-90 active:scale-98 transition-all">
+                        Retake Assessment
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-12 border-t border-slate-200/15 bg-slate-50 dark:bg-slate-900">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-12 max-w-7xl mx-auto gap-6">
+<div class="flex flex-col items-center md:items-start gap-2">
+<span class="font-serif text-lg text-slate-900 dark:text-slate-100">Aura Lexicon</span>
+<p class="font-sans Manrope text-sm uppercase tracking-widest text-slate-500 dark:text-slate-500">© 2024 Aura Lexicon. The Digital Curator.</p>
+</div>
+<div class="flex gap-8">
+<a class="font-sans Manrope text-sm uppercase tracking-widest text-slate-500 hover:text-indigo-700 dark:hover:text-indigo-300 transition-opacity" href="#">Privacy Policy</a>
+<a class="font-sans Manrope text-sm uppercase tracking-widest text-slate-500 hover:text-indigo-700 dark:hover:text-indigo-300 transition-opacity" href="#">Terms of Service</a>
+<a class="font-sans Manrope text-sm uppercase tracking-widest text-slate-500 hover:text-indigo-700 dark:hover:text-indigo-300 transition-opacity" href="#">Contact</a>
+</div>
+</div>
+</footer>
+</body></html>
