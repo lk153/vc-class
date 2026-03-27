@@ -53,7 +53,7 @@ export default async function TopicsPage() {
   );
 
   // Get flashcard progress for all assigned topics
-  const vocabIds = assignments.flatMap((a) =>
+  const vocabIds = assignments.flatMap((a: any) =>
     a.topic.vocabulary.map((v: { id: string }) => v.id)
   );
 
@@ -90,7 +90,7 @@ export default async function TopicsPage() {
         </div>
       ) : (
         <TopicGrid
-          items={assignments.map((assignment) => {
+          items={assignments.map((assignment: any) => {
             const totalWords = assignment.topic.vocabulary.length;
             const learnedWords = assignment.topic.vocabulary.filter((v: { id: string }) =>
               learnedSet.has(v.id)
@@ -105,7 +105,7 @@ export default async function TopicsPage() {
             };
           })}
           languages={[...new Map(
-            assignments.map((a) => [a.topic.language.id, { id: a.topic.language.id, name: a.topic.language.name }])
+            assignments.map((a: any) => [a.topic.language.id, { id: a.topic.language.id, name: a.topic.language.name }])
           ).values()]}
         />
       )}
