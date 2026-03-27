@@ -54,7 +54,7 @@ export default async function TopicsPage() {
 
   // Get flashcard progress for all assigned topics
   const vocabIds = assignments.flatMap((a) =>
-    a.topic.vocabulary.map((v) => v.id)
+    a.topic.vocabulary.map((v: { id: string }) => v.id)
   );
 
   const progress = await prisma.flashcardProgress.findMany({

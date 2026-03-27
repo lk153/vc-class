@@ -32,7 +32,7 @@ export default async function FlashcardsPage({
   const progress = await prisma.flashcardProgress.findMany({
     where: {
       userId: session.user.id,
-      vocabularyId: { in: topic.vocabulary.map((v) => v.id) },
+      vocabularyId: { in: topic.vocabulary.map((v: { id: string }) => v.id) },
     },
   });
 
@@ -44,7 +44,7 @@ export default async function FlashcardsPage({
     <FlashcardDeck
       topicId={topicId}
       topicTitle={topic.title}
-      vocabulary={topic.vocabulary.map((v) => ({
+      vocabulary={topic.vocabulary.map((v: { id: string; word: string; meaning: string; example: string | null }) => ({
         id: v.id,
         word: v.word,
         meaning: v.meaning,
