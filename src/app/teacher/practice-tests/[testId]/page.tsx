@@ -40,7 +40,7 @@ export default async function PracticeTestDetailPage({
           Questions ({test.questions.length})
         </h2>
         <div className="space-y-4">
-          {test.questions.map((q) => (
+          {test.questions.map((q: { id: string; questionNumber: number; content: string; questionType: string; answer1: string; answer2: string | null; answer3: string | null; answer4: string | null; correctAnswer: string; timer: number }) => (
             <QuestionEditor
               key={q.id}
               question={{

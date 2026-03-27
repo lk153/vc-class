@@ -37,7 +37,7 @@ export default async function FlashcardsPage({
   });
 
   const progressMap = Object.fromEntries(
-    progress.map((p) => [p.vocabularyId, p.learned])
+    progress.map((p: { vocabularyId: string; learned: boolean }) => [p.vocabularyId, p.learned])
   );
 
   return (

@@ -39,17 +39,17 @@ export default async function AssignmentsPage() {
         </p>
       </div>
       <AssignmentPanel
-        topics={topics.map((t) => ({
+        topics={topics.map((t: { id: string; title: string; language: { name: string } }) => ({
           id: t.id,
           title: t.title,
           languageName: t.language.name,
         }))}
-        classes={classes.map((c) => ({
+        classes={classes.map((c: { id: string; name: string; language: { name: string }; _count: { enrollments: number }; topicAssignments: { topicId: string }[] }) => ({
           id: c.id,
           name: c.name,
           languageName: c.language.name,
           studentCount: c._count.enrollments,
-          assignedTopicIds: c.topicAssignments.map((a) => a.topicId),
+          assignedTopicIds: c.topicAssignments.map((a: { topicId: string }) => a.topicId),
         }))}
       />
     </div>

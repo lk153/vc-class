@@ -15,16 +15,16 @@ export default async function TeacherDashboard() {
     where: { class: { teacherId: session.user.id } },
     include: { user: { select: { id: true, status: true } } },
   });
-  const studentMap = new Map(enrollments.map((e) => [e.userId, e.user]));
+  const studentMap = new Map(enrollments.map((e: { userId: string; user: { id: string; status: string } }) => [e.userId, e.user]));
   const uniqueStudents = [...studentMap.values()];
   const totalStudents = uniqueStudents.length;
-  const activeStudents = uniqueStudents.filter((s) => s.status === "ACTIVE").length;
+  const activeStudents = uniqueStudents.filter((s: { status: string }) => s.status === "ACTIVE").length;
 
   const [totalTopics, recentResults] = await Promise.all([
     prisma.topic.count({ where: { createdById: session.user.id } }),
     prisma.practiceResult.findMany({
       where: {
-        userId: { in: uniqueStudents.map((s) => s.id) },
+        userId: { in: uniqueStudents.map((s: { id: string }) => s.id) },
       },
       take: 10,
       orderBy: { completedAt: "desc" },

@@ -38,7 +38,7 @@ export default async function ClassDetailPage({
   if (!cls || cls.teacherId !== session.user.id) notFound();
 
   // Get all students not yet enrolled in this class
-  const enrolledIds = cls.enrollments.map((e) => e.userId);
+  const enrolledIds = cls.enrollments.map((e: { userId: string }) => e.userId);
   const availableStudents = await prisma.user.findMany({
     where: {
       role: "STUDENT",
@@ -78,7 +78,7 @@ export default async function ClassDetailPage({
           status: cls.status,
         }}
         languages={languages.map((l) => ({ id: l.id, name: l.name, code: l.code }))}
-        enrolledStudents={cls.enrollments.map((e) => ({
+        enrolledStudents={cls.enrollments.map((e: { user: { id: string; name: string; email: string; status: string }; enrolledAt: Date }) => ({
           id: e.user.id,
           name: e.user.name,
           email: e.user.email,
@@ -86,7 +86,7 @@ export default async function ClassDetailPage({
           enrolledAt: e.enrolledAt.toISOString(),
         }))}
         availableStudents={availableStudents}
-        topics={cls.topicAssignments.map((ta) => ({
+        topics={cls.topicAssignments.map((ta: { id: string; topic: { title: string; language: { name: string } }; assignedAt: Date }) => ({
           id: ta.id,
           title: ta.topic.title,
           languageName: ta.topic.language.name,

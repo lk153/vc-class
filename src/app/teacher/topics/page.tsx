@@ -37,7 +37,7 @@ export default async function TeacherTopicsPage() {
       </div>
 
       <TopicList
-        topics={topics.map((t) => ({
+        topics={topics.map((t: { id: string; title: string; description: string | null; language: { name: string }; languageId: string; _count: { vocabulary: number; topicAssignments: number } }) => ({
           id: t.id,
           title: t.title,
           description: t.description,

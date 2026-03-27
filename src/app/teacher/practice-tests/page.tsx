@@ -68,7 +68,7 @@ export default async function PracticeTestsPage() {
           </div>
           <div>
             <p className="font-headline text-2xl text-[#1b6b51] leading-none">
-              {new Set(tests.map((t) => t.topicId)).size}
+              {new Set(tests.map((t: { topicId: string }) => t.topicId)).size}
             </p>
             <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">Topics Covered</p>
           </div>

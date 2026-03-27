@@ -44,8 +44,8 @@ export default async function TopicsPage() {
 
   // Flatten and deduplicate topics across classes
   const seenTopicIds = new Set<string>();
-  const assignments = enrollments.flatMap((e) =>
-    e.class.topicAssignments.filter((ta) => {
+  const assignments = enrollments.flatMap((e: any) =>
+    e.class.topicAssignments.filter((ta: any) => {
       if (seenTopicIds.has(ta.topicId)) return false;
       seenTopicIds.add(ta.topicId);
       return true;
@@ -65,7 +65,7 @@ export default async function TopicsPage() {
     },
   });
 
-  const learnedSet = new Set(progress.map((p) => p.vocabularyId));
+  const learnedSet = new Set(progress.map((p: { vocabularyId: string }) => p.vocabularyId));
 
   return (
     <div className="font-body">
@@ -92,7 +92,7 @@ export default async function TopicsPage() {
         <TopicGrid
           items={assignments.map((assignment) => {
             const totalWords = assignment.topic.vocabulary.length;
-            const learnedWords = assignment.topic.vocabulary.filter((v) =>
+            const learnedWords = assignment.topic.vocabulary.filter((v: { id: string }) =>
               learnedSet.has(v.id)
             ).length;
             return {

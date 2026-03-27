@@ -17,7 +17,7 @@ export default async function ImportPage() {
     <div>
       <h1 className="text-2xl font-bold text-foreground mb-6">Import Practice Test</h1>
       <CsvImporter
-        topics={topics.map((t) => ({
+        topics={topics.map((t: { id: string; title: string; language: { name: string } }) => ({
           id: t.id,
           title: t.title,
           languageName: t.language.name,

@@ -146,7 +146,7 @@ export default async function StudentResultDetailPage({
             </tr>
           </thead>
           <tbody className="divide-y divide-[#c7c4d7]/10">
-            {result.studentAnswers.map((sa) => (
+            {result.studentAnswers.map((sa: { id: string; isCorrect: boolean; selectedAnswer: string; question: { questionNumber: number; content: string; correctAnswer: string } }) => (
               <tr
                 key={sa.id}
                 className={`transition-colors ${
@@ -187,7 +187,7 @@ export default async function StudentResultDetailPage({
       {/* Teacher Feedback / Comments */}
       <ResultCommentSection
         resultId={resultId}
-        comments={result.comments.map((c) => ({
+        comments={result.comments.map((c: { id: string; content: string; user: { name: string }; createdAt: Date }) => ({
           id: c.id,
           content: c.content,
           userName: c.user.name,

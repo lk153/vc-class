@@ -39,7 +39,7 @@ export default async function TeacherTopicDetailPage({
 
       <VocabularyManager
         topicId={topicId}
-        vocabulary={topic.vocabulary.map((v) => ({
+        vocabulary={topic.vocabulary.map((v: { id: string; word: string; meaning: string; example: string | null; sortOrder: number }) => ({
           id: v.id,
           word: v.word,
           meaning: v.meaning,

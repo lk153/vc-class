@@ -45,7 +45,7 @@ export default async function StudentsPage() {
   for (const enrollment of enrollments) {
     const classGroup = {
       className: enrollment.class.name,
-      topics: enrollment.class.topicAssignments.map((ta) => ({
+      topics: enrollment.class.topicAssignments.map((ta: { id: string; topic: { id: string; title: string; language: { name: string }; createdBy: { name: string } | null }; assignedAt: Date }) => ({
         id: ta.topic.id,
         assignmentId: ta.id,
         title: ta.topic.title,
