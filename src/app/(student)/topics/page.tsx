@@ -104,7 +104,7 @@ export default async function TopicsPage() {
               learnedWords,
             };
           })}
-          languages={[...new Map(
+          languages={[...new Map<string, { id: string; name: string }>(
             assignments.map((a: any) => [a.topic.language.id, { id: a.topic.language.id, name: a.topic.language.name }])
           ).values()]}
         />
