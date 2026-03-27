@@ -3,11 +3,10 @@ import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import type { PracticeResult } from "@prisma/client";
-
 type VocabItem = { id: string; word: string; meaning: string; example: string | null };
 type PracticeTestItem = { id: string; title: string; _count: { questions: number } };
 type ProgressItem = { vocabularyId: string };
+type PracticeResultItem = { id: string; practiceTestId: string; score: number };
 
 export default async function TopicDetailPage({
   params,
@@ -67,8 +66,8 @@ export default async function TopicDetailPage({
     orderBy: { completedAt: "desc" },
   });
 
-  const resultsByTest = new Map<string, PracticeResult>(
-    practiceResults.map((r: PracticeResult) => [r.practiceTestId, r])
+  const resultsByTest = new Map<string, PracticeResultItem>(
+    practiceResults.map((r: PracticeResultItem) => [r.practiceTestId, r])
   );
 
   return (
