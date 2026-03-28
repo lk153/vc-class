@@ -22,10 +22,10 @@ export default async function MediaPage() {
   });
 
   const totalFiles = media.length;
-  const totalSize = media.reduce((sum, m) => sum + m.fileSize, 0);
-  const imageCount = media.filter((m) => m.fileType.startsWith("image/")).length;
-  const audioCount = media.filter((m) => m.fileType.startsWith("audio/")).length;
-  const videoCount = media.filter((m) => m.fileType.startsWith("video/")).length;
+  const totalSize = media.reduce((sum: number, m: { fileSize: number }) => sum + m.fileSize, 0);
+  const imageCount = media.filter((m: { fileType: string }) => m.fileType.startsWith("image/")).length;
+  const audioCount = media.filter((m: { fileType: string }) => m.fileType.startsWith("audio/")).length;
+  const videoCount = media.filter((m: { fileType: string }) => m.fileType.startsWith("video/")).length;
 
   return (
     <div>
