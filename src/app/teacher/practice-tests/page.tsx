@@ -19,7 +19,7 @@ export default async function PracticeTestsPage() {
     orderBy: { createdAt: "desc" },
   });
 
-  const totalQuestions = tests.reduce((sum, t) => sum + t._count.questions, 0);
+  const totalQuestions = tests.reduce((sum: number, t: { _count: { questions: number } }) => sum + t._count.questions, 0);
 
   return (
     <div>
