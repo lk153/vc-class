@@ -15,7 +15,7 @@ export default async function TeacherDashboard() {
     where: { class: { teacherId: session.user.id } },
     include: { user: { select: { id: true, status: true } } },
   });
-  const studentMap = new Map(enrollments.map((e: { userId: string; user: { id: string; status: string } }) => [e.userId, e.user]));
+  const studentMap = new Map<string, { id: string; status: string }>(enrollments.map((e: { userId: string; user: { id: string; status: string } }) => [e.userId, e.user]));
   const uniqueStudents = [...studentMap.values()];
   const totalStudents = uniqueStudents.length;
   const activeStudents = uniqueStudents.filter((s: { status: string }) => s.status === "ACTIVE").length;
