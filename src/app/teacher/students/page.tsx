@@ -86,8 +86,8 @@ export default async function StudentsPage() {
       </div>
 
       <StudentTable
-        students={students.map((s) => {
-          const totalTopics = s.classTopics.reduce((sum, ct) => sum + ct.topics.length, 0);
+        students={students.map((s: any) => {
+          const totalTopics = s.classTopics.reduce((sum: number, ct: any) => sum + ct.topics.length, 0);
           return {
             id: s.user.id,
             name: s.user.name,

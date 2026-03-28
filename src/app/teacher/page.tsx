@@ -144,11 +144,11 @@ export default async function TeacherDashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#c7c4d7]/10">
-                {recentResults.map((result) => {
+                {recentResults.map((result: any) => {
                   const score = Math.round(result.score);
-                  const initials = result.user.name
+                  const initials = (result.user.name as string)
                     .split(" ")
-                    .map((n) => n[0])
+                    .map((n: string) => n[0])
                     .join("")
                     .slice(0, 2);
                   return (

@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     where: { class: { teacherId: session.user.id } },
     select: { userId: true },
   });
-  const studentIds = [...new Set(enrollments.map((e) => e.userId))];
+  const studentIds = [...new Set(enrollments.map((e: any) => e.userId))];
 
   const where = {
     userId: { in: studentIds },
@@ -60,7 +60,7 @@ export async function GET(request: Request) {
   ]);
 
   return NextResponse.json({
-    results: results.map((r) => ({
+    results: results.map((r: any) => ({
       id: r.id,
       studentName: r.user.name,
       testName: r.practiceTest.title,

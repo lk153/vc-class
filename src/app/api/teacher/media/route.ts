@@ -36,7 +36,7 @@ export async function GET(request: Request) {
   ]);
 
   return NextResponse.json({
-    results: results.map((m) => ({
+    results: results.map((m: any) => ({
       id: m.id,
       fileName: m.fileName,
       fileUrl: m.fileUrl,

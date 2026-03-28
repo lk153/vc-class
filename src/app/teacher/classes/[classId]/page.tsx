@@ -77,7 +77,7 @@ export default async function ClassDetailPage({
           specialNotes: cls.specialNotes || "",
           status: cls.status,
         }}
-        languages={languages.map((l) => ({ id: l.id, name: l.name, code: l.code }))}
+        languages={languages.map((l: { id: string; name: string; code: string }) => ({ id: l.id, name: l.name, code: l.code }))}
         enrolledStudents={cls.enrollments.map((e: { user: { id: string; name: string; email: string; status: string }; enrolledAt: Date }) => ({
           id: e.user.id,
           name: e.user.name,

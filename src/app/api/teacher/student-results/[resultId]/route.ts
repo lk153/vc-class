@@ -63,7 +63,7 @@ export async function GET(
     testName: result.practiceTest.title,
     topicName: result.practiceTest.topic.title,
     language: result.practiceTest.topic.language.name,
-    answers: result.studentAnswers.map((sa) => ({
+    answers: result.studentAnswers.map((sa: any) => ({
       id: sa.id,
       questionNumber: sa.question.questionNumber,
       content: sa.question.content,
@@ -71,7 +71,7 @@ export async function GET(
       correctAnswer: sa.question.correctAnswer,
       isCorrect: sa.isCorrect,
     })),
-    comments: result.comments.map((c) => ({
+    comments: result.comments.map((c: any) => ({
       id: c.id,
       content: c.content,
       userName: c.user.name,

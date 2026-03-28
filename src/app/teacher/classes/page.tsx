@@ -115,7 +115,7 @@ export default async function ClassesPage() {
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {classes.map((cls) => {
+          {classes.map((cls: any) => {
             const status = statusConfig[cls.status] || statusConfig.SCHEDULING;
             const weeks = Math.ceil(
               (new Date(cls.endDate).getTime() - new Date(cls.startDate).getTime()) /
