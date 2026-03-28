@@ -39,8 +39,8 @@ export default async function ClassesPage() {
     orderBy: { createdAt: "desc" },
   });
 
-  const activeCount = classes.filter((c) => c.status === "ACTIVE").length;
-  const totalStudents = classes.reduce((sum, c) => sum + c._count.enrollments, 0);
+  const activeCount = classes.filter((c: { status: string }) => c.status === "ACTIVE").length;
+  const totalStudents = classes.reduce((sum: number, c: { _count: { enrollments: number } }) => sum + c._count.enrollments, 0);
 
   return (
     <div>
