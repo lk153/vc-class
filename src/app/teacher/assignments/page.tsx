@@ -17,7 +17,7 @@ export default async function AssignmentsPage() {
       orderBy: { title: "asc" },
     }),
     prisma.class.findMany({
-      where: { teacherId: session.user.id, status: { not: "ARCHIVED" } },
+      where: { teacherId: session.user.id, status: { not: "CANCELLED" } },
       include: {
         language: true,
         topicAssignments: { select: { topicId: true } },
@@ -31,11 +31,11 @@ export default async function AssignmentsPage() {
     <div>
       {/* Editorial Header */}
       <div className="mb-10">
-        <h1 className="font-headline text-3xl text-[#121c2a] font-bold mb-2">
+        <h1 className="font-body font-bold text-3xl text-[#121c2a] mb-2">
           {t("assignments")}
         </h1>
-        <p className="text-lg font-headline italic text-[#464554] opacity-80">
-          Select topics and assign them to your classes.
+        <p className="text-lg font-body text-[#464554] opacity-80">
+          {t("assignmentsSubtitle")}
         </p>
       </div>
       <AssignmentPanel

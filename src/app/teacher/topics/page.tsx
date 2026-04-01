@@ -27,11 +27,11 @@ export default async function TeacherTopicsPage() {
       {/* Editorial Header */}
       <div className="flex items-start justify-between mb-10">
         <div>
-          <h1 className="font-headline text-3xl text-[#121c2a] font-bold mb-2">
+          <h1 className="font-body font-bold text-3xl text-[#121c2a] mb-2">
             {t("topics")}
           </h1>
-          <p className="text-lg font-headline italic text-[#464554] opacity-80">
-            Curate and manage your vocabulary collections.
+          <p className="text-lg font-body text-[#464554] opacity-80">
+            {t("topicsSubtitle")}
           </p>
         </div>
       </div>

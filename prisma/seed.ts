@@ -136,7 +136,18 @@ async function main() {
       createdById: teacherNga.id,
     },
   });
-  console.log("✓ Topics:", parkTopic.title, countrysideTopic.title, chineseTopic.title);
+  const cityTopic = await prisma.topic.upsert({
+    where: { id: "cmnfot7wi00037w5cnvn9n8no" },
+    update: {},
+    create: {
+      id: "cmnfot7wi00037w5cnvn9n8no",
+      title: "At the City",
+      description: "Learn vocabulary about urban life, buildings, transportation, and things you see in a city",
+      languageId: english.id,
+      createdById: teacherNga.id,
+    },
+  });
+  console.log("✓ Topics:", parkTopic.title, countrysideTopic.title, chineseTopic.title, cityTopic.title);
 
   // ── Vocabulary: Park ──
   const parkWords = [
@@ -188,7 +199,33 @@ async function main() {
       },
     });
   }
-  console.log("✓ Vocabulary: Park (8), Countryside (16)");
+  // ── Vocabulary: City ──
+  const cityWords = [
+    { word: "Skyscraper", meaning: "A very tall building in a city", example: "The skyscraper has over 50 floors." },
+    { word: "Sidewalk", meaning: "A paved path for pedestrians beside a road", example: "Please walk on the sidewalk, not on the road." },
+    { word: "Crosswalk", meaning: "A marked part of a road where pedestrians can cross", example: "Always use the crosswalk to cross the street safely." },
+    { word: "Traffic light", meaning: "A signal with red, yellow, and green lights to control traffic", example: "Stop when the traffic light turns red." },
+    { word: "Subway", meaning: "An underground railway system in a city", example: "I take the subway to work every morning." },
+    { word: "Bus stop", meaning: "A place where buses pick up and drop off passengers", example: "We waited at the bus stop for ten minutes." },
+    { word: "Apartment", meaning: "A set of rooms for living in, usually on one floor of a building", example: "She lives in an apartment on the fifth floor." },
+    { word: "Intersection", meaning: "A point where two or more roads meet", example: "There is a coffee shop at the intersection." },
+    { word: "Pedestrian", meaning: "A person walking in the street", example: "The city center is a pedestrian zone." },
+    { word: "Billboard", meaning: "A large board used for displaying advertisements", example: "There is a huge billboard on top of that building." },
+    { word: "Parking lot", meaning: "An area where cars can be parked", example: "The parking lot behind the mall is always full." },
+    { word: "Street vendor", meaning: "A person who sells food or goods on the street", example: "The street vendor sells delicious noodles." },
+    { word: "Bridge", meaning: "A structure built over a river, road, or railway", example: "We crossed the bridge to get to the other side of the river." },
+    { word: "Monument", meaning: "A statue or building built to remember an important person or event", example: "The monument in the city square is very famous." },
+    { word: "Taxi", meaning: "A car that you pay to ride in", example: "We took a taxi from the airport to the hotel." },
+    { word: "Alley", meaning: "A narrow passage between or behind buildings", example: "There is a small café hidden in the alley." },
+  ];
+  for (let i = 0; i < cityWords.length; i++) {
+    await prisma.vocabulary.upsert({
+      where: { id: `sample-vocab-city-${i}` },
+      update: {},
+      create: { id: `sample-vocab-city-${i}`, ...cityWords[i], topicId: cityTopic.id, sortOrder: i },
+    });
+  }
+  console.log("✓ Vocabulary: Park (8), Countryside (16), City (16)");
 
   // ── Practice Tests ──
   const parkTest = await prisma.practiceTest.upsert({

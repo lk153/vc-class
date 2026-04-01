@@ -75,13 +75,13 @@ export default async function StudentsPage() {
       {/* Editorial Header */}
       <div className="mb-10">
         <p className="text-[10px] font-body uppercase tracking-[0.2em] text-[#464554] opacity-40 mb-2">
-          Directory
+          {t("directory")}
         </p>
-        <h1 className="font-headline text-3xl text-[#121c2a] font-bold mb-2">
+        <h1 className="font-body font-bold text-3xl text-[#121c2a] mb-2">
           {t("students")}
         </h1>
-        <p className="text-lg font-headline italic text-[#464554] opacity-80">
-          Manage your classroom roster and track individual progress.
+        <p className="text-lg font-body text-[#464554] opacity-80">
+          {t("studentsSubtitle")}
         </p>
       </div>
 

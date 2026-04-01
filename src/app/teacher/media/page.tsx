@@ -31,10 +31,10 @@ export default async function MediaPage() {
     <div>
       {/* Header */}
       <div className="mb-10">
-        <h1 className="font-headline text-3xl text-[#121c2a] font-bold mb-2">
+        <h1 className="font-body font-bold text-3xl text-[#121c2a] mb-2">
           {t("media")}
         </h1>
-        <p className="text-lg font-headline italic text-[#464554] opacity-80">
+        <p className="text-lg font-body text-[#464554] opacity-80">
           {t("mediaDescription")}
         </p>
       </div>
@@ -46,7 +46,7 @@ export default async function MediaPage() {
             <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">perm_media</span>
           </div>
           <div>
-            <p className="font-headline text-2xl text-[#121c2a] leading-none">{totalFiles}</p>
+            <p className="font-body font-bold text-2xl text-[#121c2a] leading-none">{totalFiles}</p>
             <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">{t("totalFiles")}</p>
           </div>
         </div>
@@ -55,7 +55,7 @@ export default async function MediaPage() {
             <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">cloud</span>
           </div>
           <div>
-            <p className="font-headline text-2xl text-[#2a14b4] leading-none">{formatSize(totalSize)}</p>
+            <p className="font-body font-bold text-2xl text-[#2a14b4] leading-none">{formatSize(totalSize)}</p>
             <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">{t("storageUsed")}</p>
           </div>
         </div>
@@ -65,7 +65,7 @@ export default async function MediaPage() {
               <span className="material-symbols-outlined text-[16px] text-[#2a14b4]">image</span>
             </div>
             <div>
-              <p className="font-headline text-lg text-[#2a14b4] leading-none">{imageCount}</p>
+              <p className="font-body font-bold text-lg text-[#2a14b4] leading-none">{imageCount}</p>
               <p className="text-[9px] font-body uppercase tracking-widest text-[#777586] font-bold mt-0.5">{t("images")}</p>
             </div>
           </div>
@@ -75,7 +75,7 @@ export default async function MediaPage() {
               <span className="material-symbols-outlined text-[16px] text-[#1b6b51]">audio_file</span>
             </div>
             <div>
-              <p className="font-headline text-lg text-[#1b6b51] leading-none">{audioCount}</p>
+              <p className="font-body font-bold text-lg text-[#1b6b51] leading-none">{audioCount}</p>
               <p className="text-[9px] font-body uppercase tracking-widest text-[#777586] font-bold mt-0.5">{t("audio")}</p>
             </div>
           </div>
@@ -85,7 +85,7 @@ export default async function MediaPage() {
               <span className="material-symbols-outlined text-[16px] text-[#7b0020]">video_file</span>
             </div>
             <div>
-              <p className="font-headline text-lg text-[#7b0020] leading-none">{videoCount}</p>
+              <p className="font-body font-bold text-lg text-[#7b0020] leading-none">{videoCount}</p>
               <p className="text-[9px] font-body uppercase tracking-widest text-[#777586] font-bold mt-0.5">{t("videos")}</p>
             </div>
           </div>

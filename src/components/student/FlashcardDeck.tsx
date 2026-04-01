@@ -111,7 +111,7 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
           <span className="material-symbols-outlined text-6xl text-[#1b6b51] mb-6 block">
             celebration
           </span>
-          <h2 className="font-headline text-4xl italic text-[#121c2a] mb-3">
+          <h2 className="font-body text-4xl text-[#121c2a] mb-3">
             {t("allCardsReviewed")}
           </h2>
           <p className="text-[#777586] font-body mb-8 tracking-wide">
@@ -134,7 +134,7 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
 
             {/* The Card */}
             <div
-              className="glass-card w-full h-full rounded-[2rem] border border-white/40 ambient-shadow flex flex-col items-center justify-between p-10 overflow-hidden cursor-pointer select-none active:scale-[0.98] transition-all duration-300"
+              className="glass-card w-full h-full rounded-[2rem] border border-white/40 ambient-shadow flex flex-col items-center justify-between p-10 overflow-hidden cursor-pointer select-none transition-all duration-300"
               style={{
                 transform: `translateX(${dragX}px) rotate(${dragX * 0.05}deg)`,
                 transition: isDragging ? "none" : "transform 0.3s ease, scale 0.3s ease",
@@ -160,7 +160,7 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
               <div className="flex-1 flex flex-col items-center justify-center text-center w-full">
                 {!flipped ? (
                   <>
-                    <h1 className="font-headline text-6xl md:text-7xl italic text-[#121c2a] tracking-tight mb-3">
+                    <h1 className="font-body text-6xl md:text-7xl text-[#121c2a] tracking-tight mb-3">
                       {currentCard.word}
                     </h1>
                   </>
@@ -170,7 +170,7 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
                       {currentCard.meaning}
                     </p>
                     {currentCard.example && (
-                      <p className="font-headline text-base italic text-[#777586] leading-relaxed">
+                      <p className="font-body text-base text-[#777586] leading-relaxed">
                         &ldquo;{currentCard.example}&rdquo;
                       </p>
                     )}
@@ -195,7 +195,7 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
               onClick={() => markCard(false)}
               className="flex flex-col items-center gap-4 group"
             >
-              <div className="w-16 h-16 rounded-full bg-[#dee9fc] flex items-center justify-center group-hover:bg-[#ffdada] transition-all duration-300 active:scale-95 shadow-sm">
+              <div className="w-16 h-16 rounded-full bg-[#dee9fc] flex items-center justify-center group-hover:bg-[#ffdada] transition-all duration-300 shadow-sm">
                 <span className="material-symbols-outlined text-[#7b0020] text-2xl">close</span>
               </div>
               <span className="text-[10px] font-body uppercase tracking-widest text-[#777586] group-hover:text-[#7b0020] font-bold transition-colors">
@@ -208,7 +208,7 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
               onClick={() => markCard(true)}
               className="flex flex-col items-center gap-4 group"
             >
-              <div className="w-16 h-16 rounded-full bg-[#a6f2d1] flex items-center justify-center group-hover:bg-[#8bd6b6] transition-all duration-300 active:scale-95 shadow-sm">
+              <div className="w-16 h-16 rounded-full bg-[#a6f2d1] flex items-center justify-center group-hover:bg-[#8bd6b6] transition-all duration-300 shadow-sm">
                 <span
                   className="material-symbols-outlined text-[#1b6b51] text-2xl"
                   style={{ fontVariationSettings: "'FILL' 1" }}

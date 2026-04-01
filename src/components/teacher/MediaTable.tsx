@@ -199,7 +199,7 @@ export default function MediaTable() {
         <div className="sm:ml-auto">
           <button
             onClick={() => setShowUpload(true)}
-            className="inline-flex items-center gap-2 bg-[#2a14b4] text-white px-6 py-2.5 rounded-full font-body font-bold text-sm shadow-lg shadow-[#2a14b4]/20 hover:scale-[1.02] active:scale-95 transition-all"
+            className="inline-flex items-center gap-2 bg-[#2a14b4] text-white px-6 py-2.5 rounded-full font-body font-bold text-sm shadow-lg shadow-[#2a14b4]/20 transition-all"
           >
             <span className="material-symbols-outlined text-[18px]">cloud_upload</span>
             {t("uploadMedia")}
@@ -346,7 +346,7 @@ export default function MediaTable() {
         {total > 0 && (
           <div className="px-6 py-4 bg-[#dee9fc]/30 flex items-center justify-end gap-4">
             <p className="text-xs font-body text-[#464554]/60">
-              Showing {startItem}-{endItem} of {total} results
+              {t("showingResults", { start: startItem, end: endItem, total })}
             </p>
             <div className="flex gap-2">
               <button

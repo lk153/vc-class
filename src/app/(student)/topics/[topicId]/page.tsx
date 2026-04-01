@@ -84,12 +84,12 @@ export default async function TopicDetailPage({
             <span className="text-[#2a14b4] font-bold">{topic.language.name}</span>
           </nav>
 
-          <h1 className="text-7xl md:text-8xl font-headline text-[#121c2a] leading-none mb-6">
+          <h1 className="text-7xl md:text-8xl font-body font-bold text-[#121c2a] leading-none mb-6">
             {topic.title}
           </h1>
 
           {topic.description && (
-            <p className="text-xl md:text-2xl text-[#464554] font-headline italic leading-relaxed max-w-2xl">
+            <p className="text-xl md:text-2xl text-[#464554] font-body leading-relaxed max-w-2xl">
               {topic.description}
             </p>
           )}
@@ -102,7 +102,7 @@ export default async function TopicDetailPage({
               <span className="text-sm font-body uppercase tracking-widest text-[#464554]">
                 {t("progress") || "Progress"}
               </span>
-              <span className="text-3xl font-headline text-[#2a14b4]">
+              <span className="text-3xl font-body font-bold text-[#2a14b4]">
                 {progressPercent}%
               </span>
             </div>
@@ -120,7 +120,7 @@ export default async function TopicDetailPage({
           {/* Study Flashcards Button */}
           <Link
             href={`/topics/${topicId}/flashcards`}
-            className="w-full py-5 bg-[#2a14b4] text-white rounded-full font-body font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-3 shadow-lg shadow-[#2a14b4]/20 hover:scale-[1.02] active:scale-95 transition-all"
+            className="w-full py-5 bg-[#2a14b4] text-white rounded-full font-body font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-3 shadow-lg shadow-[#2a14b4]/20 transition-all"
           >
             <span className="material-symbols-outlined">style</span>
             {t("studyFlashcards")}
@@ -131,7 +131,7 @@ export default async function TopicDetailPage({
       {/* Vocabulary Collection */}
       <section className="mb-24">
         <div className="flex items-baseline justify-between mb-10">
-          <h2 className="text-4xl font-headline text-[#121c2a]">
+          <h2 className="text-4xl font-body font-bold text-[#121c2a]">
             {t("vocabularyCollection") || "Vocabulary Collection"}
           </h2>
           <div className="h-px flex-grow mx-8 bg-[#c7c4d7]/20 hidden md:block" />
@@ -167,7 +167,7 @@ export default async function TopicDetailPage({
                   )}
                 </div>
 
-                <h3 className="text-2xl font-headline text-[#121c2a] mb-4">{vocab.word}</h3>
+                <h3 className="text-2xl font-body font-bold text-[#121c2a] mb-4">{vocab.word}</h3>
                 <p className="text-sm text-[#464554] mb-6 leading-relaxed">{vocab.meaning}</p>
 
                 {vocab.example && (
@@ -175,7 +175,7 @@ export default async function TopicDetailPage({
                     <p className="text-xs font-body uppercase tracking-wider text-[#2a14b4] mb-2 opacity-60">
                       {t("example")}
                     </p>
-                    <p className="text-sm font-headline italic text-[#121c2a]">
+                    <p className="text-sm font-body text-[#121c2a]">
                       &ldquo;{vocab.example}&rdquo;
                     </p>
                   </>
@@ -194,10 +194,10 @@ export default async function TopicDetailPage({
 
           <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-12">
             <div className="max-w-xl">
-              <h2 className="text-4xl font-headline text-[#121c2a] mb-4">
+              <h2 className="text-4xl font-body font-bold text-[#121c2a] mb-4">
                 {t("testKnowledge") || "Test your knowledge"}
               </h2>
-              <p className="text-lg font-headline italic text-[#464554]">
+              <p className="text-lg font-body text-[#464554]">
                 {t("testDescription") || "Validate your mastery through our curated assessment modules."}
               </p>
             </div>
@@ -208,7 +208,7 @@ export default async function TopicDetailPage({
                 return (
                   <div
                     key={test.id}
-                    className="bg-white p-6 rounded-2xl flex items-center justify-between border border-[#c7c4d7]/10 hover:scale-[1.01] transition-all"
+                    className="bg-white p-6 rounded-2xl flex items-center justify-between border border-[#c7c4d7]/10 transition-all"
                   >
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-full bg-[#a6f2d1]/30 flex items-center justify-center text-[#1b6b51]">
@@ -223,7 +223,7 @@ export default async function TopicDetailPage({
                     </div>
                     {result && (
                       <div className="text-right">
-                        <span className="block text-2xl font-headline text-[#2a14b4]">
+                        <span className="block text-2xl font-body font-bold text-[#2a14b4]">
                           {Math.round(result.score)}%
                         </span>
                         <span className="text-[10px] font-body uppercase text-[#464554]">
@@ -238,7 +238,7 @@ export default async function TopicDetailPage({
               {allLearned && (
                 <Link
                   href={`/topics/${topicId}/practice`}
-                  className="w-full py-4 bg-[#121c2a] text-white rounded-xl font-body font-bold uppercase tracking-widest text-xs hover:opacity-90 active:scale-[0.98] transition-all text-center"
+                  className="w-full py-4 bg-[#121c2a] text-white rounded-xl font-body font-bold uppercase tracking-widest text-xs hover:opacity-90 transition-all text-center"
                 >
                   {t("retakeAssessment") || "Retake Assessment"}
                 </Link>

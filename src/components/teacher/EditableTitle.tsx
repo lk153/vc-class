@@ -75,7 +75,7 @@ export default function EditableTitle({ testId, title }: Props) {
           onBlur={handleSave}
           onKeyDown={handleKeyDown}
           disabled={saving}
-          className="font-headline text-3xl font-bold text-[#121c2a] bg-transparent border-b-2 border-[#2a14b4] outline-none py-1 w-full max-w-lg"
+          className="font-body font-bold text-3xl text-[#121c2a] bg-transparent border-b-2 border-[#2a14b4] outline-none py-1 w-full max-w-lg"
         />
         {saving && (
           <span className="text-sm text-[#777586]">Saving...</span>
@@ -86,7 +86,7 @@ export default function EditableTitle({ testId, title }: Props) {
 
   return (
     <div className="flex items-center gap-3 group">
-      <h1 className="font-headline text-3xl font-bold text-[#121c2a]">{title}</h1>
+      <h1 className="font-body font-bold text-3xl text-[#121c2a]">{title}</h1>
       <button
         onClick={() => setEditing(true)}
         className="opacity-0 group-hover:opacity-100 transition-opacity text-[#777586] hover:text-[#2a14b4]"

@@ -41,6 +41,10 @@ type Props = {
 
 export default function ResultDetailModal({ resultId, onClose }: Props) {
   const t = useTranslations("teacher");
+  const tLang = (name: string) => {
+    const key = `lang_${name}`;
+    return t.has(key) ? t(key) : name;
+  };
   const [data, setData] = useState<ResultDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [feedbackContent, setFeedbackContent] = useState("");
@@ -91,14 +95,14 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
         body: JSON.stringify({ content: feedbackContent.trim() }),
       });
       if (!res.ok) {
-        toast.error("Failed to post comment");
+        toast.error(t("commentFailed"));
         return;
       }
       toast.success(t("commentPosted"));
       setFeedbackContent("");
       fetchDetail();
     } catch {
-      toast.error("Failed to post comment");
+      toast.error(t("commentFailed"));
     } finally {
       setPosting(false);
     }
@@ -122,12 +126,14 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
     >
       <div className="bg-[#f8f9ff] rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative animate-in fade-in zoom-in-95 duration-200">
         {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-white/80 hover:bg-white flex items-center justify-center text-[#777586] hover:text-[#121c2a] transition-all shadow-sm"
-        >
-          <span className="material-symbols-outlined text-[20px]">close</span>
-        </button>
+        <div className="sticky top-0 z-10 flex justify-end p-4 pb-0">
+          <button
+            onClick={onClose}
+            className="w-9 h-9 rounded-full bg-white hover:bg-[#f0eef6] flex items-center justify-center text-[#777586] hover:text-[#121c2a] transition-all shadow-sm"
+          >
+            <span className="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
 
         {loading ? (
           <div className="flex items-center justify-center py-24">
@@ -137,7 +143,7 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
           </div>
         ) : !data ? (
           <div className="flex items-center justify-center py-24">
-            <p className="text-sm text-[#777586]">Result not found.</p>
+            <p className="text-sm text-[#777586]">{t("noResults")}</p>
           </div>
         ) : (
           <div className="p-6 md:p-8 space-y-6">
@@ -148,14 +154,14 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
                   {initials}
                 </div>
                 <div className="min-w-0">
-                  <h2 className="font-headline text-2xl font-bold text-[#121c2a] truncate">
+                  <h2 className="font-body font-bold text-2xl text-[#121c2a] truncate">
                     {data.student.name}
                   </h2>
                   <p className="text-sm font-body text-[#777586] truncate">{data.student.email}</p>
                 </div>
               </div>
               <span className="text-[10px] font-bold uppercase tracking-widest text-[#1b6b51] bg-[#a6f2d1]/40 px-3 py-1.5 rounded-full w-fit shrink-0">
-                {data.language}
+                {tLang(data.language)}
               </span>
             </div>
 
@@ -165,7 +171,7 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
                 <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
                   {t("testNameCol")}
                 </p>
-                <p className="font-headline text-base text-[#121c2a] font-semibold truncate">
+                <p className="font-body font-bold text-base text-[#121c2a] font-semibold truncate">
                   {data.testName}
                 </p>
               </div>
@@ -173,7 +179,7 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
                 <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
                   {t("topicCol")}
                 </p>
-                <p className="font-headline text-base text-[#121c2a] font-semibold truncate">
+                <p className="font-body font-bold text-base text-[#121c2a] font-semibold truncate">
                   {data.topicName}
                 </p>
               </div>
@@ -182,7 +188,7 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
                   {t("scoreCol")}
                 </p>
                 <p
-                  className={`font-headline text-2xl font-bold ${
+                  className={`font-body font-bold text-2xl ${
                     data.score >= 80
                       ? "text-[#1b6b51]"
                       : data.score >= 50
@@ -197,12 +203,8 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
                 <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
                   {t("submittedDate")}
                 </p>
-                <p className="font-headline text-base text-[#121c2a]">
-                  {new Date(data.completedAt).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
+                <p className="font-body font-bold text-base text-[#121c2a]">
+                  {(() => { const d = new Date(data.completedAt); return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`; })()}
                 </p>
               </div>
             </div>
@@ -210,7 +212,7 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
             {/* Answer Details */}
             <div className="bg-white rounded-xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] overflow-hidden">
               <div className="px-5 py-3.5 border-b border-[#c7c4d7]/15">
-                <h3 className="font-headline text-lg font-bold text-[#121c2a] flex items-center gap-2">
+                <h3 className="font-body font-bold text-lg text-[#121c2a] flex items-center gap-2">
                   <span className="material-symbols-outlined text-[#2a14b4] text-[20px]">fact_check</span>
                   {t("answerDetails")}
                   <span className="text-sm font-body font-normal text-[#777586] ml-1">
@@ -271,7 +273,7 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
 
             {/* Teacher Feedback */}
             <div className="bg-white rounded-xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-5">
-              <h3 className="font-headline text-lg font-bold text-[#121c2a] mb-4 flex items-center gap-2">
+              <h3 className="font-body font-bold text-lg text-[#121c2a] mb-4 flex items-center gap-2">
                 <span className="material-symbols-outlined text-[#2a14b4] text-[20px]">chat</span>
                 {t("teacherFeedback")}
               </h3>
@@ -296,13 +298,7 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
                           {comment.userName}
                         </span>
                         <span className="text-xs font-body text-[#777586]">
-                          {new Date(comment.createdAt).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
+                          {(() => { const d = new Date(comment.createdAt); return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}, ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`; })()}
                         </span>
                       </div>
                       <p className="text-sm font-body text-[#464554] pl-8">{comment.content}</p>
@@ -323,9 +319,9 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
                   <button
                     onClick={handlePostFeedback}
                     disabled={posting || !feedbackContent.trim()}
-                    className="bg-[#2a14b4] text-white px-5 py-2 rounded-full text-sm font-body font-bold shadow-lg shadow-[#2a14b4]/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="bg-[#2a14b4] text-white px-5 py-2 rounded-full text-sm font-body font-bold shadow-lg shadow-[#2a14b4]/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
                   >
-                    <span className="material-symbols-outlined text-[16px]">send</span>
+                    <span className={`material-symbols-outlined text-[16px] ${posting ? "animate-spin" : ""}`}>{posting ? "progress_activity" : "send"}</span>
                     {t("addFeedback")}
                   </button>
                 </div>

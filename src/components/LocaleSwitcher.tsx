@@ -42,7 +42,7 @@ export default function LocaleSwitcher() {
   }
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative no-ripple">
       <button
         onClick={() => setOpen(!open)}
         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full hover:bg-[#e3dfff]/50 transition-colors text-sm font-body text-[#464554]"
@@ -58,12 +58,12 @@ export default function LocaleSwitcher() {
         </span>
       </button>
       {open && (
-        <div className="absolute top-full right-0 mt-1.5 w-40 bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50">
+        <div className="absolute top-full right-0 mt-1.5 w-auto min-w-40 bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50 no-ripple">
           {locales.map((l) => (
             <button
               key={l.code}
               onClick={() => switchLocale(l.code)}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-body transition-colors ${
+              className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-body transition-colors whitespace-nowrap ${
                 locale === l.code
                   ? "text-[#2a14b4] bg-[#e3dfff]/40 font-medium"
                   : "text-[#464554] hover:bg-[#eff4ff]"

@@ -45,6 +45,7 @@ function getFileIcon(type: string): string {
 
 export default function MediaUploadModal({ onClose, onComplete }: Props) {
   const t = useTranslations("teacher");
+  const ct = useTranslations("common");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [entries, setEntries] = useState<FileEntry[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -139,7 +140,6 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
           )
         );
 
-        // If it's a config error, stop trying remaining files
         if (isConfigError) {
           toast.error(t("storageNotConfigured"));
           break;
@@ -147,7 +147,6 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
       }
     }
 
-    // Save metadata to DB
     if (uploaded.length > 0) {
       try {
         await fetch("/api/teacher/media", {
@@ -155,9 +154,9 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ files: uploaded }),
         });
-        toast.success(`${uploaded.length} file(s) uploaded`);
+        toast.success(t("uploadComplete"));
       } catch {
-        toast.error("Failed to save media metadata");
+        toast.error(t("uploadComplete"));
       }
     }
 
@@ -176,26 +175,34 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 backdrop-blur-sm p-4 pt-[5vh] overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 backdrop-blur-sm p-4 pt-[10vh] overflow-y-auto"
       onClick={(e) => {
         if (e.target === e.currentTarget && !uploading) onClose();
       }}
     >
       <div className="bg-[#f8f9ff] rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto relative">
-        {/* Close */}
+        {/* Close button - sticky top right */}
         {!uploading && (
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-white/80 hover:bg-white flex items-center justify-center text-[#777586] hover:text-[#121c2a] transition-all shadow-sm"
-          >
-            <span className="material-symbols-outlined text-[20px]">close</span>
-          </button>
+          <div className="sticky top-0 z-10 flex justify-end p-4 pb-0">
+            <button
+              onClick={onClose}
+              className="w-9 h-9 rounded-full bg-white hover:bg-[#f0eef6] flex items-center justify-center text-[#777586] hover:text-[#121c2a] transition-all shadow-sm"
+            >
+              <span className="material-symbols-outlined text-[20px]">close</span>
+            </button>
+          </div>
         )}
 
-        <div className="p-6 md:p-8 space-y-5">
-          <h2 className="font-headline text-2xl font-bold text-[#121c2a]">
-            {t("uploadMedia")}
-          </h2>
+        <div className="px-6 md:px-8 pb-6 md:pb-8">
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-11 h-11 rounded-xl bg-[#e3dfff] flex items-center justify-center">
+              <span className="material-symbols-outlined text-[22px] text-[#2a14b4]">cloud_upload</span>
+            </div>
+            <h2 className="font-body font-bold text-xl text-[#121c2a]">
+              {t("uploadMedia")}
+            </h2>
+          </div>
 
           {/* Drop zone */}
           {!uploading && (
@@ -204,10 +211,10 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
               onDragLeave={() => setDragOver(false)}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${
+              className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all mb-5 ${
                 dragOver
                   ? "border-[#2a14b4] bg-[#e3dfff]/30"
-                  : "border-[#c7c4d7]/40 hover:border-[#2a14b4]/40 hover:bg-[#eff4ff]/50"
+                  : "border-[#c7c4d7]/40 bg-[#d9e3f6]/15 hover:border-[#2a14b4]/40 hover:bg-[#d9e3f6]/30"
               }`}
             >
               <span className="material-symbols-outlined text-4xl text-[#2a14b4]/40 mb-3 block">
@@ -235,7 +242,7 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
 
           {/* Validation errors */}
           {hasValidation && !uploading && (
-            <div className="text-xs font-body text-[#7b0020] space-y-1">
+            <div className="text-xs font-body text-[#7b0020] space-y-1 mb-4 bg-[#ffdada]/20 rounded-lg p-3">
               {tooManyFiles && <p>Maximum {MAX_FILES} files allowed.</p>}
               {totalTooLarge && <p>Total size exceeds {formatSize(MAX_TOTAL_SIZE)}.</p>}
               {hasOversizedFile && <p>Individual files must be under {formatSize(MAX_FILE_SIZE)}.</p>}
@@ -245,7 +252,7 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
 
           {/* File list */}
           {entries.length > 0 && (
-            <div className="space-y-2">
+            <div className="space-y-2 mb-5">
               {uploading && (
                 <p className="text-xs font-body text-[#777586] mb-1">
                   {t("uploading")} {doneCount} / {entries.length}...
@@ -254,19 +261,25 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
               {entries.map((entry, index) => (
                 <div
                   key={index}
-                  className="bg-white rounded-lg p-3 flex items-center gap-3 border border-[#c7c4d7]/20"
+                  className="bg-white rounded-xl p-3.5 flex items-center gap-3 border border-[#c7c4d7]/15"
                 >
-                  <span className={`material-symbols-outlined text-[20px] shrink-0 ${
-                    entry.status === "done" ? "text-[#1b6b51]" :
-                    entry.status === "error" ? "text-[#7b0020]" :
-                    "text-[#2a14b4]"
+                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
+                    entry.status === "done" ? "bg-[#a6f2d1]/40" :
+                    entry.status === "error" ? "bg-[#ffdada]/40" :
+                    "bg-[#e3dfff]"
                   }`}>
-                    {entry.status === "done" ? "check_circle" :
-                     entry.status === "error" ? "error" :
-                     getFileIcon(entry.file.type)}
-                  </span>
+                    <span className={`material-symbols-outlined text-[18px] ${
+                      entry.status === "done" ? "text-[#1b6b51]" :
+                      entry.status === "error" ? "text-[#7b0020]" :
+                      "text-[#2a14b4]"
+                    }`}>
+                      {entry.status === "done" ? "check_circle" :
+                       entry.status === "error" ? "error" :
+                       getFileIcon(entry.file.type)}
+                    </span>
+                  </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-body text-[#121c2a] truncate">{entry.file.name}</p>
+                    <p className="text-sm font-body font-medium text-[#121c2a] truncate">{entry.file.name}</p>
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-body text-[#777586]">{formatSize(entry.file.size)}</span>
                       {entry.status === "error" && (
@@ -280,7 +293,7 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
                       )}
                     </div>
                     {entry.status === "uploading" && (
-                      <div className="h-1 w-full bg-[#d9e3f6] rounded-full overflow-hidden mt-1.5">
+                      <div className="h-1.5 w-full bg-[#d9e3f6] rounded-full overflow-hidden mt-2">
                         <div
                           className="h-full bg-[#2a14b4] rounded-full transition-all duration-300"
                           style={{ width: `${entry.progress}%` }}
@@ -291,13 +304,13 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
                   {entry.status === "pending" && !uploading && (
                     <button
                       onClick={() => removeEntry(index)}
-                      className="text-[#777586] hover:text-[#7b0020] transition-colors shrink-0"
+                      className="w-7 h-7 rounded-full flex items-center justify-center text-[#777586] hover:text-[#7b0020] hover:bg-[#ffdada]/30 transition-colors shrink-0"
                     >
-                      <span className="material-symbols-outlined text-[18px]">close</span>
+                      <span className="material-symbols-outlined text-[16px]">close</span>
                     </button>
                   )}
                   {entry.status === "uploading" && (
-                    <span className="text-xs font-body text-[#2a14b4] shrink-0 w-10 text-right">
+                    <span className="text-xs font-body font-bold text-[#2a14b4] shrink-0 w-10 text-right">
                       {Math.round(entry.progress)}%
                     </span>
                   )}
@@ -306,20 +319,29 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
             </div>
           )}
 
-          {/* Footer */}
+          {/* Footer actions */}
           {entries.length > 0 && !uploading && (
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-3">
               <p className="text-xs font-body text-[#777586]">
-                {entries.length} file(s) · {formatSize(totalSize)}
+                {entries.length} file(s) &middot; {formatSize(totalSize)}
               </p>
-              <button
-                onClick={handleUpload}
-                disabled={!canUpload}
-                className="bg-[#2a14b4] text-white px-6 py-2.5 rounded-full text-sm font-body font-bold shadow-lg shadow-[#2a14b4]/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
-              >
-                <span className="material-symbols-outlined text-[16px]">cloud_upload</span>
-                {t("uploadMedia")}
-              </button>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-5 py-2.5 rounded-full text-sm font-body font-medium text-[#464554] bg-[#f0eef6] hover:bg-[#e3dfff] hover:text-[#121c2a] transition-colors"
+                >
+                  {ct("cancel")}
+                </button>
+                <button
+                  onClick={handleUpload}
+                  disabled={!canUpload}
+                  className="bg-[#2a14b4] hover:bg-[#4338ca] text-white px-6 py-2.5 rounded-full text-sm font-body font-bold shadow-lg shadow-[#2a14b4]/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-[16px]">cloud_upload</span>
+                  {t("uploadMedia")}
+                </button>
+              </div>
             </div>
           )}
         </div>

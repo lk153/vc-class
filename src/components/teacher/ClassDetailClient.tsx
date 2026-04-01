@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -48,10 +48,10 @@ type Props = {
 };
 
 const statusOptions = [
-  { value: "SCHEDULING", label: "Scheduling", bg: "bg-[#d9e3f6]", text: "text-[#464554]" },
-  { value: "ACTIVE", label: "Active", bg: "bg-[#a6f2d1]/40", text: "text-[#1b6b51]" },
-  { value: "ENDED", label: "Ended", bg: "bg-[#ffdada]/40", text: "text-[#7b0020]" },
-  { value: "ARCHIVED", label: "Archived", bg: "bg-[#d9e3f6]/50", text: "text-[#777586]" },
+  { value: "SCHEDULING", key: "scheduling", icon: "schedule", bg: "bg-[#d9e3f6]", text: "text-[#464554]", dot: "bg-[#464554]" },
+  { value: "ACTIVE", key: "active", icon: "check_circle", bg: "bg-[#a6f2d1]/40", text: "text-[#1b6b51]", dot: "bg-[#1b6b51]" },
+  { value: "ENDED", key: "ended", icon: "cancel", bg: "bg-[#ffdada]/40", text: "text-[#7b0020]", dot: "bg-[#7b0020]" },
+  { value: "CANCELLED", key: "cancelled", icon: "block", bg: "bg-[#d9e3f6]/50", text: "text-[#777586]", dot: "bg-[#777586]" },
 ];
 
 const levelPresets: Record<string, string[]> = {
@@ -68,6 +68,10 @@ export default function ClassDetailClient({
   topics,
 }: Props) {
   const t = useTranslations("teacher");
+  const tLang = (name: string) => {
+    const key = `lang_${name}`;
+    return t.has(key) ? t(key) : name;
+  };
   const router = useRouter();
 
   // Editable class fields
@@ -80,7 +84,23 @@ export default function ClassDetailClient({
   const [editMaxStudents, setEditMaxStudents] = useState(classInfo.maxStudents);
   const [editNotes, setEditNotes] = useState(classInfo.specialNotes);
   const [editStatus, setEditStatus] = useState(classInfo.status);
+  const [statusOpen, setStatusOpen] = useState(false);
+  const statusRef = useRef<HTMLDivElement>(null);
+  const [langOpen, setLangOpen] = useState(false);
+  const langRef = useRef<HTMLDivElement>(null);
+  const [levelOpen, setLevelOpen] = useState(false);
+  const levelRef = useRef<HTMLDivElement>(null);
   const [savingInfo, setSavingInfo] = useState(false);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (statusRef.current && !statusRef.current.contains(e.target as Node)) setStatusOpen(false);
+      if (langRef.current && !langRef.current.contains(e.target as Node)) setLangOpen(false);
+      if (levelRef.current && !levelRef.current.contains(e.target as Node)) setLevelOpen(false);
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // Enrollment state
   const [selectedStudents, setSelectedStudents] = useState<Set<string>>(new Set());
@@ -114,7 +134,7 @@ export default function ClassDetailClient({
   async function handleSaveInfo() {
     const validSessions = editSessions.filter((s) => s.day && s.startTime && s.endTime);
     if (!editName.trim() || !editLevel.trim() || validSessions.length === 0) {
-      toast.error("Please fill in all required fields and at least one class session");
+      toast.error(t("fillRequiredFields"));
       return;
     }
     setSavingInfo(true);
@@ -135,13 +155,13 @@ export default function ClassDetailClient({
         }),
       });
       if (!res.ok) {
-        toast.error("Failed to update class");
+        toast.error(t("classUpdateFailed"));
         return;
       }
       toast.success(t("classUpdated"));
       router.refresh();
     } catch {
-      toast.error("Failed to update class");
+      toast.error(t("classUpdateFailed"));
     } finally {
       setSavingInfo(false);
     }
@@ -166,15 +186,15 @@ export default function ClassDetailClient({
       });
       if (!res.ok) {
         const data = await res.json();
-        toast.error(data.error || "Failed to enroll students");
+        toast.error(data.error || t("enrollFailed"));
         return;
       }
       const data = await res.json();
-      toast.success(`${data.count} student(s) enrolled`);
+      toast.success(t("studentsEnrolled"));
       setSelectedStudents(new Set());
       router.refresh();
     } catch {
-      toast.error("Failed to enroll students");
+      toast.error(t("enrollFailed"));
     } finally {
       setEnrolling(false);
     }
@@ -187,14 +207,14 @@ export default function ClassDetailClient({
         method: "DELETE",
       });
       if (!res.ok) {
-        toast.error("Failed to remove student");
+        toast.error(t("removeFailed"));
         return;
       }
-      toast.success(`Removed ${name}`);
+      toast.success(t("studentRemoved", { name }));
       setRemovedIds((prev) => new Set(prev).add(userId));
       router.refresh();
     } catch {
-      toast.error("Failed to remove student");
+      toast.error(t("removeFailed"));
     } finally {
       setRemovingId(null);
     }
@@ -205,30 +225,60 @@ export default function ClassDetailClient({
       {/* Header with editable name + status */}
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 group/name mb-1">
+          <div className="inline-flex items-center gap-1.5 group/name mb-1 max-w-full">
             <input
               type="text"
               value={editName}
               onChange={(e) => setEditName(e.target.value)}
-              className="font-headline text-2xl sm:text-3xl font-bold text-[#121c2a] bg-transparent border-b-2 border-transparent hover:border-[#c7c4d7]/40 focus:border-[#2a14b4] outline-none transition-colors px-0 py-0.5 w-full"
+              style={{ width: `${Math.max(editName.length, 1) + 1}ch` }}
+              className="font-body font-bold text-2xl sm:text-3xl text-[#121c2a] bg-transparent border-b-2 border-transparent hover:border-[#c7c4d7]/40 focus:border-[#2a14b4] outline-none transition-colors px-0 py-0.5 min-w-[2ch] max-w-full"
             />
             <span className="material-symbols-outlined text-[18px] scale-75 text-[#c7c4d7] group-hover/name:text-[#2a14b4] transition-colors pointer-events-none shrink-0">
               edit
             </span>
           </div>
           <p className="text-sm font-body text-[#464554]">
-            {selectedLang?.name || classInfo.languageName} · {editLevel} · {formatSessions(editSessions)}
+            {selectedLang?.name ? tLang(selectedLang.name) : tLang(classInfo.languageName)} · {editLevel} · {formatSessions(editSessions, t)}
           </p>
         </div>
-        <select
-          value={editStatus}
-          onChange={(e) => setEditStatus(e.target.value)}
-          className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full w-fit shrink-0 border-none outline-none cursor-pointer ${currentStatus.bg} ${currentStatus.text}`}
-        >
-          {statusOptions.map((s) => (
-            <option key={s.value} value={s.value}>{s.label}</option>
-          ))}
-        </select>
+        <div ref={statusRef} className="relative no-ripple shrink-0">
+          <button
+            type="button"
+            onClick={() => setStatusOpen(!statusOpen)}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-body font-bold transition-colors ${currentStatus.bg} ${currentStatus.text}`}
+          >
+            <span className={`w-2 h-2 rounded-full ${currentStatus.dot}`} />
+            {t(currentStatus.key)}
+            <span
+              className="material-symbols-outlined text-[14px] transition-transform"
+              style={{ transform: statusOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+            >
+              expand_more
+            </span>
+          </button>
+          {statusOpen && (
+            <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50">
+              {statusOptions.map((s) => (
+                <button
+                  key={s.value}
+                  type="button"
+                  onClick={() => { setEditStatus(s.value); setStatusOpen(false); }}
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-body transition-colors ${
+                    editStatus === s.value
+                      ? "bg-[#f5f3ff] font-medium"
+                      : "hover:bg-[#f8f9ff]"
+                  }`}
+                >
+                  <span className={`w-2.5 h-2.5 rounded-full ${s.dot}`} />
+                  <span className={`flex-1 text-left ${s.text}`}>{t(s.key)}</span>
+                  {editStatus === s.value && (
+                    <span className="material-symbols-outlined text-[16px] text-[#2a14b4]">check</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Editable Info Cards */}
@@ -237,29 +287,92 @@ export default function ClassDetailClient({
           <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-2">
             {t("classLanguage")}
           </p>
-          <select
-            value={editLanguageId}
-            onChange={(e) => { setEditLanguageId(e.target.value); setEditLevel(""); }}
-            className="w-full text-sm font-body font-semibold text-[#121c2a] bg-transparent border-b-2 border-transparent hover:border-[#c7c4d7]/40 focus:border-[#2a14b4] outline-none transition-colors cursor-pointer px-0 py-0.5"
-          >
-            {languages.map((l) => (
-              <option key={l.id} value={l.id}>{l.name}</option>
-            ))}
-          </select>
+          <div ref={langRef} className="relative no-ripple">
+            <button
+              type="button"
+              onClick={() => { setLangOpen(!langOpen); setLevelOpen(false); }}
+              className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-xl border text-sm font-body font-semibold transition-colors ${
+                langOpen
+                  ? "border-[#2a14b4] ring-2 ring-[#2a14b4]/20 bg-white"
+                  : "border-[#c7c4d7]/30 bg-[#f8f9ff] hover:border-[#c7c4d7]/60"
+              } text-[#121c2a]`}
+            >
+              <span className="truncate">{selectedLang ? tLang(selectedLang.name) : "—"}</span>
+              <span
+                className="material-symbols-outlined text-[16px] text-[#777586] transition-transform shrink-0"
+                style={{ transform: langOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+              >
+                expand_more
+              </span>
+            </button>
+            {langOpen && (
+              <div className="absolute top-full left-0 mt-1.5 w-full bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50">
+                {languages.map((l) => (
+                  <button
+                    key={l.id}
+                    type="button"
+                    onClick={() => { setEditLanguageId(l.id); setEditLevel(""); setLangOpen(false); }}
+                    className={`w-full flex items-center justify-between px-4 py-2.5 text-sm font-body transition-colors ${
+                      editLanguageId === l.id
+                        ? "bg-[#f5f3ff] text-[#2a14b4] font-medium"
+                        : "text-[#464554] hover:bg-[#f8f9ff]"
+                    }`}
+                  >
+                    <span>{tLang(l.name)}</span>
+                    {editLanguageId === l.id && (
+                      <span className="material-symbols-outlined text-[16px] text-[#2a14b4]">check</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
         <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
           <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-2">
             {t("classLevel")}
           </p>
           {presets.length > 0 ? (
-            <select
-              value={editLevel}
-              onChange={(e) => setEditLevel(e.target.value)}
-              className="w-full text-sm font-body font-semibold text-[#121c2a] bg-transparent border-b-2 border-transparent hover:border-[#c7c4d7]/40 focus:border-[#2a14b4] outline-none transition-colors cursor-pointer px-0 py-0.5"
-            >
-              <option value="">Select</option>
-              {presets.map((p) => <option key={p} value={p}>{p}</option>)}
-            </select>
+            <div ref={levelRef} className="relative no-ripple">
+              <button
+                type="button"
+                onClick={() => { setLevelOpen(!levelOpen); setLangOpen(false); }}
+                className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-xl border text-sm font-body font-semibold transition-colors ${
+                  levelOpen
+                    ? "border-[#2a14b4] ring-2 ring-[#2a14b4]/20 bg-white"
+                    : "border-[#c7c4d7]/30 bg-[#f8f9ff] hover:border-[#c7c4d7]/60"
+                } ${editLevel ? "text-[#121c2a]" : "text-[#777586]"}`}
+              >
+                <span className="truncate">{editLevel || t("selectLevel")}</span>
+                <span
+                  className="material-symbols-outlined text-[16px] text-[#777586] transition-transform shrink-0"
+                  style={{ transform: levelOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+                >
+                  expand_more
+                </span>
+              </button>
+              {levelOpen && (
+                <div className="absolute top-full left-0 mt-1.5 w-full bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50">
+                  {presets.map((p) => (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => { setEditLevel(p); setLevelOpen(false); }}
+                      className={`w-full flex items-center justify-between px-4 py-2.5 text-sm font-body transition-colors ${
+                        editLevel === p
+                          ? "bg-[#f5f3ff] text-[#2a14b4] font-medium"
+                          : "text-[#464554] hover:bg-[#f8f9ff]"
+                      }`}
+                    >
+                      <span>{p}</span>
+                      {editLevel === p && (
+                        <span className="material-symbols-outlined text-[16px] text-[#2a14b4]">check</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           ) : (
             <input
               type="text"
@@ -273,7 +386,7 @@ export default function ClassDetailClient({
           <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
             {t("enrolledStudents")}
           </p>
-          <p className="font-headline text-2xl text-[#2a14b4] font-bold">
+          <p className="font-body font-bold text-2xl text-[#2a14b4]">
             {visibleEnrolled.length}<span className="text-base text-[#777586] font-normal">/{editMaxStudents}</span>
           </p>
         </div>
@@ -281,7 +394,7 @@ export default function ClassDetailClient({
           <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
             {t("classTopics")}
           </p>
-          <p className="font-headline text-2xl text-[#1b6b51] font-bold">
+          <p className="font-body font-bold text-2xl text-[#1b6b51]">
             {topics.length}
           </p>
         </div>
@@ -318,7 +431,7 @@ export default function ClassDetailClient({
             onChange={(e) => setEditEndDate(e.target.value)}
             className="w-full text-sm font-body text-[#121c2a] bg-transparent border-b-2 border-transparent hover:border-[#c7c4d7]/40 focus:border-[#2a14b4] outline-none transition-colors px-0 py-0.5"
           />
-          <p className="text-xs text-[#777586] font-body mt-1">{weeks > 0 ? `${weeks} weeks` : ""}</p>
+          <p className="text-xs text-[#777586] font-body mt-1">{weeks > 0 ? t("weeksCount", { count: weeks }) : ""}</p>
         </div>
         <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
           <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-2">
@@ -355,10 +468,10 @@ export default function ClassDetailClient({
           <button
             onClick={handleSaveInfo}
             disabled={savingInfo}
-            className="bg-[#2a14b4] text-white px-6 py-2.5 rounded-full text-sm font-body font-bold shadow-lg shadow-[#2a14b4]/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+            className="bg-[#2a14b4] text-white px-6 py-2.5 rounded-full text-sm font-body font-bold shadow-lg shadow-[#2a14b4]/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
           >
-            <span className="material-symbols-outlined text-[16px]">save</span>
-            {savingInfo ? "Saving..." : "Save Changes"}
+            <span className={`material-symbols-outlined text-[16px] ${savingInfo ? "animate-spin" : ""}`}>{savingInfo ? "progress_activity" : "save"}</span>
+            {savingInfo ? t("savingChanges") : t("saveChanges")}
           </button>
         </div>
       )}
@@ -366,7 +479,7 @@ export default function ClassDetailClient({
       {/* Enrolled Students */}
       <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] overflow-hidden">
         <div className="px-6 py-4 border-b border-[#c7c4d7]/15">
-          <h2 className="font-headline text-xl font-bold text-[#121c2a] flex items-center gap-2">
+          <h2 className="font-body font-bold text-xl text-[#121c2a] flex items-center gap-2">
             <span className="material-symbols-outlined text-[#2a14b4]">group</span>
             {t("enrolledStudents")}
           </h2>
@@ -378,14 +491,14 @@ export default function ClassDetailClient({
               return (
                 <div key={student.id} className="px-6 py-4 flex items-center gap-4 hover:bg-[#eff4ff]/50 transition-colors">
                   <div className="w-9 h-9 rounded-full bg-[#e3dfff] flex items-center justify-center shrink-0">
-                    <span className="font-headline italic text-sm text-[#2a14b4]">{initials}</span>
+                    <span className="font-body text-sm text-[#2a14b4]">{initials}</span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-body font-medium text-[#121c2a] text-sm">{student.name}</p>
                     <p className="text-xs text-[#777586] font-body truncate">{student.email}</p>
                   </div>
                   <span className="text-xs text-[#777586] font-body hidden sm:block">
-                    {new Date(student.enrolledAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    {(() => { const d = new Date(student.enrolledAt); return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`; })()}
                   </span>
                   <button
                     onClick={() => handleRemove(student.id, student.name)}
@@ -411,7 +524,7 @@ export default function ClassDetailClient({
       {availableStudents.length > 0 && (
         <div className="bg-[#eff4ff] rounded-xl p-6">
           <div className="flex items-baseline justify-between mb-4">
-            <h3 className="font-headline text-lg font-bold text-[#121c2a] flex items-center gap-2">
+            <h3 className="font-body font-bold text-lg text-[#121c2a] flex items-center gap-2">
               <span className="material-symbols-outlined text-[#2a14b4] text-[20px]">person_add</span>
               {t("enrollStudents")}
             </h3>
@@ -419,9 +532,9 @@ export default function ClassDetailClient({
               <button
                 onClick={handleEnroll}
                 disabled={enrolling}
-                className="bg-[#2a14b4] text-white px-5 py-2 rounded-full text-xs font-body font-bold shadow-lg shadow-[#2a14b4]/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
+                className="bg-[#2a14b4] text-white px-5 py-2 rounded-full text-xs font-body font-bold shadow-lg shadow-[#2a14b4]/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
               >
-                <span className="material-symbols-outlined text-[14px]">add</span>
+                <span className={`material-symbols-outlined text-[14px] ${enrolling ? "animate-spin" : ""}`}>{enrolling ? "progress_activity" : "add"}</span>
                 {enrolling ? "..." : `Enroll ${selectedStudents.size}`}
               </button>
             )}
@@ -439,7 +552,7 @@ export default function ClassDetailClient({
                   }`}
                 >
                   <div className="w-8 h-8 rounded-full bg-[#e3dfff] flex items-center justify-center shrink-0">
-                    <span className="font-headline italic text-xs text-[#2a14b4]">{initials}</span>
+                    <span className="font-body text-xs text-[#2a14b4]">{initials}</span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-body font-medium text-[#121c2a] text-sm">{student.name}</p>
@@ -461,7 +574,7 @@ export default function ClassDetailClient({
       {/* Assigned Topics */}
       <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] overflow-hidden">
         <div className="px-6 py-4 border-b border-[#c7c4d7]/15">
-          <h2 className="font-headline text-xl font-bold text-[#121c2a] flex items-center gap-2">
+          <h2 className="font-body font-bold text-xl text-[#121c2a] flex items-center gap-2">
             <span className="material-symbols-outlined text-[#2a14b4]">menu_book</span>
             {t("classTopics")}
           </h2>
@@ -474,10 +587,10 @@ export default function ClassDetailClient({
                   <p className="font-body font-medium text-[#121c2a] text-sm">{topic.title}</p>
                 </div>
                 <span className="text-xs font-body font-bold px-2.5 py-0.5 rounded-full bg-[#a6f2d1]/40 text-[#1b6b51] shrink-0">
-                  {topic.languageName}
+                  {tLang(topic.languageName)}
                 </span>
                 <span className="text-xs text-[#777586] font-body hidden sm:block shrink-0">
-                  {new Date(topic.assignedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                  {(() => { const d = new Date(topic.assignedAt); return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`; })()}
                 </span>
               </div>
             ))}

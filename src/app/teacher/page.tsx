@@ -80,8 +80,8 @@ export default async function TeacherDashboard() {
     <div>
       {/* Page Header */}
       <div className="mb-10">
-        <h1 className="font-headline text-3xl text-[#121c2a] font-bold">{t("dashboard")}</h1>
-        <p className="text-[#464554] font-body mt-1">Overview of your classroom activity</p>
+        <h1 className="font-body font-bold text-3xl text-[#121c2a]">{t("dashboard")}</h1>
+        <p className="text-[#464554] font-body mt-1">{t("dashboardSubtitle")}</p>
       </div>
 
       {/* Stat Cards */}
@@ -95,7 +95,7 @@ export default async function TeacherDashboard() {
               <span className={`material-symbols-outlined text-[20px] ${stat.iconColor}`}>{stat.icon}</span>
             </div>
             <div>
-              <p className="font-headline text-2xl text-[#121c2a] leading-none">{stat.value}</p>
+              <p className="font-body font-bold text-2xl text-[#121c2a] leading-none">{stat.value}</p>
               <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">
                 {stat.label}
               </p>
@@ -107,39 +107,40 @@ export default async function TeacherDashboard() {
       {/* Recent Results Table */}
       <div className="bg-white rounded-xl ambient-shadow p-4 md:p-8">
         <div className="flex items-baseline justify-between mb-8">
-          <h2 className="font-headline text-2xl text-[#121c2a]">{t("recentResults")}</h2>
+          <h2 className="font-body font-bold text-2xl text-[#121c2a]">{t("recentResults")}</h2>
           <Link
             href="/teacher/student-results"
-            className="text-xs font-body uppercase tracking-widest text-[#2a14b4] hover:underline underline-offset-4 transition-all"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[14px] font-body font-bold text-[#2a14b4] bg-[#eff4ff] hover:bg-[#2a14b4] hover:text-white transition-all"
           >
-            View All
+            {t("viewAll")}
+            <span className="material-symbols-outlined text-[12px]">arrow_forward</span>
           </Link>
         </div>
 
         {recentResults.length === 0 ? (
-          <p className="text-sm text-[#777586] font-body">No results yet.</p>
+          <p className="text-sm text-[#777586] font-body">{t("noResultsYet")}</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm min-w-[650px]">
               <thead>
                 <tr className="border-b border-[#c7c4d7]/20">
                   <th className="text-left py-3 text-sm font-body uppercase tracking-widest text-[#464554] font-extrabold">
-                    Student
+                    {t("studentName")}
                   </th>
                   <th className="text-left py-3 text-sm font-body uppercase tracking-widest text-[#464554] font-extrabold">
-                    Test Name
+                    {t("testNameCol")}
                   </th>
                   <th className="text-left py-3 text-sm font-body uppercase tracking-widest text-[#464554] font-extrabold">
-                    Topic
+                    {t("topicCol")}
                   </th>
                   <th className="text-left py-3 text-sm font-body uppercase tracking-widest text-[#464554] font-extrabold">
-                    Language
+                    {t("languageCol")}
                   </th>
                   <th className="text-right py-3 text-sm font-body uppercase tracking-widest text-[#464554] font-extrabold">
-                    Score
+                    {t("scoreCol")}
                   </th>
                   <th className="text-right py-3 text-sm font-body uppercase tracking-widest text-[#464554] font-extrabold">
-                    Submitted
+                    {t("submittedDate")}
                   </th>
                 </tr>
               </thead>
@@ -159,7 +160,7 @@ export default async function TeacherDashboard() {
                       <td className="py-4">
                         <div className="flex items-center gap-3">
                           <div className="w-9 h-9 rounded-full bg-[#e3dfff] flex items-center justify-center">
-                            <span className="font-headline italic text-sm text-[#2a14b4]">
+                            <span className="font-body text-sm text-[#2a14b4]">
                               {initials}
                             </span>
                           </div>
@@ -178,7 +179,7 @@ export default async function TeacherDashboard() {
                       <td className="py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <span className={`w-2 h-2 rounded-full ${getScoreDot(score)}`} />
-                          <span className={`font-headline italic text-lg ${getScoreColor(score)}`}>
+                          <span className={`font-body text-lg ${getScoreColor(score)}`}>
                             {score}%
                           </span>
                         </div>

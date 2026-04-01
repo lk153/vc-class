@@ -74,7 +74,7 @@ export default async function TopicsPage() {
         <div className="inline-block px-3 py-1 mb-4 bg-[#d9e3f6] text-[#464554] font-body text-[10px] uppercase tracking-[0.2em] rounded-full">
           {languageLabel}
         </div>
-        <h1 className="font-headline text-6xl md:text-7xl text-[#121c2a] tracking-tight leading-tight">
+        <h1 className="font-body font-bold text-6xl md:text-7xl text-[#121c2a] tracking-tight leading-tight">
           {t("topics")}
         </h1>
         <p className="mt-6 text-[#464554] text-lg max-w-2xl font-light leading-relaxed">
@@ -85,7 +85,7 @@ export default async function TopicsPage() {
       {assignments.length === 0 ? (
         <div className="text-center py-20 text-[#777586]">
           <span className="material-symbols-outlined text-6xl mb-6 block">menu_book</span>
-          <h2 className="font-headline text-3xl italic text-[#121c2a] mb-3">No topics yet</h2>
+          <h2 className="font-body text-3xl text-[#121c2a] mb-3">No topics yet</h2>
           <p className="text-[#464554] font-body">No topics assigned yet. Please wait for your teacher.</p>
         </div>
       ) : (

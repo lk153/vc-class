@@ -51,7 +51,7 @@ export default function ResultCommentSection({ resultId, comments }: Props) {
 
   return (
     <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-6">
-      <h2 className="font-headline text-xl font-bold text-[#121c2a] mb-4 flex items-center gap-2">
+      <h2 className="font-body font-bold text-xl text-[#121c2a] mb-4 flex items-center gap-2">
         <span className="material-symbols-outlined text-[#2a14b4]">chat</span>
         {t("teacherFeedback")}
       </h2>
@@ -103,9 +103,9 @@ export default function ResultCommentSection({ resultId, comments }: Props) {
           <button
             onClick={handlePost}
             disabled={posting || !content.trim()}
-            className="bg-[#2a14b4] text-white px-6 py-2.5 rounded-full text-sm font-body font-bold shadow-lg shadow-[#2a14b4]/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+            className="bg-[#2a14b4] text-white px-6 py-2.5 rounded-full text-sm font-body font-bold shadow-lg shadow-[#2a14b4]/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
           >
-            <span className="material-symbols-outlined text-[16px]">send</span>
+            <span className={`material-symbols-outlined text-[16px] ${posting ? "animate-spin" : ""}`}>{posting ? "progress_activity" : "send"}</span>
             {t("addFeedback")}
           </button>
         </div>

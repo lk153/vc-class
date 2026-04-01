@@ -20,7 +20,7 @@ export default function TopicCard({ topic, languageName, totalWords, learnedWord
       className="group flex flex-col bg-white rounded-xl ambient-shadow overflow-hidden transition-all duration-300 hover:-translate-y-2 h-full"
     >
       <div className="p-8 flex flex-col flex-grow">
-        <h3 className="font-headline text-2xl text-[#121c2a] mb-2">{topic.title}</h3>
+        <h3 className="font-body font-bold text-2xl text-[#121c2a] mb-2">{topic.title}</h3>
 
         <p className="text-[#464554] text-sm mb-8 leading-relaxed line-clamp-2 min-h-[2.5rem]">
           {topic.description || "\u00A0"}
@@ -31,7 +31,7 @@ export default function TopicCard({ topic, languageName, totalWords, learnedWord
             <span className="font-body text-[11px] uppercase tracking-widest text-[#464554]">
               {t("wordsLearned", { count: learnedWords, total: totalWords })}
             </span>
-            <span className="font-headline italic text-[#2a14b4] text-lg">
+            <span className="font-body text-[#2a14b4] text-lg">
               {progressPercent}%
             </span>
           </div>

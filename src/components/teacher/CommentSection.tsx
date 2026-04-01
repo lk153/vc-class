@@ -82,8 +82,9 @@ export default function CommentSection({ testId, comments }: Props) {
           <button
             onClick={handlePost}
             disabled={posting || !content.trim()}
-            className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50"
+            className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50 inline-flex items-center gap-1.5"
           >
+            <span className={`material-symbols-outlined text-[16px] ${posting ? "animate-spin" : ""}`}>{posting ? "progress_activity" : "send"}</span>
             {t("addComment")}
           </button>
         </div>

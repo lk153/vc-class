@@ -17,7 +17,7 @@ export default function StudentNavbar({ user }: Props) {
       <div className="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
         <Link
           href="/topics"
-          className="text-2xl font-headline italic text-[#2a14b4]"
+          className="text-2xl font-body text-[#2a14b4]"
         >
           {t("common.appName")}
         </Link>

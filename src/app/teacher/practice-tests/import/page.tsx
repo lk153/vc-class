@@ -1,11 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import CsvImporter from "@/components/teacher/CsvImporter";
 
 export default async function ImportPage() {
   const session = await auth();
   if (!session?.user) redirect("/login");
+
+  const t = await getTranslations("teacher");
 
   const topics = await prisma.topic.findMany({
     where: { createdById: session.user.id },
@@ -15,7 +18,7 @@ export default async function ImportPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-foreground mb-6">Import Practice Test</h1>
+      <h1 className="text-2xl font-bold text-foreground mb-6">{t("importPracticeTest")}</h1>
       <CsvImporter
         topics={topics.map((t: { id: string; title: string; language: { name: string } }) => ({
           id: t.id,

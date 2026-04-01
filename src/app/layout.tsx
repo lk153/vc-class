@@ -1,24 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Newsreader, Manrope } from "next/font/google";
+import { Roboto } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { Toaster } from "sonner";
+import RippleEffect from "@/components/RippleEffect";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const newsreader = Newsreader({
-  variable: "--font-newsreader",
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-});
-
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
+const roboto = Roboto({
+  variable: "--font-roboto",
+  subsets: ["latin", "vietnamese"],
+  weight: ["400", "500", "700"],
 });
 
 export const metadata: Metadata = {
@@ -42,10 +33,21 @@ export default async function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className={`${geistSans.variable} ${newsreader.variable} ${manrope.variable} antialiased`}>
+      <body className={`${roboto.variable} antialiased`}>
         <NextIntlClientProvider messages={messages}>
           {children}
-          <Toaster position="top-right" richColors />
+          <Toaster
+            position="top-center"
+            richColors
+            visibleToasts={4}
+            expand={false}
+            gap={0}
+            toastOptions={{
+              className: "toast-custom",
+              duration: 3000,
+            }}
+          />
+          <RippleEffect />
         </NextIntlClientProvider>
       </body>
     </html>

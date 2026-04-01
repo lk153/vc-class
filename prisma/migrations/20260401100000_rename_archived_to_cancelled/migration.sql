@@ -1,0 +1,2 @@
+-- AlterEnum: rename ARCHIVED to CANCELLED in ClassStatus
+ALTER TYPE "ClassStatus" RENAME VALUE 'ARCHIVED' TO 'CANCELLED';

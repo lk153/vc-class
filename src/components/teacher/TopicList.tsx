@@ -26,6 +26,10 @@ type Props = {
 
 export default function TopicList({ topics, languages, teacherId }: Props) {
   const t = useTranslations("teacher");
+  const tLang = (name: string) => {
+    const key = `lang_${name}`;
+    return t.has(key) ? t(key) : name;
+  };
   const ct = useTranslations("common");
   const router = useRouter();
   const [showCreate, setShowCreate] = useState(false);
@@ -54,15 +58,15 @@ export default function TopicList({ topics, languages, teacherId }: Props) {
       });
 
       if (!res.ok) {
-        toast.error("Failed to create topic");
+        toast.error(t("topicCreateFailed"));
         return;
       }
 
-      toast.success("Topic created");
+      toast.success(t("topicCreated"));
       setShowCreate(false);
       router.refresh();
     } catch {
-      toast.error("Failed to create topic");
+      toast.error(t("topicCreateFailed"));
     } finally {
       setCreating(false);
     }
@@ -76,32 +80,32 @@ export default function TopicList({ topics, languages, teacherId }: Props) {
           onSubmit={handleCreate}
           className="bg-white rounded-xl ambient-shadow p-8 mb-10"
         >
-          <h3 className="font-headline text-2xl text-[#121c2a] mb-6">Create New Topic</h3>
+          <h3 className="font-body font-bold text-2xl text-[#121c2a] mb-6">{t("createNewTopic")}</h3>
           <div className="grid gap-6 sm:grid-cols-2">
             <div>
               <label className="block text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-2">
-                Title
+                {t("topicTitle")}
               </label>
               <input
                 name="title"
                 required
                 className="w-full px-4 py-3 rounded-lg bg-[#d9e3f6]/30 border-0 focus:outline-none focus:ring-2 focus:ring-[#2a14b4]/30 font-body text-[#121c2a] placeholder:text-[#777586]"
-                placeholder="Enter topic title..."
+                placeholder={t("topicTitlePlaceholder")}
               />
             </div>
             <div>
               <label className="block text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-2">
-                Language
+                {t("topicLanguage")}
               </label>
               <select
                 name="languageId"
                 required
                 className="w-full px-4 py-3 rounded-lg bg-[#d9e3f6]/30 border-0 focus:outline-none focus:ring-2 focus:ring-[#2a14b4]/30 font-body text-[#121c2a]"
               >
-                <option value="">Select language...</option>
+                <option value="">{t("topicSelectLanguage")}</option>
                 {languages.map((lang) => (
                   <option key={lang.id} value={lang.id}>
-                    {lang.name}
+                    {tLang(lang.name)}
                   </option>
                 ))}
               </select>
@@ -109,13 +113,13 @@ export default function TopicList({ topics, languages, teacherId }: Props) {
           </div>
           <div className="mt-4">
             <label className="block text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-2">
-              Description
+              {t("topicDescription")}
             </label>
             <textarea
               name="description"
               rows={2}
               className="w-full px-4 py-3 rounded-lg bg-[#d9e3f6]/30 border-0 focus:outline-none focus:ring-2 focus:ring-[#2a14b4]/30 font-body text-[#121c2a] placeholder:text-[#777586]"
-              placeholder="Brief description of the topic..."
+              placeholder={t("topicDescriptionPlaceholder")}
             />
           </div>
           <div className="flex gap-3 justify-end mt-6">
@@ -129,8 +133,9 @@ export default function TopicList({ topics, languages, teacherId }: Props) {
             <button
               type="submit"
               disabled={creating}
-              className="bg-[#2a14b4] hover:bg-[#4338ca] text-white px-6 py-2.5 rounded-full font-body font-bold text-sm transition-all disabled:opacity-50 shadow-lg shadow-[#2a14b4]/20"
+              className="bg-[#2a14b4] hover:bg-[#4338ca] text-white px-6 py-2.5 rounded-full font-body font-bold text-sm transition-all disabled:opacity-50 shadow-lg shadow-[#2a14b4]/20 inline-flex items-center gap-2"
             >
+              <span className={`material-symbols-outlined text-[16px] ${creating ? "animate-spin" : ""}`}>{creating ? "progress_activity" : "add"}</span>
               {ct("create")}
             </button>
           </div>
@@ -140,7 +145,7 @@ export default function TopicList({ topics, languages, teacherId }: Props) {
       {/* Language Filter */}
       <div className="flex items-center gap-2 mb-8 flex-wrap">
         <span className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mr-2">
-          Filter
+          {ct("filter")}
         </span>
         <button
           onClick={() => setFilterLangId(null)}
@@ -150,7 +155,7 @@ export default function TopicList({ topics, languages, teacherId }: Props) {
               : "bg-white text-[#464554] hover:bg-[#eff4ff] ambient-shadow"
           }`}
         >
-          All
+          {ct("all")}
         </button>
         {languages.map((lang) => (
           <button
@@ -162,7 +167,7 @@ export default function TopicList({ topics, languages, teacherId }: Props) {
                 : "bg-white text-[#464554] hover:bg-[#eff4ff] ambient-shadow"
             }`}
           >
-            {lang.name}
+            {tLang(lang.name)}
           </button>
         ))}
       </div>
@@ -173,17 +178,17 @@ export default function TopicList({ topics, languages, teacherId }: Props) {
           <Link
             key={topic.id}
             href={`/teacher/topics/${topic.id}`}
-            className="group bg-white rounded-xl ambient-shadow p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0px_30px_60px_rgba(18,28,42,0.1)] block border border-transparent hover:border-[#2a14b4]/10"
+            className="group bg-white rounded-xl ambient-shadow p-8 transition-colors duration-200 block border border-transparent hover:border-[#2a14b4]/10 hover:bg-[#f5f3ff]"
           >
             <div className="flex items-start justify-between mb-4">
               <div className="w-12 h-12 rounded-xl bg-[#e3dfff] flex items-center justify-center">
                 <span className="material-symbols-outlined text-[#2a14b4]">menu_book</span>
               </div>
               <span className="text-xs font-body font-bold px-3 py-1 rounded-full bg-[#a6f2d1]/40 text-[#1b6b51]">
-                {topic.languageName}
+                {tLang(topic.languageName)}
               </span>
             </div>
-            <h3 className="font-headline text-2xl text-[#121c2a] mb-2 group-hover:text-[#2a14b4] transition-colors">
+            <h3 className="font-body font-bold text-2xl text-[#121c2a] mb-2 group-hover:text-[#2a14b4] transition-colors">
               {topic.title}
             </h3>
             {topic.description && (
@@ -195,11 +200,11 @@ export default function TopicList({ topics, languages, teacherId }: Props) {
               <div className="flex gap-6">
                 <div className="flex items-center gap-1.5 text-xs text-[#777586] font-body">
                   <span className="material-symbols-outlined text-[14px]">dictionary</span>
-                  {topic.vocabCount} words
+                  {topic.vocabCount} {t("wordsCount")}
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-[#777586] font-body">
                   <span className="material-symbols-outlined text-[14px]">group</span>
-                  {topic.assignmentCount} learners
+                  {topic.assignmentCount} {t("learnersCount")}
                 </div>
               </div>
               <span className="w-8 h-8 rounded-full bg-[#eff4ff] flex items-center justify-center group-hover:bg-[#2a14b4] group-hover:text-white text-[#464554] transition-all">
@@ -218,7 +223,7 @@ export default function TopicList({ topics, languages, teacherId }: Props) {
             <span className="material-symbols-outlined text-[#2a14b4] text-2xl">add</span>
           </div>
           <span className="text-sm font-body font-medium text-[#777586] group-hover:text-[#2a14b4] transition-colors">
-            Create New Topic
+            {t("createNewTopic")}
           </span>
         </button>
       </div>

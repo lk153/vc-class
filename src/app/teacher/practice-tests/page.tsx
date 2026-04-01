@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
+import PracticeTestGrid from "@/components/teacher/PracticeTestGrid";
 
 export default async function PracticeTestsPage() {
   const session = await auth();
@@ -26,16 +27,16 @@ export default async function PracticeTestsPage() {
       {/* Editorial Header */}
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-10">
         <div>
-          <h1 className="font-headline text-3xl text-[#121c2a] font-bold mb-2">
+          <h1 className="font-body font-bold text-3xl text-[#121c2a] mb-2">
             {t("practiceTests")}
           </h1>
-          <p className="text-lg font-headline italic text-[#464554] opacity-80">
-            Create and manage assessment modules for your students.
+          <p className="text-lg font-body text-[#464554] opacity-80">
+            {t("practiceTestsSubtitle")}
           </p>
         </div>
         <Link
           href="/teacher/practice-tests/import"
-          className="inline-flex items-center gap-2 bg-[#2a14b4] text-white px-6 py-3 rounded-full font-body font-bold text-sm shadow-lg shadow-[#2a14b4]/20 hover:scale-[1.02] active:scale-95 transition-all shrink-0"
+          className="inline-flex items-center gap-2 bg-[#2a14b4] text-white px-6 py-3 rounded-full font-body font-bold text-sm shadow-lg shadow-[#2a14b4]/20 transition-all shrink-0"
         >
           <span className="material-symbols-outlined text-[18px]">upload_file</span>
           {t("importTest")}
@@ -49,8 +50,8 @@ export default async function PracticeTestsPage() {
             <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">quiz</span>
           </div>
           <div>
-            <p className="font-headline text-2xl text-[#121c2a] leading-none">{tests.length}</p>
-            <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">Total Tests</p>
+            <p className="font-body font-bold text-2xl text-[#121c2a] leading-none">{tests.length}</p>
+            <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">{t("totalTests")}</p>
           </div>
         </div>
         <div className="bg-white rounded-xl ambient-shadow p-5 flex items-center gap-4">
@@ -58,8 +59,8 @@ export default async function PracticeTestsPage() {
             <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">help</span>
           </div>
           <div>
-            <p className="font-headline text-2xl text-[#2a14b4] leading-none">{totalQuestions}</p>
-            <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">Total Questions</p>
+            <p className="font-body font-bold text-2xl text-[#2a14b4] leading-none">{totalQuestions}</p>
+            <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">{t("totalQuestions")}</p>
           </div>
         </div>
         <div className="bg-white rounded-xl ambient-shadow p-5 flex items-center gap-4">
@@ -67,10 +68,10 @@ export default async function PracticeTestsPage() {
             <span className="material-symbols-outlined text-[20px] text-[#1b6b51]">topic</span>
           </div>
           <div>
-            <p className="font-headline text-2xl text-[#1b6b51] leading-none">
+            <p className="font-body font-bold text-2xl text-[#1b6b51] leading-none">
               {new Set(tests.map((t: { topicId: string }) => t.topicId)).size}
             </p>
-            <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">Topics Covered</p>
+            <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">{t("topicsCovered")}</p>
           </div>
         </div>
       </div>
@@ -80,8 +81,8 @@ export default async function PracticeTestsPage() {
           <div className="w-20 h-20 rounded-full bg-[#eff4ff] flex items-center justify-center mx-auto mb-6">
             <span className="material-symbols-outlined text-[#2a14b4] text-3xl">quiz</span>
           </div>
-          <h2 className="font-headline text-2xl text-[#121c2a] mb-2">No tests yet</h2>
-          <p className="text-[#777586] font-body mb-6">Import your first practice test via CSV.</p>
+          <h2 className="font-body font-bold text-2xl text-[#121c2a] mb-2">{t("noTestsYet")}</h2>
+          <p className="text-[#777586] font-body mb-6">{t("noTestsDescription")}</p>
           <Link
             href="/teacher/practice-tests/import"
             className="inline-flex items-center gap-2 bg-[#2a14b4] text-white px-6 py-3 rounded-full font-body font-bold text-sm shadow-lg shadow-[#2a14b4]/20 transition-all"
@@ -91,43 +92,15 @@ export default async function PracticeTestsPage() {
           </Link>
         </div>
       ) : (
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {tests.map((test: any) => (
-            <Link
-              key={test.id}
-              href={`/teacher/practice-tests/${test.id}`}
-              className="group bg-white rounded-xl ambient-shadow p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0px_30px_60px_rgba(18,28,42,0.1)] block border border-transparent hover:border-[#2a14b4]/10"
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div className="w-12 h-12 rounded-xl bg-[#eff4ff] flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[#2a14b4]">quiz</span>
-                </div>
-                <span className="text-xs font-body font-bold px-3 py-1 rounded-full bg-[#a6f2d1]/40 text-[#1b6b51]">
-                  {test.topic.language.name}
-                </span>
-              </div>
-
-              <h3 className="font-headline text-2xl text-[#121c2a] mb-1 group-hover:text-[#2a14b4] transition-colors">
-                {test.title}
-              </h3>
-              <p className="text-sm text-[#464554] font-body font-headline italic mb-6">
-                {test.topic.title}
-              </p>
-
-              <div className="flex items-center justify-between pt-4 border-t border-[#c7c4d7]/15">
-                <div className="flex gap-6">
-                  <div className="flex items-center gap-1.5 text-xs text-[#777586] font-body">
-                    <span className="material-symbols-outlined text-[14px]">help</span>
-                    {test._count.questions} questions
-                  </div>
-                </div>
-                <span className="text-xs font-body text-[#2a14b4] opacity-0 group-hover:opacity-100 transition-opacity">
-                  View Details
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
+        <PracticeTestGrid
+          tests={tests.map((test: any) => ({
+            id: test.id,
+            title: test.title,
+            topicTitle: test.topic.title,
+            languageName: test.topic.language.name,
+            questionCount: test._count.questions,
+          }))}
+        />
       )}
     </div>
   );

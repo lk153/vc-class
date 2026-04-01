@@ -16,6 +16,11 @@ const levelPresets: Record<string, string[]> = {
 
 export default function CreateClassPage() {
   const t = useTranslations("teacher");
+  const ct = useTranslations("common");
+  const tLang = (name: string) => {
+    const key = `lang_${name}`;
+    return t.has(key) ? t(key) : name;
+  };
   const router = useRouter();
   const [languages, setLanguages] = useState<Language[]>([]);
   const [saving, setSaving] = useState(false);
@@ -39,11 +44,17 @@ export default function CreateClassPage() {
   const selectedLang = languages.find((l) => l.id === languageId);
   const presets = selectedLang ? levelPresets[selectedLang.code] || [] : [];
 
+  const inputClass =
+    "w-full px-4 py-3 rounded-lg bg-[#d9e3f6]/30 border-0 focus:outline-none focus:ring-2 focus:ring-[#2a14b4]/30 font-body text-[#121c2a] placeholder:text-[#777586]";
+
+  const labelClass =
+    "block text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] mb-2";
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const validSessions = sessions.filter((s) => s.day && s.startTime && s.endTime);
     if (!name.trim() || !languageId || !level.trim() || validSessions.length === 0 || !startDate || !endDate) {
-      toast.error("Please fill in all required fields and at least one class session");
+      toast.error(t("fillRequiredFields"));
       return;
     }
     setSaving(true);
@@ -63,21 +74,21 @@ export default function CreateClassPage() {
         }),
       });
       if (!res.ok) {
-        toast.error("Failed to create class");
+        toast.error(t("createClassError"));
         return;
       }
       toast.success(t("classCreated"));
       router.push("/teacher/classes");
       router.refresh();
     } catch {
-      toast.error("Failed to create class");
+      toast.error(t("createClassError"));
     } finally {
       setSaving(false);
     }
   }
 
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-3xl">
       {/* Back */}
       <Link
         href="/teacher/classes"
@@ -87,56 +98,50 @@ export default function CreateClassPage() {
         {t("classes")}
       </Link>
 
-      <h1 className="font-headline text-3xl text-[#121c2a] font-bold mb-8">
-        {t("createClass")}
-      </h1>
+      <form onSubmit={handleSubmit} className="bg-white rounded-xl ambient-shadow p-8">
+        <h1 className="font-body font-bold text-2xl text-[#121c2a] mb-6">
+          {t("createClass")}
+        </h1>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
         {/* Class Name */}
-        <div>
-          <label className="block text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] mb-2">
-            {t("className")} *
-          </label>
+        <div className="mb-6">
+          <label className={labelClass}>{t("className")} *</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="e.g., Intermediate English Conversation"
-            className="w-full px-4 py-3 rounded-xl border border-[#c7c4d7]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#2a14b4]/20 text-sm font-body placeholder:text-[#464554]/40"
+            placeholder={t("classNamePlaceholder")}
+            className={inputClass}
             required
           />
         </div>
 
         {/* Language + Level */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid gap-6 sm:grid-cols-2 mb-6">
           <div>
-            <label className="block text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] mb-2">
-              {t("classLanguage")} *
-            </label>
+            <label className={labelClass}>{t("classLanguage")} *</label>
             <select
               value={languageId}
               onChange={(e) => { setLanguageId(e.target.value); setLevel(""); }}
-              className="w-full px-4 py-3 rounded-xl border border-[#c7c4d7]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#2a14b4]/20 text-sm font-body"
+              className={inputClass}
               required
             >
-              <option value="">Select language</option>
+              <option value="">{t("selectLanguage")}</option>
               {languages.map((lang) => (
-                <option key={lang.id} value={lang.id}>{lang.name}</option>
+                <option key={lang.id} value={lang.id}>{tLang(lang.name)}</option>
               ))}
             </select>
           </div>
           <div>
-            <label className="block text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] mb-2">
-              {t("classLevel")} *
-            </label>
+            <label className={labelClass}>{t("classLevel")} *</label>
             {presets.length > 0 ? (
               <select
                 value={level}
                 onChange={(e) => setLevel(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-[#c7c4d7]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#2a14b4]/20 text-sm font-body"
+                className={inputClass}
                 required
               >
-                <option value="">Select level</option>
+                <option value="">{t("selectLevel")}</option>
                 {presets.map((p) => (
                   <option key={p} value={p}>{p}</option>
                 ))}
@@ -146,8 +151,8 @@ export default function CreateClassPage() {
                 type="text"
                 value={level}
                 onChange={(e) => setLevel(e.target.value)}
-                placeholder="e.g., Beginner, B1"
-                className="w-full px-4 py-3 rounded-xl border border-[#c7c4d7]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#2a14b4]/20 text-sm font-body placeholder:text-[#464554]/40"
+                placeholder={t("levelPlaceholder")}
+                className={inputClass}
                 required
               />
             )}
@@ -155,79 +160,75 @@ export default function CreateClassPage() {
         </div>
 
         {/* Class Sessions */}
-        <div>
-          <label className="block text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] mb-2">
-            {t("classSchedule")} *
-          </label>
+        <div className="mb-6">
+          <label className={labelClass}>{t("classSchedule")} *</label>
           <ClassSessionEditor sessions={sessions} onChange={setSessions} />
         </div>
 
         {/* Duration */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid gap-6 sm:grid-cols-2 mb-6">
           <div>
-            <label className="block text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] mb-2">
-              {t("classStartDate")} *
-            </label>
+            <label className={labelClass}>{t("classStartDate")} *</label>
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-[#c7c4d7]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#2a14b4]/20 text-sm font-body text-[#464554]"
+              className={`${inputClass} date-input`}
               required
             />
           </div>
           <div>
-            <label className="block text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] mb-2">
-              {t("classEndDate")} *
-            </label>
+            <label className={labelClass}>{t("classEndDate")} *</label>
             <input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-[#c7c4d7]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#2a14b4]/20 text-sm font-body text-[#464554]"
+              className={`${inputClass} date-input`}
               required
             />
           </div>
         </div>
 
         {/* Max Students */}
-        <div>
-          <label className="block text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] mb-2">
-            {t("classMaxStudents")}
-          </label>
+        <div className="mb-6">
+          <label className={labelClass}>{t("classMaxStudents")}</label>
           <input
             type="number"
             value={maxStudents}
             onChange={(e) => setMaxStudents(parseInt(e.target.value) || 10)}
             min={1}
             max={100}
-            className="w-32 px-4 py-3 rounded-xl border border-[#c7c4d7]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#2a14b4]/20 text-sm font-body"
+            className={`${inputClass} w-32`}
           />
         </div>
 
         {/* Special Notes */}
-        <div>
-          <label className="block text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] mb-2">
-            {t("classSpecialNotes")}
-          </label>
+        <div className="mb-6">
+          <label className={labelClass}>{t("classSpecialNotes")}</label>
           <textarea
             value={specialNotes}
             onChange={(e) => setSpecialNotes(e.target.value)}
             rows={3}
-            placeholder="e.g., First class free trial | All sessions recorded for review"
-            className="w-full px-4 py-3 rounded-xl border border-[#c7c4d7]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#2a14b4]/20 text-sm font-body placeholder:text-[#464554]/40 resize-none"
+            placeholder={t("specialNotesPlaceholder")}
+            className={`${inputClass} resize-none`}
           />
         </div>
 
-        {/* Submit */}
-        <div className="flex justify-end pt-4">
+        {/* Actions */}
+        <div className="flex gap-3 justify-end pt-2">
+          <Link
+            href="/teacher/classes"
+            className="px-6 py-2.5 rounded-full text-sm font-body font-medium text-[#464554] bg-[#f0eef6] hover:bg-[#e3dfff] hover:text-[#121c2a] transition-colors"
+          >
+            {ct("cancel")}
+          </Link>
           <button
             type="submit"
             disabled={saving}
-            className="bg-[#2a14b4] text-white px-8 py-3 rounded-full font-body font-bold text-sm shadow-lg shadow-[#2a14b4]/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+            className="bg-[#2a14b4] hover:bg-[#4338ca] text-white px-6 py-2.5 rounded-full font-body font-bold text-sm transition-all disabled:opacity-50 shadow-lg shadow-[#2a14b4]/20 inline-flex items-center gap-2"
           >
-            <span className="material-symbols-outlined text-[18px]">add</span>
-            {saving ? "Creating..." : t("createClass")}
+            <span className={`material-symbols-outlined text-[16px] ${saving ? "animate-spin" : ""}`}>{saving ? "progress_activity" : "add"}</span>
+            {saving ? t("creating") : t("createClass")}
           </button>
         </div>
       </form>

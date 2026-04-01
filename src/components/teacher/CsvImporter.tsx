@@ -26,6 +26,10 @@ type Props = { topics: Topic[] };
 
 export default function CsvImporter({ topics }: Props) {
   const t = useTranslations("teacher");
+  const tLang = (name: string) => {
+    const key = `lang_${name}`;
+    return t.has(key) ? t(key) : name;
+  };
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [topicId, setTopicId] = useState("");
@@ -38,18 +42,18 @@ export default function CsvImporter({ topics }: Props) {
     const errors: string[] = [];
     const type = row.question_type?.toUpperCase();
 
-    if (!row.content) errors.push("Content is required");
+    if (!row.content) errors.push(t("csvContentRequired"));
     if (!["YES_NO", "MULTIPLE_CHOICE", "GAP_FILL"].includes(type)) {
-      errors.push("Invalid question_type");
+      errors.push(t("csvInvalidType"));
     }
-    if (!row.answer_1) errors.push("answer_1 is required");
-    if (type === "YES_NO" && !row.answer_2) errors.push("answer_2 required for YES_NO");
+    if (!row.answer_1) errors.push(t("csvAnswer1Required"));
+    if (type === "YES_NO" && !row.answer_2) errors.push(t("csvAnswer2Required"));
     if (type === "MULTIPLE_CHOICE") {
       if (!row.answer_2 || !row.answer_3 || !row.answer_4) {
-        errors.push("All 4 answers required for MULTIPLE_CHOICE");
+        errors.push(t("csvAllAnswersRequired"));
       }
     }
-    if (!row.correct_answer) errors.push("correct_answer is required");
+    if (!row.correct_answer) errors.push(t("csvCorrectRequired"));
 
     return { ...row, question_number: row.question_number || String(index + 1), errors };
   }
@@ -67,7 +71,7 @@ export default function CsvImporter({ topics }: Props) {
         setFileSelected(true);
       },
       error() {
-        toast.error("Failed to parse CSV file");
+        toast.error(t("csvParseFailed"));
       },
     });
   }
@@ -90,7 +94,7 @@ export default function CsvImporter({ topics }: Props) {
   async function handleImport() {
     if (!topicId || !title || rows.length === 0) return;
     if (rows.some((r) => r.errors.length > 0)) {
-      toast.error("Fix validation errors before importing");
+      toast.error(t("csvFixErrors"));
       return;
     }
 
@@ -117,14 +121,14 @@ export default function CsvImporter({ topics }: Props) {
       });
 
       if (!res.ok) {
-        toast.error("Failed to import test");
+        toast.error(t("csvImportFailed"));
         return;
       }
 
-      toast.success("Practice test imported successfully!");
+      toast.success(t("csvImportSuccess"));
       router.push("/teacher/practice-tests");
     } catch {
-      toast.error("Failed to import test");
+      toast.error(t("csvImportFailed"));
     } finally {
       setImporting(false);
     }
@@ -149,27 +153,27 @@ export default function CsvImporter({ topics }: Props) {
       <div className="bg-card rounded-xl border border-border p-6 space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="block text-sm font-medium mb-1.5">Topic</label>
+            <label className="block text-sm font-medium mb-1.5">{t("csvTopic")}</label>
             <select
               value={topicId}
               onChange={(e) => setTopicId(e.target.value)}
               className="w-full px-4 py-2.5 rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary"
             >
-              <option value="">Select topic...</option>
+              <option value="">{t("csvSelectTopic")}</option>
               {topics.map((topic) => (
                 <option key={topic.id} value={topic.id}>
-                  {topic.title} ({topic.languageName})
+                  {topic.title} ({tLang(topic.languageName)})
                 </option>
               ))}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1.5">Test Title</label>
+            <label className="block text-sm font-medium mb-1.5">{t("csvTestTitle")}</label>
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full px-4 py-2.5 rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="e.g., Park Vocabulary Test 1"
+              placeholder={t("csvTestTitlePlaceholder")}
             />
           </div>
         </div>
@@ -190,7 +194,7 @@ export default function CsvImporter({ topics }: Props) {
       {fileSelected && rows.length > 0 && (
         <div className="bg-card rounded-xl border border-border p-6">
           <h2 className="font-semibold text-foreground mb-4">
-            Preview ({rows.length} questions)
+            {t("csvPreview", { count: rows.length })}
           </h2>
 
           <div className="overflow-x-auto">
@@ -198,12 +202,12 @@ export default function CsvImporter({ topics }: Props) {
               <thead>
                 <tr className="border-b border-border">
                   <th className="text-left py-2 px-2 text-muted font-medium">#</th>
-                  <th className="text-left py-2 px-2 text-muted font-medium">Content</th>
-                  <th className="text-left py-2 px-2 text-muted font-medium">Type</th>
-                  <th className="text-left py-2 px-2 text-muted font-medium">Answers</th>
-                  <th className="text-left py-2 px-2 text-muted font-medium">Correct</th>
-                  <th className="text-left py-2 px-2 text-muted font-medium">Timer</th>
-                  <th className="text-left py-2 px-2 text-muted font-medium">Status</th>
+                  <th className="text-left py-2 px-2 text-muted font-medium">{t("csvContent")}</th>
+                  <th className="text-left py-2 px-2 text-muted font-medium">{t("csvType")}</th>
+                  <th className="text-left py-2 px-2 text-muted font-medium">{t("csvAnswers")}</th>
+                  <th className="text-left py-2 px-2 text-muted font-medium">{t("csvCorrect")}</th>
+                  <th className="text-left py-2 px-2 text-muted font-medium">{t("csvTimer")}</th>
+                  <th className="text-left py-2 px-2 text-muted font-medium">{t("csvStatus")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -228,7 +232,7 @@ export default function CsvImporter({ topics }: Props) {
                       {row.errors.length > 0 ? (
                         <span className="text-error text-xs">{row.errors.join(", ")}</span>
                       ) : (
-                        <span className="text-success text-xs">Valid</span>
+                        <span className="text-success text-xs">{t("csvValid")}</span>
                       )}
                     </td>
                   </tr>
@@ -247,7 +251,7 @@ export default function CsvImporter({ topics }: Props) {
             disabled={importing || !topicId || !title || hasErrors || rows.length === 0}
             className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-6 py-2.5 rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span className="material-symbols-outlined text-[18px]">upload</span>
+            <span className={`material-symbols-outlined text-[18px] ${importing ? "animate-spin" : ""}`}>{importing ? "progress_activity" : "upload"}</span>
             {t("import")}
           </button>
         </div>

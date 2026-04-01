@@ -32,6 +32,10 @@ type Student = {
 
 export default function StudentTable({ students }: { students: Student[] }) {
   const t = useTranslations("teacher");
+  const tLang = (name: string) => {
+    const key = `lang_${name}`;
+    return t.has(key) ? t(key) : name;
+  };
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 
   const totalStudents = students.length;
@@ -46,8 +50,8 @@ export default function StudentTable({ students }: { students: Student[] }) {
             <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">group</span>
           </div>
           <div>
-            <p className="font-headline text-2xl text-[#121c2a] leading-none">{totalStudents}</p>
-            <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">Total Enrolled</p>
+            <p className="font-body font-bold text-2xl text-[#121c2a] leading-none">{totalStudents}</p>
+            <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">{t("totalEnrolled")}</p>
           </div>
         </div>
         <div className="bg-white rounded-xl ambient-shadow p-5 flex items-center gap-4">
@@ -56,10 +60,10 @@ export default function StudentTable({ students }: { students: Student[] }) {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <p className="font-headline text-2xl text-[#1b6b51] leading-none">{activeStudents}</p>
+              <p className="font-body font-bold text-2xl text-[#1b6b51] leading-none">{activeStudents}</p>
               <span className="w-2 h-2 rounded-full bg-[#1b6b51] animate-pulse" />
             </div>
-            <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">Active</p>
+            <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">{t("active")}</p>
           </div>
         </div>
         <div className="bg-white rounded-xl ambient-shadow p-5 flex items-center gap-4">
@@ -67,8 +71,8 @@ export default function StudentTable({ students }: { students: Student[] }) {
             <span className="material-symbols-outlined text-[20px] text-[#777586]">person_off</span>
           </div>
           <div>
-            <p className="font-headline text-2xl text-[#777586] leading-none">{totalStudents - activeStudents}</p>
-            <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">Inactive</p>
+            <p className="font-body font-bold text-2xl text-[#777586] leading-none">{totalStudents - activeStudents}</p>
+            <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">{t("inactive")}</p>
           </div>
         </div>
         <div className="bg-white rounded-xl ambient-shadow p-5 flex items-center gap-4">
@@ -76,12 +80,12 @@ export default function StudentTable({ students }: { students: Student[] }) {
             <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">menu_book</span>
           </div>
           <div>
-            <p className="font-headline text-2xl text-[#2a14b4] leading-none">
+            <p className="font-body font-bold text-2xl text-[#2a14b4] leading-none">
               {totalStudents > 0
                 ? (students.reduce((sum, s) => sum + s.topicCount, 0) / totalStudents).toFixed(1)
                 : "0"}
             </p>
-            <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">Avg. Topics</p>
+            <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">{t("avgTopics")}</p>
           </div>
         </div>
       </div>
@@ -90,7 +94,7 @@ export default function StudentTable({ students }: { students: Student[] }) {
       <div className="md:hidden space-y-3">
         {students.length === 0 ? (
           <div className="bg-white rounded-xl ambient-shadow px-6 py-12 text-center text-[#777586]">
-            No students registered yet.
+            {t("noStudentsYet")}
           </div>
         ) : (
           students.map((s) => {
@@ -105,11 +109,11 @@ export default function StudentTable({ students }: { students: Student[] }) {
               <button
                 key={s.id}
                 onClick={() => setSelectedStudent(s)}
-                className={`w-full text-left bg-white rounded-xl ambient-shadow p-4 hover:bg-[#e3dfff]/50 hover:shadow-[0px_4px_16px_rgba(18,28,42,0.08)] transition-all duration-200 ${isInactive ? "opacity-60" : ""}`}
+                className={`w-full text-left bg-white rounded-xl ambient-shadow p-4 hover:bg-[#e3dfff]/50 transition-colors duration-200 ${isInactive ? "opacity-60" : ""}`}
               >
                 <div className="flex items-center gap-3 mb-3">
                   <div className={`w-10 h-10 rounded-full bg-[#e3dfff] flex items-center justify-center shrink-0 ${isInactive ? "grayscale" : ""}`}>
-                    <span className="font-headline italic text-sm text-[#2a14b4]">{initials}</span>
+                    <span className="font-body text-sm text-[#2a14b4]">{initials}</span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-body font-medium text-[#121c2a] truncate">{s.name}</p>
@@ -122,13 +126,13 @@ export default function StudentTable({ students }: { students: Student[] }) {
                         : "bg-[#d9e3f6] text-[#777586]"
                     }`}
                   >
-                    {s.status}
+                    {s.status === "ACTIVE" ? t("active") : t("inactive")}
                   </span>
                 </div>
                 <div className="flex items-center gap-4 text-xs text-[#464554] font-body">
-                  <span>Joined {new Date(s.createdAt).toLocaleDateString()}</span>
-                  {s.languageName && <span>• {s.languageName}</span>}
-                  <span className="ml-auto font-headline italic text-sm text-[#2a14b4]">{s.topicCount} topics</span>
+                  <span>{t("joinedDate", { date: (() => { const d = new Date(s.createdAt); return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`; })() })}</span>
+                  {s.languageName && <span>• {tLang(s.languageName)}</span>}
+                  <span className="ml-auto font-body text-sm text-[#2a14b4]">{s.topicCount} {t("topicsCount")}</span>
                 </div>
               </button>
             );
@@ -141,18 +145,18 @@ export default function StudentTable({ students }: { students: Student[] }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-[#c7c4d7]/20">
-              <th className="px-6 py-4 text-left text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold">Student</th>
-              <th className="px-6 py-4 text-left text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold">Email</th>
-              <th className="px-6 py-4 text-left text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold">Status</th>
-              <th className="px-6 py-4 text-left text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold">Language</th>
-              <th className="px-6 py-4 text-center text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold">Topics</th>
+              <th className="px-6 py-4 text-left text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold">{t("studentName")}</th>
+              <th className="px-6 py-4 text-left text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold">{t("emailCol")}</th>
+              <th className="px-6 py-4 text-left text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold">{t("statusCol")}</th>
+              <th className="px-6 py-4 text-left text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold">{t("languageCol")}</th>
+              <th className="px-6 py-4 text-center text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold">{t("topics")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#c7c4d7]/10">
             {students.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-12 text-center text-[#777586]">
-                  No students registered yet.
+                  {t("noStudentsYet")}
                 </td>
               </tr>
             ) : (
@@ -168,17 +172,17 @@ export default function StudentTable({ students }: { students: Student[] }) {
                   <tr
                     key={s.id}
                     onClick={() => setSelectedStudent(s)}
-                    className={`hover:bg-[#e3dfff]/50 hover:shadow-[0px_4px_16px_rgba(18,28,42,0.08)] hover:-translate-y-[1px] transition-all duration-200 cursor-pointer ${isInactive ? "opacity-60" : ""}`}
+                    className={`hover:bg-[#e3dfff]/50 transition-colors duration-200 cursor-pointer ${isInactive ? "opacity-60" : ""}`}
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className={`w-9 h-9 rounded-full bg-[#e3dfff] flex items-center justify-center shrink-0 ${isInactive ? "grayscale" : ""}`}>
-                          <span className="font-headline italic text-sm text-[#2a14b4]">{initials}</span>
+                          <span className="font-body text-sm text-[#2a14b4]">{initials}</span>
                         </div>
                         <div>
                           <p className="font-body font-medium text-[#121c2a]">{s.name}</p>
                           <p className="text-xs text-[#777586] font-body">
-                            Joined {new Date(s.createdAt).toLocaleDateString()}
+                            {t("joinedDate", { date: (() => { const d = new Date(s.createdAt); return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`; })() })}
                           </p>
                         </div>
                       </div>
@@ -192,12 +196,12 @@ export default function StudentTable({ students }: { students: Student[] }) {
                             : "bg-[#d9e3f6] text-[#777586]"
                         }`}
                       >
-                        {s.status}
+                        {s.status === "ACTIVE" ? t("active") : t("inactive")}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-[#464554] font-body">{s.languageName}</td>
+                    <td className="px-6 py-4 text-[#464554] font-body">{tLang(s.languageName)}</td>
                     <td className="px-6 py-4 text-center">
-                      <span className="font-headline italic text-lg text-[#2a14b4]">{s.topicCount}</span>
+                      <span className="font-body text-lg text-[#2a14b4]">{s.topicCount}</span>
                     </td>
                   </tr>
                 );

@@ -180,20 +180,20 @@ export default function PracticeSession({
           <span className="material-symbols-outlined text-7xl text-[#2a14b4] mb-6 block">
             emoji_events
           </span>
-          <h1 className="font-headline text-5xl italic text-[#121c2a] mb-3">
+          <h1 className="font-body text-5xl text-[#121c2a] mb-3">
             {t("assessmentComplete") || "Assessment Complete"}
           </h1>
-          <p className="text-6xl font-headline text-[#2a14b4] mb-4">{score}%</p>
+          <p className="text-6xl font-body font-bold text-[#2a14b4] mb-4">{score}%</p>
 
           <div className="flex justify-center gap-12 mb-10">
             <div className="text-center">
-              <span className="block text-3xl font-headline text-[#1b6b51]">{correctCount}</span>
+              <span className="block text-3xl font-body font-bold text-[#1b6b51]">{correctCount}</span>
               <span className="text-[10px] font-body uppercase tracking-widest text-[#464554]">
                 {t("correct")}
               </span>
             </div>
             <div className="text-center">
-              <span className="block text-3xl font-headline text-[#7b0020]">
+              <span className="block text-3xl font-body font-bold text-[#7b0020]">
                 {questions.length - correctCount}
               </span>
               <span className="text-[10px] font-body uppercase tracking-widest text-[#464554]">
@@ -204,7 +204,7 @@ export default function PracticeSession({
 
           <button
             onClick={() => router.push(`/topics/${topicId}`)}
-            className="bg-[#2a14b4] hover:bg-[#4338ca] text-white px-10 py-4 rounded-full font-body font-bold uppercase tracking-widest text-sm transition-all hover:shadow-lg hover:shadow-[#2a14b4]/20 active:scale-95"
+            className="bg-[#2a14b4] hover:bg-[#4338ca] text-white px-10 py-4 rounded-full font-body font-bold uppercase tracking-widest text-sm transition-all hover:shadow-lg hover:shadow-[#2a14b4]/20"
           >
             {t("reviewTopic")}
           </button>
@@ -259,7 +259,7 @@ export default function PracticeSession({
         <span className="font-body text-xs uppercase tracking-widest text-[#2a14b4] font-bold mb-2 block">
           {testTitle}
         </span>
-        <h1 className="font-headline italic text-5xl md:text-6xl text-[#121c2a] tracking-tight">
+        <h1 className="font-body text-5xl md:text-6xl text-[#121c2a] tracking-tight">
           {t("moduleAssessment") || "Module Assessment"}
         </h1>
       </div>
@@ -276,7 +276,7 @@ export default function PracticeSession({
                 Question {String(currentIndex + 1).padStart(2, "0")} of {String(questions.length).padStart(2, "0")}
               </label>
 
-              <h2 className="font-headline italic text-4xl md:text-5xl text-[#121c2a] leading-snug mb-8">
+              <h2 className="font-body text-4xl md:text-5xl text-[#121c2a] leading-snug mb-8">
                 {currentQuestion.content}
               </h2>
 
@@ -310,7 +310,7 @@ export default function PracticeSession({
                         </span>
                         {t("incorrect")}
                       </span>
-                      <p className="font-headline italic text-lg ml-9">
+                      <p className="font-body text-lg ml-9">
                         {t("correctAnswerIs") || "Answer"}: {currentQuestion.correctAnswer}
                       </p>
                     </div>
@@ -330,7 +330,7 @@ export default function PracticeSession({
                 <span className="block text-[10px] uppercase tracking-widest text-[#777586] mb-1">
                   {t("timeRemaining") || "Time Remaining"}
                 </span>
-                <span className={`text-2xl font-headline italic ${timeLeft <= 5 ? "text-[#7b0020]" : "text-[#2a14b4]"}`}>
+                <span className={`text-2xl font-body ${timeLeft <= 5 ? "text-[#7b0020]" : "text-[#2a14b4]"}`}>
                   {formatTime(timeLeft)}
                 </span>
               </div>
@@ -338,7 +338,7 @@ export default function PracticeSession({
                 <span className="block text-[10px] uppercase tracking-widest text-[#777586] mb-1">
                   {t("accuracy") || "Accuracy"}
                 </span>
-                <span className="text-2xl font-headline italic text-[#1b6b51]">
+                <span className="text-2xl font-body text-[#1b6b51]">
                   {accuracyPercent}%
                 </span>
               </div>
@@ -374,7 +374,7 @@ export default function PracticeSession({
             <div className="space-y-4">
               {answerOptions.map((option, i) => {
                 let btnClass =
-                  "w-full text-left p-6 rounded-full flex items-center justify-between transition-all duration-200 active:scale-95 ";
+                  "w-full text-left p-6 rounded-full flex items-center justify-between transition-all duration-200 ";
 
                 if (feedback) {
                   if (option === currentQuestion.correctAnswer) {
@@ -400,7 +400,7 @@ export default function PracticeSession({
                   >
                     <div className="flex items-center gap-6">
                       <span
-                        className={`w-10 h-10 flex items-center justify-center rounded-full font-headline italic transition-colors ${
+                        className={`w-10 h-10 flex items-center justify-center rounded-full font-body transition-colors ${
                           feedback && option === currentQuestion.correctAnswer
                             ? "bg-[#1b6b51] text-white"
                             : selectedAnswer === option && !feedback
@@ -437,14 +437,14 @@ export default function PracticeSession({
               <button
                 onClick={handleSubmit}
                 disabled={!selectedAnswer}
-                className="w-full bg-[#2a14b4] text-white h-16 rounded-full font-body font-bold tracking-tight hover:shadow-lg hover:shadow-[#2a14b4]/20 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
+                className="w-full bg-[#2a14b4] text-white h-16 rounded-full font-body font-bold tracking-tight hover:shadow-lg hover:shadow-[#2a14b4]/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
               >
                 {t("submitAnswer") || "Submit Answer"}
               </button>
             ) : (
               <button
                 onClick={handleNext}
-                className="w-full bg-[#121c2a] text-white h-16 rounded-full font-body font-bold tracking-tight hover:opacity-90 active:scale-95 transition-all"
+                className="w-full bg-[#121c2a] text-white h-16 rounded-full font-body font-bold tracking-tight hover:opacity-90 transition-all"
               >
                 {isLastQuestion ? t("results") : t("nextQuestion")}
               </button>

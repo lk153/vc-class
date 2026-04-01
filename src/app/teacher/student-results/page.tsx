@@ -8,10 +8,10 @@ export default async function StudentResultsPage() {
     <div>
       {/* Editorial Header */}
       <div className="mb-10">
-        <h1 className="font-headline text-3xl text-[#121c2a] font-bold mb-2">
+        <h1 className="font-body font-bold text-3xl text-[#121c2a] mb-2">
           {t("studentResults")}
         </h1>
-        <p className="text-lg font-headline italic text-[#464554] opacity-80">
+        <p className="text-lg font-body text-[#464554] opacity-80">
           {t("studentResultsDescription")}
         </p>
       </div>

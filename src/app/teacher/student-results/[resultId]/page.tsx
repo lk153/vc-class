@@ -65,7 +65,7 @@ export default async function StudentResultDetailPage({
             {initials}
           </div>
           <div className="min-w-0">
-            <h1 className="font-headline text-2xl sm:text-3xl font-bold text-[#121c2a] truncate">
+            <h1 className="font-body font-bold text-2xl sm:text-3xl text-[#121c2a] truncate">
               {result.user.name}
             </h1>
             <p className="text-sm font-body text-[#777586] truncate">{result.user.email}</p>
@@ -82,7 +82,7 @@ export default async function StudentResultDetailPage({
           <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
             {t("testNameCol")}
           </p>
-          <p className="font-headline text-lg text-[#121c2a] font-semibold">
+          <p className="font-body font-bold text-lg text-[#121c2a] font-semibold">
             {result.practiceTest.title}
           </p>
         </div>
@@ -90,7 +90,7 @@ export default async function StudentResultDetailPage({
           <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
             {t("topicCol")}
           </p>
-          <p className="font-headline text-lg text-[#121c2a] font-semibold">
+          <p className="font-body font-bold text-lg text-[#121c2a] font-semibold">
             {result.practiceTest.topic.title}
           </p>
         </div>
@@ -99,7 +99,7 @@ export default async function StudentResultDetailPage({
             {t("scoreCol")}
           </p>
           <p
-            className={`font-headline text-3xl font-bold ${
+            className={`font-body font-bold text-3xl ${
               result.score >= 80
                 ? "text-[#1b6b51]"
                 : result.score >= 50
@@ -114,7 +114,7 @@ export default async function StudentResultDetailPage({
           <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
             {t("submittedDate")}
           </p>
-          <p className="font-headline text-lg text-[#121c2a]">
+          <p className="font-body font-bold text-lg text-[#121c2a]">
             {new Date(result.completedAt).toLocaleDateString("en-US", {
               month: "short",
               day: "numeric",
@@ -127,7 +127,7 @@ export default async function StudentResultDetailPage({
       {/* Answer Details */}
       <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] overflow-hidden overflow-x-auto">
         <div className="px-6 py-4 border-b border-[#c7c4d7]/15">
-          <h2 className="font-headline text-xl font-bold text-[#121c2a] flex items-center gap-2">
+          <h2 className="font-body font-bold text-xl text-[#121c2a] flex items-center gap-2">
             <span className="material-symbols-outlined text-[#2a14b4]">fact_check</span>
             {t("answerDetails")}
             <span className="text-sm font-body font-normal text-[#777586] ml-1">

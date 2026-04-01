@@ -32,15 +32,17 @@
   --color-muted: var(--muted);
   --color-border: var(--border);
   --color-card: var(--card);
-  --font-sans: var(--font-geist-sans);
-  --font-headline: var(--font-newsreader);
-  --font-body: var(--font-manrope);
+  --font-sans: var(--font-roboto);
+  --font-headline: var(--font-roboto);
+  --font-body: var(--font-roboto);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
 .glass-card {
@@ -56,4 +58,173 @@ body {
 .glass-nav {
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
+}
+
+/* ── MUI-style ripple & hover for all buttons ── */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* Pointer cursor for all clickable elements */
+button:not(:disabled),
+a,
+[role="button"],
+select,
+label[for],
+input[type="checkbox"],
+input[type="radio"],
+input[type="file"] {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* Base: all buttons & link-buttons get ripple + hover lift */
+button,
+a[class*="rounded"] {
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+/* Hover: subtle lift + shadow */
+button:not(:disabled):not([class*="opacity-0"]):hover,
+a[class*="rounded"]:hover {
+  box-shadow:
+    0 2px 4px -1px rgba(0, 0, 0, 0.12),
+    0 4px 5px 0 rgba(0, 0, 0, 0.08),
+    0 1px 10px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* Active: flatten shadow */
+button:not(:disabled):active,
+a[class*="rounded"]:active {
+  box-shadow:
+    0 1px 2px 0 rgba(0, 0, 0, 0.1),
+    0 1px 3px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* Ripple element (injected via JS on click) */
+.ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  animation: ripple 1.5s ease-out forwards;
+  z-index: 1;
+}
+
+/* Dark ripple for light/white background buttons */
+button:not([class*="bg-["]):not([class*="bg-primary"]) > .ripple-effect,
+button[class*="bg-white"] > .ripple-effect,
+a[class*="bg-white"] > .ripple-effect,
+a[class*="bg-[#eff4ff]"] > .ripple-effect {
+  background: rgba(42, 20, 180, 0.15);
+}
+
+/* Opt-out: elements that should not get hover shadow */
+.no-ripple,
+.no-ripple:hover,
+.no-ripple:active {
+  box-shadow: none !important;
+  transform: none !important;
+  overflow: visible !important;
+}
+
+/* ── Custom Toast (Stacked 3D) ── */
+[data-sonner-toaster] {
+  --width: 380px;
+  font-family: var(--font-roboto), sans-serif !important;
+}
+
+[data-sonner-toaster][data-y-position="top"] {
+  top: 24px !important;
+}
+
+/* Individual toast styling */
+[data-sonner-toast] {
+  --normal-bg: #ffffff;
+  --normal-border: rgba(199, 196, 215, 0.2);
+  --normal-text: #121c2a;
+  background: var(--normal-bg) !important;
+  border: 1px solid var(--normal-border) !important;
+  border-radius: 16px !important;
+  box-shadow:
+    0 8px 32px rgba(18, 28, 42, 0.08),
+    0 2px 8px rgba(18, 28, 42, 0.04) !important;
+  padding: 16px 20px !important;
+  color: var(--normal-text) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  gap: 12px !important;
+}
+
+/* Success toast */
+[data-sonner-toast][data-type="success"] {
+  --normal-bg: #f0fdf4;
+  --normal-border: rgba(34, 197, 94, 0.2);
+  --normal-text: #15803d;
+}
+
+[data-sonner-toast][data-type="success"] [data-icon] svg {
+  color: #22c55e !important;
+}
+
+/* Error toast */
+[data-sonner-toast][data-type="error"] {
+  --normal-bg: #fef2f2;
+  --normal-border: rgba(239, 68, 68, 0.2);
+  --normal-text: #991b1b;
+}
+
+[data-sonner-toast][data-type="error"] [data-icon] svg {
+  color: #ef4444 !important;
+}
+
+/* Toast icon */
+[data-sonner-toast] [data-icon] {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* Close button */
+[data-sonner-toast] [data-close-button] {
+  border-radius: 50% !important;
+  width: 24px !important;
+  height: 24px !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: none !important;
+}
+
+[data-sonner-toast] [data-close-button]:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Stacked effect: push back with 3D transforms */
+[data-sonner-toast][data-front="false"] {
+  opacity: 0.8;
+}
+
+/* Date input segments */
+.date-input::-webkit-datetime-edit-day-field:focus,
+.date-input::-webkit-datetime-edit-month-field:focus,
+.date-input::-webkit-datetime-edit-year-field:focus {
+  background: #2a14b4;
+  color: #fff;
+  border-radius: 3px;
+  outline: none;
+  padding: 1px 2px;
 }

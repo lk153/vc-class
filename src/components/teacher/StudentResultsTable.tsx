@@ -92,36 +92,33 @@ export default function StudentResultsTable() {
             className="w-full pl-11 pr-4 py-2.5 bg-[#d9e3f6]/50 border-none rounded-full text-sm font-body focus:ring-2 focus:ring-[#2a14b4]/20 placeholder:text-[#464554]/50 outline-none"
           />
         </div>
-        <div className="flex items-center gap-0 bg-[#d9e3f6]/50 rounded-full overflow-hidden">
-          <span className="material-symbols-outlined text-[#777586]/60 text-[18px] pl-3.5 shrink-0">
-            calendar_today
-          </span>
-          <div className="flex items-center">
-            <label className="text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] pl-2 pr-1.5 shrink-0">From</label>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-white border border-[#c7c4d7]/40 rounded-lg px-3 py-1.5 focus-within:border-[#2a14b4] focus-within:ring-1 focus-within:ring-[#2a14b4]/20 transition-all">
+            <label className="text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] shrink-0">{t("dateFrom")}</label>
             <input
               type="date"
               value={dateFrom}
               onChange={(e) => setDateFrom(e.target.value)}
-              className="px-1.5 py-2 bg-transparent border-none text-sm font-body text-[#464554] outline-none focus:ring-0"
+              className="date-input bg-transparent border-none text-sm font-body text-[#121c2a] outline-none focus:ring-0 w-[130px]"
             />
           </div>
-          <div className="w-px h-5 bg-[#c7c4d7]/40 shrink-0" />
-          <div className="flex items-center">
-            <label className="text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] pl-2.5 pr-1.5 shrink-0">To</label>
+          <span className="text-[#c7c4d7] text-sm">—</span>
+          <div className="flex items-center gap-2 bg-white border border-[#c7c4d7]/40 rounded-lg px-3 py-1.5 focus-within:border-[#2a14b4] focus-within:ring-1 focus-within:ring-[#2a14b4]/20 transition-all">
+            <label className="text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] shrink-0">{t("dateTo")}</label>
             <input
               type="date"
               value={dateTo}
               onChange={(e) => setDateTo(e.target.value)}
-              className="px-1.5 py-2 bg-transparent border-none text-sm font-body text-[#464554] outline-none focus:ring-0"
+              className="date-input bg-transparent border-none text-sm font-body text-[#121c2a] outline-none focus:ring-0 w-[130px]"
             />
           </div>
           {(dateFrom || dateTo) && (
             <button
               onClick={() => { setDateFrom(""); setDateTo(""); }}
-              className="pr-3 pl-1 text-[#777586] hover:text-[#7b0020] transition-colors shrink-0"
-              title="Clear dates"
+              className="w-7 h-7 rounded-full bg-[#f0eef6] flex items-center justify-center text-[#777586] hover:bg-[#ffdada]/60 hover:text-[#7b0020] transition-all"
+              title={t("clearDates")}
             >
-              <span className="material-symbols-outlined text-[16px]">close</span>
+              <span className="material-symbols-outlined text-[14px]">close</span>
             </button>
           )}
         </div>
@@ -166,7 +163,7 @@ export default function StudentResultsTable() {
                     <p className="text-xs text-[#464554] font-body truncate">{r.testName}</p>
                   </div>
                   <span
-                    className={`font-headline text-xl font-bold shrink-0 ${
+                    className={`font-body font-bold text-xl shrink-0 ${
                       r.score >= 80
                         ? "text-[#1b6b51]"
                         : r.score >= 50
@@ -184,10 +181,7 @@ export default function StudentResultsTable() {
                   </span>
                   <span className="text-[#777586] font-body">{r.correctCount}/{r.totalQuestions}</span>
                   <span className="ml-auto text-[#777586] font-body">
-                    {new Date(r.completedAt).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    })}
+                    {(() => { const d = new Date(r.completedAt); return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`; })()}
                   </span>
                 </div>
               </button>
@@ -231,9 +225,33 @@ export default function StudentResultsTable() {
               <th className="px-6 py-4">{t("testNameCol")}</th>
               <th className="px-6 py-4">{t("topicCol")}</th>
               <th className="px-6 py-4">{t("languageCol")}</th>
-              <th className="px-6 py-4 text-right">{t("scoreCol")}</th>
-              <th className="px-6 py-4 text-right">{t("correctCol")}</th>
-              <th className="px-6 py-4 text-right">{t("submittedDate")}</th>
+              <th className="px-6 py-4 text-right">
+                <span className="inline-flex items-center gap-1 group/score relative">
+                  {t("scoreCol")}
+                  <span className="material-symbols-outlined text-[14px] text-[#777586] cursor-help">info</span>
+                  <span className="pointer-events-none absolute top-full right-0 mt-2 opacity-0 group-hover/score:opacity-100 transition-opacity whitespace-nowrap bg-[#121c2a] text-white text-xs font-body font-medium px-3 py-1.5 rounded normal-case tracking-normal before:content-[''] before:absolute before:bottom-full before:right-3 before:border-[5px] before:border-transparent before:border-b-[#121c2a]">
+                    {t("scoreHint")}
+                  </span>
+                </span>
+              </th>
+              <th className="px-6 py-4 text-right">
+                <span className="inline-flex items-center gap-1 group/correct relative">
+                  {t("correctCol")}
+                  <span className="material-symbols-outlined text-[14px] text-[#777586] cursor-help">info</span>
+                  <span className="pointer-events-none absolute top-full right-0 mt-2 opacity-0 group-hover/correct:opacity-100 transition-opacity whitespace-nowrap bg-[#121c2a] text-white text-xs font-body font-medium px-3 py-1.5 rounded normal-case tracking-normal before:content-[''] before:absolute before:bottom-full before:right-3 before:border-[5px] before:border-transparent before:border-b-[#121c2a]">
+                    {t("correctHint")}
+                  </span>
+                </span>
+              </th>
+              <th className="px-6 py-4 text-right">
+                <span className="inline-flex items-center gap-1 group/tip relative">
+                  {t("submittedDate")}
+                  <span className="material-symbols-outlined text-[14px] text-[#777586] cursor-help">info</span>
+                  <span className="pointer-events-none absolute top-full right-0 mt-2 opacity-0 group-hover/tip:opacity-100 transition-opacity whitespace-nowrap bg-[#121c2a] text-white text-xs font-body font-medium px-3 py-1.5 rounded normal-case tracking-normal before:content-[''] before:absolute before:bottom-full before:right-3 before:border-[5px] before:border-transparent before:border-b-[#121c2a]">
+                    {t("dateFormatHint")}
+                  </span>
+                </span>
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#c7c4d7]/10">
@@ -261,7 +279,7 @@ export default function StudentResultsTable() {
                 <tr
                   key={r.id}
                   onClick={() => setSelectedResultId(r.id)}
-                  className="hover:bg-[#e3dfff]/50 hover:shadow-[0px_4px_16px_rgba(18,28,42,0.08)] hover:-translate-y-[1px] transition-all duration-200 cursor-pointer"
+                  className="hover:bg-[#e3dfff]/50 transition-colors duration-200 cursor-pointer"
                 >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
@@ -291,7 +309,7 @@ export default function StudentResultsTable() {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <span
-                      className={`font-headline text-lg font-bold ${
+                      className={`font-body font-bold text-lg ${
                         r.score >= 80
                           ? "text-[#1b6b51]"
                           : r.score >= 50
@@ -306,11 +324,7 @@ export default function StudentResultsTable() {
                     {r.correctCount}/{r.totalQuestions}
                   </td>
                   <td className="px-6 py-4 text-right text-sm font-body text-[#464554]">
-                    {new Date(r.completedAt).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
+                    {(() => { const d = new Date(r.completedAt); return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`; })()}
                   </td>
                 </tr>
               ))
@@ -322,7 +336,7 @@ export default function StudentResultsTable() {
         {total > 0 && (
           <div className="px-6 py-4 bg-[#dee9fc]/30 flex items-center justify-end gap-4">
             <p className="text-xs font-body text-[#464554]/60">
-              Showing {startItem}-{endItem} of {total} results
+              {t("showingResults", { start: startItem, end: endItem, total })}
             </p>
             <div className="flex gap-2">
               <button

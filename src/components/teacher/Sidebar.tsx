@@ -42,11 +42,11 @@ export default function TeacherSidebar({ open, onClose }: Props) {
         {/* Brand */}
         <div className="px-6 pt-8 pb-6 flex items-start justify-between">
           <div>
-            <Link href="/teacher" className="text-2xl font-headline italic text-[#4338ca]">
+            <Link href="/teacher" className="text-2xl font-body text-[#4338ca]">
               {t("common.appName")}
             </Link>
             <p className="text-[10px] font-body uppercase tracking-[0.2em] text-[#464554] opacity-60 mt-1">
-              Teacher Portal
+              {t("teacher.teacherPortal")}
             </p>
           </div>
           <button
@@ -62,10 +62,10 @@ export default function TeacherSidebar({ open, onClose }: Props) {
           <Link
             href="/teacher/topics"
             onClick={onClose}
-            className="w-full py-3 bg-[#2a14b4] text-white rounded-full font-body font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#2a14b4]/20 hover:scale-[1.02] active:scale-95 transition-all"
+            className="w-full py-3 bg-[#2a14b4] text-white rounded-full font-body font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#2a14b4]/20 transition-all"
           >
             <span className="material-symbols-outlined text-[18px]">add</span>
-            Create New Topic
+            {t("teacher.createNewTopic")}
           </Link>
         </div>
 
