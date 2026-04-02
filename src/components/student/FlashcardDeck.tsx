@@ -18,6 +18,22 @@ type Props = {
   vocabulary: Vocab[];
 };
 
+// Dual-tone color palettes: [topColor, bottomColor, textColor]
+const cardColors: [string, string, string][] = [
+  ["#F59E0B", "#EA580C", "#ffffff"], // Yellow → Orange
+  ["#22C55E", "#15803D", "#ffffff"], // Green → Dark Green
+  ["#3B82F6", "#1D4ED8", "#ffffff"], // Blue → Dark Blue
+  ["#EF4444", "#B91C1C", "#ffffff"], // Red → Dark Red
+  ["#A855F7", "#7C3AED", "#ffffff"], // Purple → Dark Purple
+  ["#EC4899", "#BE185D", "#ffffff"], // Pink → Dark Pink
+  ["#14B8A6", "#0F766E", "#ffffff"], // Teal → Dark Teal
+  ["#F97316", "#C2410C", "#ffffff"], // Orange → Burnt Orange
+  ["#6366F1", "#4338CA", "#ffffff"], // Indigo → Dark Indigo
+  ["#84CC16", "#4D7C0F", "#ffffff"], // Lime → Dark Lime
+  ["#06B6D4", "#0E7490", "#ffffff"], // Cyan → Dark Cyan
+  ["#E11D48", "#9F1239", "#ffffff"], // Rose → Dark Rose
+];
+
 export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props) {
   const t = useTranslations("student");
   const [cards, setCards] = useState(vocabulary);
@@ -36,6 +52,8 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
   const currentCard = cards[currentIndex];
   const allDone = currentIndex >= totalCount;
   const progressPercent = ((currentIndex) / totalCount) * 100;
+  const [topColor, bottomColor, textColor] = cardColors[currentIndex % cardColors.length];
+  const cardNumber = String(currentIndex + 1).padStart(2, "0");
 
   const markCard = useCallback(
     async (learned: boolean) => {
@@ -189,77 +207,131 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
             >
               {/* Front Face (Word) */}
               <div
-                className="glass-card absolute inset-0 rounded-[2rem] border border-white/40 ambient-shadow flex flex-col items-center justify-between p-10 overflow-hidden"
+                className="absolute inset-0 rounded-[2rem] flex flex-col overflow-hidden border-[10px] border-white shadow-[0_20px_60px_rgba(0,0,0,0.25),0_8px_20px_rgba(0,0,0,0.15)]"
                 style={{
                   backfaceVisibility: "hidden",
-                  backgroundColor: swipeColor === "green" ? "rgba(166, 242, 209, 0.35)" : swipeColor === "red" ? "rgba(255, 218, 218, 0.45)" : dragX > 50 ? "rgba(166, 242, 209, 0.2)" : dragX < -50 ? "rgba(255, 218, 218, 0.3)" : undefined,
+                  background: swipeColor === "green"
+                    ? "linear-gradient(180deg, rgba(166,242,209,0.6) 0%, rgba(27,107,81,0.4) 100%)"
+                    : swipeColor === "red"
+                    ? "linear-gradient(180deg, rgba(255,218,218,0.7) 0%, rgba(123,0,32,0.3) 100%)"
+                    : dragX > 50
+                    ? `linear-gradient(180deg, ${topColor}cc 0%, rgba(166,242,209,0.4) 100%)`
+                    : dragX < -50
+                    ? `linear-gradient(180deg, ${topColor}cc 0%, rgba(255,218,218,0.5) 100%)`
+                    : topColor,
                 }}
               >
-                <div className="flex-1 flex flex-col items-center justify-center text-center w-full">
-                  <h1 className="font-body text-6xl md:text-7xl text-[#121c2a] tracking-tight mb-3">
-                    {currentCard.word}
-                  </h1>
+                {/* Top section */}
+                <div className="flex-[2] flex flex-col p-10 pb-0">
+                  <div className="w-full flex justify-start">
+                    <span className="font-body font-bold text-5xl leading-none" style={{ color: `${textColor}30` }}>
+                      {cardNumber}
+                    </span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center justify-center text-center">
+                    <h1 className="font-body text-5xl md:text-6xl tracking-tight font-bold" style={{ color: textColor }}>
+                      {currentCard.word}
+                    </h1>
+                  </div>
                 </div>
 
-                {/* Swipe indicator */}
-                <div className="h-16 flex items-center justify-center">
-                  {dragX > 50 ? (
-                    <div className="w-14 h-14 rounded-full bg-[#a6f2d1] flex items-center justify-center shadow-lg">
-                      <span className="material-symbols-outlined text-[#1b6b51] text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
-                    </div>
-                  ) : dragX < -50 ? (
-                    <div className="w-14 h-14 rounded-full bg-[#ffdada] flex items-center justify-center shadow-lg">
-                      <span className="material-symbols-outlined text-[#7b0020] text-3xl">close</span>
-                    </div>
-                  ) : null}
-                </div>
+                {/* Wave divider */}
+                <svg viewBox="0 0 400 80" preserveAspectRatio="none" className="w-full h-14 block" style={{ marginTop: "-1px" }}>
+                  {/* Thin accent swoosh */}
+                  <path d="M0,58 C60,35 120,50 180,30 C240,10 300,45 360,25 Q380,18 400,22" fill="none" stroke={`${textColor}20`} strokeWidth="2" />
+                  {/* Secondary wave */}
+                  <path d="M0,52 C70,28 140,55 210,32 C280,9 340,48 400,28 L400,80 L0,80 Z" fill={bottomColor} opacity="0.5" />
+                  {/* Main wave */}
+                  <path d="M0,60 C80,30 160,65 240,35 C300,15 350,50 400,32 L400,80 L0,80 Z" fill={bottomColor} />
+                </svg>
 
-                <div className="flex items-center gap-3 text-[#777586]/60">
-                  <span className="material-symbols-outlined text-sm">sync</span>
-                  <span className="text-[10px] uppercase font-body tracking-[0.2em] font-bold">
-                    {t("tapToFlip")}
-                  </span>
+                {/* Bottom section */}
+                <div className="flex-[1] flex flex-col items-center justify-between px-10 pb-8 pt-2" style={{ backgroundColor: bottomColor }}>
+                  {/* Swipe indicator */}
+                  <div className="h-14 flex items-center justify-center">
+                    {dragX > 50 || swipeColor === "green" ? (
+                      <div className="w-12 h-12 rounded-full bg-[#a6f2d1] flex items-center justify-center shadow-lg">
+                        <span className="material-symbols-outlined text-[#1b6b51] text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
+                      </div>
+                    ) : dragX < -50 || swipeColor === "red" ? (
+                      <div className="w-12 h-12 rounded-full bg-[#ffdada] flex items-center justify-center shadow-lg">
+                        <span className="material-symbols-outlined text-[#7b0020] text-2xl">close</span>
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <div className="flex items-center gap-3" style={{ color: `${textColor}80` }}>
+                    <span className="material-symbols-outlined text-sm">sync</span>
+                    <span className="text-[10px] uppercase font-body tracking-[0.2em] font-bold">
+                      {t("tapToFlip")}
+                    </span>
+                  </div>
                 </div>
               </div>
 
               {/* Back Face (Meaning) */}
               <div
-                className="glass-card absolute inset-0 rounded-[2rem] border border-white/40 ambient-shadow flex flex-col items-center justify-between p-10 overflow-hidden"
+                className="absolute inset-0 rounded-[2rem] flex flex-col overflow-hidden border-[10px] border-white shadow-[0_20px_60px_rgba(0,0,0,0.25),0_8px_20px_rgba(0,0,0,0.15)]"
                 style={{
                   backfaceVisibility: "hidden",
                   transform: "rotateY(180deg)",
-                  backgroundColor: swipeColor === "green" ? "rgba(166, 242, 209, 0.35)" : swipeColor === "red" ? "rgba(255, 218, 218, 0.45)" : dragX > 50 ? "rgba(166, 242, 209, 0.2)" : dragX < -50 ? "rgba(255, 218, 218, 0.3)" : undefined,
+                  background: swipeColor === "green"
+                    ? "linear-gradient(180deg, rgba(166,242,209,0.6) 0%, rgba(27,107,81,0.4) 100%)"
+                    : swipeColor === "red"
+                    ? "linear-gradient(180deg, rgba(255,218,218,0.7) 0%, rgba(123,0,32,0.3) 100%)"
+                    : bottomColor,
                 }}
               >
-                <div className="flex-1 flex flex-col items-center justify-center text-center w-full">
-                  <p className="font-body text-xl md:text-2xl text-[#121c2a] leading-relaxed mb-4 font-medium">
-                    {currentCard.meaning}
-                  </p>
-                  {currentCard.example && (
-                    <p className="font-body text-base text-[#777586] leading-relaxed">
-                      &ldquo;{currentCard.example}&rdquo;
+                {/* Top section */}
+                <div className="flex-[2] flex flex-col p-10 pb-0">
+                  <div className="w-full flex justify-start">
+                    <span className="font-body font-bold text-5xl leading-none" style={{ color: `${textColor}30` }}>
+                      {cardNumber}
+                    </span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center justify-center text-center">
+                    <p className="font-body text-xl md:text-2xl leading-relaxed mb-4 font-medium" style={{ color: textColor }}>
+                      {currentCard.meaning}
                     </p>
-                  )}
+                    {currentCard.example && (
+                      <p className="font-body text-base leading-relaxed" style={{ color: `${textColor}cc` }}>
+                        &ldquo;{currentCard.example}&rdquo;
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                {/* Swipe indicator */}
-                <div className="h-16 flex items-center justify-center">
-                  {dragX > 50 ? (
-                    <div className="w-14 h-14 rounded-full bg-[#a6f2d1] flex items-center justify-center shadow-lg">
-                      <span className="material-symbols-outlined text-[#1b6b51] text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
-                    </div>
-                  ) : dragX < -50 ? (
-                    <div className="w-14 h-14 rounded-full bg-[#ffdada] flex items-center justify-center shadow-lg">
-                      <span className="material-symbols-outlined text-[#7b0020] text-3xl">close</span>
-                    </div>
-                  ) : null}
-                </div>
+                {/* Wave divider */}
+                <svg viewBox="0 0 400 80" preserveAspectRatio="none" className="w-full h-14 block" style={{ marginTop: "-1px" }}>
+                  {/* Thin accent swoosh */}
+                  <path d="M0,58 C60,35 120,50 180,30 C240,10 300,45 360,25 Q380,18 400,22" fill="none" stroke={`${textColor}20`} strokeWidth="2" />
+                  {/* Secondary wave */}
+                  <path d="M0,52 C70,28 140,55 210,32 C280,9 340,48 400,28 L400,80 L0,80 Z" fill={topColor} opacity="0.5" />
+                  {/* Main wave */}
+                  <path d="M0,60 C80,30 160,65 240,35 C300,15 350,50 400,32 L400,80 L0,80 Z" fill={topColor} />
+                </svg>
 
-                <div className="flex items-center gap-3 text-[#777586]/60">
-                  <span className="material-symbols-outlined text-sm">sync</span>
-                  <span className="text-[10px] uppercase font-body tracking-[0.2em] font-bold">
-                    {t("tapToFlip")}
-                  </span>
+                {/* Bottom section */}
+                <div className="flex-[1] flex flex-col items-center justify-between px-10 pb-8 pt-2" style={{ backgroundColor: topColor }}>
+                  {/* Swipe indicator */}
+                  <div className="h-14 flex items-center justify-center">
+                    {dragX > 50 || swipeColor === "green" ? (
+                      <div className="w-12 h-12 rounded-full bg-[#a6f2d1] flex items-center justify-center shadow-lg">
+                        <span className="material-symbols-outlined text-[#1b6b51] text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
+                      </div>
+                    ) : dragX < -50 || swipeColor === "red" ? (
+                      <div className="w-12 h-12 rounded-full bg-[#ffdada] flex items-center justify-center shadow-lg">
+                        <span className="material-symbols-outlined text-[#7b0020] text-2xl">close</span>
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <div className="flex items-center gap-3" style={{ color: `${textColor}80` }}>
+                    <span className="material-symbols-outlined text-sm">sync</span>
+                    <span className="text-[10px] uppercase font-body tracking-[0.2em] font-bold">
+                      {t("tapToFlip")}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
