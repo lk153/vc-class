@@ -182,7 +182,7 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
 
             {/* The Card (3D flip container) */}
             <div
-              className="w-full h-full cursor-pointer select-none"
+              className="w-full h-full cursor-pointer select-none touch-none"
               style={{
                 transformStyle: "preserve-3d",
                 transform: swipeOut
