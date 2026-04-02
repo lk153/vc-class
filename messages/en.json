@@ -90,7 +90,8 @@
     "bestAttempt": "Best Attempt",
     "cardProgress": "{current} of {total} cards",
     "tapToFlip": "Tap to flip for definition",
-    "allCardsReviewed": "All cards reviewed!"
+    "allCardsReviewed": "All cards reviewed!",
+    "previousCard": "Back"
   },
   "teacher": {
     "dashboard": "Dashboard",

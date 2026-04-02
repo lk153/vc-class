@@ -22,17 +22,18 @@ export default function StudentNavbar({ user }: Props) {
           {t("common.appName")}
         </Link>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <LocaleSwitcher />
-          <div className="h-5 w-px bg-[#c7c4d7]/30" />
-          <span className="text-[#27313f] font-body text-sm hidden sm:block">
+          <div className="h-6 w-px bg-[#c7c4d7]/30 hidden sm:block" />
+          <span className="text-[#121c2a] font-body text-sm font-medium hidden sm:block">
             {user.name}
           </span>
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="text-[#777586] font-body text-xs uppercase tracking-wider hover:text-[#2a14b4] transition-colors duration-300"
+            className="no-ripple ml-1 text-[#777586] hover:text-[#7b0020] transition-colors"
+            title={t("auth.logout")}
           >
-            {t("auth.logout")}
+            <span className="material-symbols-outlined text-[20px]">logout</span>
           </button>
         </div>
       </div>

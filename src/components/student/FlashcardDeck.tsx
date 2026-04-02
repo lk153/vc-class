@@ -25,7 +25,11 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
   const [flipped, setFlipped] = useState(false);
   const [dragX, setDragX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [swipeOut, setSwipeOut] = useState<"left" | "right" | null>(null);
+  const [swipeColor, setSwipeColor] = useState<"green" | "red" | null>(null);
+  const [swipeIn, setSwipeIn] = useState(false);
   const startX = useRef(0);
+  const didDrag = useRef(false);
 
   const learnedCount = cards.filter((c) => c.learned).length;
   const totalCount = cards.length;
@@ -35,15 +39,29 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
 
   const markCard = useCallback(
     async (learned: boolean) => {
-      if (!currentCard) return;
-      setCards((prev) =>
-        prev.map((c) =>
-          c.id === currentCard.id ? { ...c, learned } : c
-        )
-      );
-      setFlipped(false);
-      setDragX(0);
-      setCurrentIndex((i) => i + 1);
+      if (!currentCard || swipeOut) return;
+
+      // Swipe out to left with color tint
+      setSwipeColor(learned ? "green" : "red");
+      setSwipeOut("left");
+
+      // After swipe-out, advance card and swipe-in from right
+      setTimeout(() => {
+        setCards((prev) =>
+          prev.map((c) =>
+            c.id === currentCard.id ? { ...c, learned } : c
+          )
+        );
+        setFlipped(false);
+        setDragX(0);
+        setSwipeOut(null);
+        setSwipeColor(null);
+        setSwipeIn(true);
+        setCurrentIndex((i) => i + 1);
+
+        // Remove swipe-in after animation
+        setTimeout(() => setSwipeIn(false), 350);
+      }, 350);
 
       await fetch("/api/flashcards", {
         method: "POST",
@@ -51,18 +69,30 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
         body: JSON.stringify({ vocabularyId: currentCard.id, learned }),
       });
     },
-    [currentCard]
+    [currentCard, swipeOut]
   );
+
+  function goBack() {
+    if (currentIndex <= 0 || swipeOut) return;
+    setFlipped(false);
+    setDragX(0);
+    setSwipeIn(true);
+    setCurrentIndex((i) => i - 1);
+    setTimeout(() => setSwipeIn(false), 350);
+  }
 
   const handlePointerDown = (e: React.PointerEvent) => {
     startX.current = e.clientX;
+    didDrag.current = false;
     setIsDragging(true);
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!isDragging) return;
-    setDragX(e.clientX - startX.current);
+    const dx = e.clientX - startX.current;
+    if (Math.abs(dx) > 5) didDrag.current = true;
+    setDragX(dx);
   };
 
   const handlePointerUp = () => {
@@ -127,99 +157,159 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
       ) : currentCard ? (
         <>
           {/* Flashcard Hero Section */}
-          <section className="relative w-full max-w-md aspect-[3/4]">
+          <section className="relative w-full max-w-md aspect-[3/4]" style={{ perspective: "1200px" }}>
             {/* Asymmetric accent blurs */}
             <div className="absolute -top-12 -left-12 w-48 h-48 bg-[#a6f2d1]/20 rounded-full blur-3xl -z-10" />
             <div className="absolute -bottom-12 -right-12 w-64 h-64 bg-[#4338ca]/10 rounded-full blur-3xl -z-10" />
 
-            {/* The Card */}
+            {/* The Card (3D flip container) */}
             <div
-              className="glass-card w-full h-full rounded-[2rem] border border-white/40 ambient-shadow flex flex-col items-center justify-between p-10 overflow-hidden cursor-pointer select-none transition-all duration-300"
+              className="w-full h-full cursor-pointer select-none"
               style={{
-                transform: `translateX(${dragX}px) rotate(${dragX * 0.05}deg)`,
-                transition: isDragging ? "none" : "transform 0.3s ease, scale 0.3s ease",
+                transformStyle: "preserve-3d",
+                transform: swipeOut
+                  ? `translateX(-120%) rotate(-15deg) rotateY(${flipped ? 180 : 0}deg)`
+                  : swipeIn
+                  ? `translateX(0) rotate(0deg) rotateY(${flipped ? 180 : 0}deg)`
+                  : `translateX(${dragX}px) rotate(${dragX * 0.05}deg) rotateY(${flipped ? 180 : 0}deg)`,
+                transition: isDragging
+                  ? "none"
+                  : swipeOut
+                  ? "transform 0.35s ease-in, opacity 0.35s ease-in"
+                  : swipeIn
+                  ? "transform 0.35s ease-out, opacity 0.35s ease-out"
+                  : "transform 0.5s ease",
+                opacity: swipeOut ? 0 : 1,
+                ...(swipeIn && !swipeOut ? { animation: "slideInRight 0.35s ease-out" } : {}),
               }}
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
-              onClick={() => !isDragging && setFlipped((f) => !f)}
+              onClick={() => { if (!didDrag.current && !swipeOut) setFlipped((f) => !f); }}
             >
-              {/* Swipe indicator overlays */}
-              {dragX > 50 && (
-                <div className="absolute inset-0 rounded-[2rem] bg-[#a6f2d1]/20 flex items-center justify-center z-10">
-                  <span className="material-symbols-outlined text-[#1b6b51] text-7xl">check</span>
+              {/* Front Face (Word) */}
+              <div
+                className="glass-card absolute inset-0 rounded-[2rem] border border-white/40 ambient-shadow flex flex-col items-center justify-between p-10 overflow-hidden"
+                style={{
+                  backfaceVisibility: "hidden",
+                  backgroundColor: swipeColor === "green" ? "rgba(166, 242, 209, 0.35)" : swipeColor === "red" ? "rgba(255, 218, 218, 0.45)" : dragX > 50 ? "rgba(166, 242, 209, 0.2)" : dragX < -50 ? "rgba(255, 218, 218, 0.3)" : undefined,
+                }}
+              >
+                <div className="flex-1 flex flex-col items-center justify-center text-center w-full">
+                  <h1 className="font-body text-6xl md:text-7xl text-[#121c2a] tracking-tight mb-3">
+                    {currentCard.word}
+                  </h1>
                 </div>
-              )}
-              {dragX < -50 && (
-                <div className="absolute inset-0 rounded-[2rem] bg-[#ffdada]/30 flex items-center justify-center z-10">
-                  <span className="material-symbols-outlined text-[#7b0020] text-7xl">close</span>
-                </div>
-              )}
 
-              {/* Card Content */}
-              <div className="flex-1 flex flex-col items-center justify-center text-center w-full">
-                {!flipped ? (
-                  <>
-                    <h1 className="font-body text-6xl md:text-7xl text-[#121c2a] tracking-tight mb-3">
-                      {currentCard.word}
-                    </h1>
-                  </>
-                ) : (
-                  <>
-                    <p className="font-body text-xl md:text-2xl text-[#121c2a] leading-relaxed mb-4 font-medium">
-                      {currentCard.meaning}
-                    </p>
-                    {currentCard.example && (
-                      <p className="font-body text-base text-[#777586] leading-relaxed">
-                        &ldquo;{currentCard.example}&rdquo;
-                      </p>
-                    )}
-                  </>
-                )}
+                {/* Swipe indicator */}
+                <div className="h-16 flex items-center justify-center">
+                  {dragX > 50 ? (
+                    <div className="w-14 h-14 rounded-full bg-[#a6f2d1] flex items-center justify-center shadow-lg">
+                      <span className="material-symbols-outlined text-[#1b6b51] text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
+                    </div>
+                  ) : dragX < -50 ? (
+                    <div className="w-14 h-14 rounded-full bg-[#ffdada] flex items-center justify-center shadow-lg">
+                      <span className="material-symbols-outlined text-[#7b0020] text-3xl">close</span>
+                    </div>
+                  ) : null}
+                </div>
+
+                <div className="flex items-center gap-3 text-[#777586]/60">
+                  <span className="material-symbols-outlined text-sm">sync</span>
+                  <span className="text-[10px] uppercase font-body tracking-[0.2em] font-bold">
+                    {t("tapToFlip")}
+                  </span>
+                </div>
               </div>
 
-              {/* Footer Hint */}
-              <div className="mt-6 flex items-center gap-3 text-[#777586]/60">
-                <span className="material-symbols-outlined text-sm">sync</span>
-                <span className="text-[10px] uppercase font-body tracking-[0.2em] font-bold">
-                  {t("tapToFlip")}
-                </span>
+              {/* Back Face (Meaning) */}
+              <div
+                className="glass-card absolute inset-0 rounded-[2rem] border border-white/40 ambient-shadow flex flex-col items-center justify-between p-10 overflow-hidden"
+                style={{
+                  backfaceVisibility: "hidden",
+                  transform: "rotateY(180deg)",
+                  backgroundColor: swipeColor === "green" ? "rgba(166, 242, 209, 0.35)" : swipeColor === "red" ? "rgba(255, 218, 218, 0.45)" : dragX > 50 ? "rgba(166, 242, 209, 0.2)" : dragX < -50 ? "rgba(255, 218, 218, 0.3)" : undefined,
+                }}
+              >
+                <div className="flex-1 flex flex-col items-center justify-center text-center w-full">
+                  <p className="font-body text-xl md:text-2xl text-[#121c2a] leading-relaxed mb-4 font-medium">
+                    {currentCard.meaning}
+                  </p>
+                  {currentCard.example && (
+                    <p className="font-body text-base text-[#777586] leading-relaxed">
+                      &ldquo;{currentCard.example}&rdquo;
+                    </p>
+                  )}
+                </div>
+
+                {/* Swipe indicator */}
+                <div className="h-16 flex items-center justify-center">
+                  {dragX > 50 ? (
+                    <div className="w-14 h-14 rounded-full bg-[#a6f2d1] flex items-center justify-center shadow-lg">
+                      <span className="material-symbols-outlined text-[#1b6b51] text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
+                    </div>
+                  ) : dragX < -50 ? (
+                    <div className="w-14 h-14 rounded-full bg-[#ffdada] flex items-center justify-center shadow-lg">
+                      <span className="material-symbols-outlined text-[#7b0020] text-3xl">close</span>
+                    </div>
+                  ) : null}
+                </div>
+
+                <div className="flex items-center gap-3 text-[#777586]/60">
+                  <span className="material-symbols-outlined text-sm">sync</span>
+                  <span className="text-[10px] uppercase font-body tracking-[0.2em] font-bold">
+                    {t("tapToFlip")}
+                  </span>
+                </div>
               </div>
             </div>
           </section>
 
           {/* Control Actions */}
-          <section className="mt-14 w-full max-w-md flex justify-center items-center gap-16">
+          <section className="mt-14 w-full max-w-md flex justify-center items-center gap-10">
             {/* Still Learning */}
-            <button
+            <div
               onClick={() => markCard(false)}
-              className="flex flex-col items-center gap-4 group"
+              className="flex flex-col items-center gap-4 group cursor-pointer no-ripple"
             >
-              <div className="w-16 h-16 rounded-full bg-[#dee9fc] flex items-center justify-center group-hover:bg-[#ffdada] transition-all duration-300 shadow-sm">
-                <span className="material-symbols-outlined text-[#7b0020] text-2xl">close</span>
-              </div>
+              <button className="w-16 h-16 rounded-full bg-[#ffdada] flex items-center justify-center group-hover:bg-[#f5a3a3] transition-colors duration-300 shadow-sm">
+                <span className="material-symbols-outlined text-[#7b0020] group-hover:text-[#5c0017] text-2xl transition-colors">close</span>
+              </button>
               <span className="text-[10px] font-body uppercase tracking-widest text-[#777586] group-hover:text-[#7b0020] font-bold transition-colors">
                 {t("notLearned")}
               </span>
-            </button>
+            </div>
+
+            {/* Back */}
+            <div
+              onClick={goBack}
+              className={`flex flex-col items-center gap-4 group no-ripple ${currentIndex > 0 ? "cursor-pointer" : "opacity-30 pointer-events-none"}`}
+            >
+              <button className="w-12 h-12 rounded-full bg-[#f0eef6] flex items-center justify-center group-hover:bg-[#e3dfff] transition-colors duration-300 shadow-sm">
+                <span className="material-symbols-outlined text-[#777586] group-hover:text-[#2a14b4] text-xl transition-colors">undo</span>
+              </button>
+              <span className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold transition-colors">
+                {t("previousCard")}
+              </span>
+            </div>
 
             {/* Mastered */}
-            <button
+            <div
               onClick={() => markCard(true)}
-              className="flex flex-col items-center gap-4 group"
+              className="flex flex-col items-center gap-4 group cursor-pointer no-ripple"
             >
-              <div className="w-16 h-16 rounded-full bg-[#a6f2d1] flex items-center justify-center group-hover:bg-[#8bd6b6] transition-all duration-300 shadow-sm">
+              <button className="w-16 h-16 rounded-full bg-[#a6f2d1] flex items-center justify-center group-hover:bg-[#8bd6b6] transition-colors duration-300 shadow-sm">
                 <span
                   className="material-symbols-outlined text-[#1b6b51] text-2xl"
                   style={{ fontVariationSettings: "'FILL' 1" }}
                 >
                   check
                 </span>
-              </div>
+              </button>
               <span className="text-[10px] font-body uppercase tracking-widest text-[#777586] group-hover:text-[#1b6b51] font-bold transition-colors">
                 {t("learned")}
               </span>
-            </button>
+            </div>
           </section>
         </>
       ) : null}

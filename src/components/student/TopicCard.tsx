@@ -17,7 +17,7 @@ export default function TopicCard({ topic, languageName, totalWords, learnedWord
   return (
     <Link
       href={`/topics/${topic.id}`}
-      className="group flex flex-col bg-white rounded-xl ambient-shadow overflow-hidden transition-all duration-300 hover:-translate-y-2 h-full"
+      className="group flex flex-col bg-white rounded-xl ambient-shadow border border-transparent hover:border-[#2a14b4]/10 hover:bg-[#f5f3ff] transition-colors duration-200 h-full"
     >
       <div className="p-8 flex flex-col flex-grow">
         <h3 className="font-body font-bold text-2xl text-[#121c2a] mb-2">{topic.title}</h3>

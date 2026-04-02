@@ -90,7 +90,8 @@
     "bestAttempt": "Kết quả tốt nhất",
     "cardProgress": "{current} / {total} thẻ",
     "tapToFlip": "Nhấn để xem nghĩa",
-    "allCardsReviewed": "Đã xem hết tất cả thẻ!"
+    "allCardsReviewed": "Đã xem hết tất cả thẻ!",
+    "previousCard": "Quay Lại"
   },
   "teacher": {
     "dashboard": "Tổng Quan",

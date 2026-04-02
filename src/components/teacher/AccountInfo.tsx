@@ -45,7 +45,7 @@ export default function AccountInfo({ user, onMenuToggle }: Props) {
         </div>
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
-          className="ml-1 text-[#777586] hover:text-[#7b0020] transition-colors"
+          className="no-ripple ml-1 text-[#777586] hover:text-[#7b0020] transition-colors"
           title={t("logout")}
         >
           <span className="material-symbols-outlined text-[20px]">logout</span>

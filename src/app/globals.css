@@ -218,6 +218,18 @@ a[class*="bg-[#eff4ff]"] > .ripple-effect {
   opacity: 0.8;
 }
 
+/* Flashcard slide-in from right */
+@keyframes slideInRight {
+  0% {
+    transform: translateX(120%) rotate(10deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+}
+
 /* Date input segments */
 .date-input::-webkit-datetime-edit-day-field:focus,
 .date-input::-webkit-datetime-edit-month-field:focus,
