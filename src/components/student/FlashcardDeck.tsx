@@ -59,6 +59,9 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
     async (learned: boolean) => {
       if (!currentCard || swipeOut) return;
 
+      const scrollY = window.scrollY;
+      const restore = () => window.scrollTo({ top: scrollY, behavior: "instant" as ScrollBehavior });
+
       // Swipe out to left with color tint
       setSwipeColor(learned ? "green" : "red");
       setSwipeOut("left");
@@ -76,6 +79,8 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
         setSwipeColor(null);
         setSwipeIn(true);
         setCurrentIndex((i) => i + 1);
+        restore();
+        requestAnimationFrame(restore);
 
         // Remove swipe-in after animation
         setTimeout(() => setSwipeIn(false), 350);
@@ -92,15 +97,19 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
 
   function goBack() {
     if (currentIndex <= 0 || swipeOut) return;
+    const scrollY = window.scrollY;
+    const restore = () => window.scrollTo({ top: scrollY, behavior: "instant" as ScrollBehavior });
     setFlipped(false);
     setDragX(0);
     setSwipeIn(true);
     setCurrentIndex((i) => i - 1);
+    restore();
+    requestAnimationFrame(restore);
     setTimeout(() => setSwipeIn(false), 350);
   }
 
   const waveDivider = (fillColor: string) => (
-    <svg viewBox="0 0 400 80" preserveAspectRatio="none" className="w-full h-14 block" style={{ marginTop: "-1px" }}>
+    <svg viewBox="0 0 400 80" preserveAspectRatio="none" className="w-full h-14 block shrink-0" style={{ marginTop: "-1px" }}>
       <path d="M0,58 C60,35 120,50 180,30 C240,10 300,45 360,25 Q380,18 400,22" fill="none" stroke={`${textColor}20`} strokeWidth="2" />
       <path d="M0,52 C70,28 140,55 210,32 C280,9 340,48 400,28 L400,80 L0,80 Z" fill={fillColor} opacity="0.5" />
       <path d="M0,60 C80,30 160,65 240,35 C300,15 350,50 400,32 L400,80 L0,80 Z" fill={fillColor} />
