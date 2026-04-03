@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import ModalOverlay from "@/components/ModalOverlay";
 
 type Vocab = {
   id: string;
@@ -30,22 +31,6 @@ export default function VocabularyManager({ topicId, vocabulary }: Props) {
   const [modal, setModal] = useState<ModalState>({ mode: "closed" });
   const [saving, setSaving] = useState(false);
 
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    if (modal.mode !== "closed") {
-      document.body.style.overflow = "hidden";
-      return () => { document.body.style.overflow = ""; };
-    }
-  }, [modal.mode]);
-
-  // Close on Escape
-  useEffect(() => {
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape" && modal.mode !== "closed") setModal({ mode: "closed" });
-    }
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [modal.mode]);
 
   async function handleAdd(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -201,14 +186,8 @@ export default function VocabularyManager({ topicId, vocabulary }: Props) {
       </div>
 
       {/* Modal */}
-      {modal.mode !== "closed" && (
-        <div
-          className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 backdrop-blur-sm p-4 pt-[15vh] overflow-y-auto"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeModal();
-          }}
-        >
-          <div className="bg-[#f8f9ff] rounded-2xl shadow-2xl w-full max-w-xl relative">
+      <ModalOverlay open={modal.mode !== "closed"} onClose={closeModal} panelClass="max-w-xl">
+        <div className="bg-[#f8f9ff] rounded-2xl">
             {/* Close button */}
             <div className="sticky top-0 z-10 flex justify-end p-4 pb-0">
               <button
@@ -293,9 +272,8 @@ export default function VocabularyManager({ topicId, vocabulary }: Props) {
                 </div>
               </form>
             </div>
-          </div>
         </div>
-      )}
+      </ModalOverlay>
     </div>
   );
 }

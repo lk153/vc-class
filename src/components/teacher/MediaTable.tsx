@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import MediaUploadModal from "@/components/teacher/MediaUploadModal";
+import ModalOverlay from "@/components/ModalOverlay";
 
 type MediaItem = {
   id: string;
@@ -15,11 +16,20 @@ type MediaItem = {
   createdAt: string;
 };
 
+type Stats = {
+  totalFiles: number;
+  totalSize: number;
+  imageCount: number;
+  audioCount: number;
+  videoCount: number;
+};
+
 type ApiResponse = {
   results: MediaItem[];
   total: number;
   page: number;
   totalPages: number;
+  stats: Stats;
 };
 
 function formatSize(bytes: number): string {
@@ -109,6 +119,7 @@ function TypeFilterDropdown({
 
 export default function MediaTable() {
   const t = useTranslations("teacher");
+  const ct = useTranslations("common");
   const [data, setData] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -117,6 +128,14 @@ export default function MediaTable() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [showUpload, setShowUpload] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  // Bulk selection
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+
+  // Preview
+  const [previewItem, setPreviewItem] = useState<MediaItem | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search), 400);
@@ -140,22 +159,66 @@ export default function MediaTable() {
   }, [page, debouncedSearch, typeFilter]);
 
   useEffect(() => { fetchMedia(); }, [fetchMedia]);
-  useEffect(() => { setPage(1); }, [debouncedSearch, typeFilter]);
+  useEffect(() => { setPage(1); setSelectedIds(new Set()); }, [debouncedSearch, typeFilter]);
+
+  // Clear selection when page changes
+  useEffect(() => { setSelectedIds(new Set()); }, [page]);
 
   async function handleDelete(id: string) {
     setDeletingId(id);
     try {
       const res = await fetch(`/api/teacher/media/${id}`, { method: "DELETE" });
       if (res.ok) {
-        toast.success("Media deleted");
+        toast.success(t("mediaDeleted"));
         fetchMedia();
       } else {
-        toast.error("Failed to delete");
+        toast.error(t("mediaDeleteFailed"));
       }
     } catch {
-      toast.error("Failed to delete");
+      toast.error(t("mediaDeleteFailed"));
     } finally {
       setDeletingId(null);
+    }
+  }
+
+  async function handleBulkDelete() {
+    setBulkDeleting(true);
+    try {
+      const res = await fetch("/api/teacher/media", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: Array.from(selectedIds) }),
+      });
+      if (res.ok) {
+        const { deleted } = await res.json();
+        toast.success(t("bulkDeleteSuccess", { count: deleted }));
+        setSelectedIds(new Set());
+        setShowDeleteConfirm(false);
+        fetchMedia();
+      } else {
+        toast.error(t("bulkDeleteFailed"));
+      }
+    } catch {
+      toast.error(t("bulkDeleteFailed"));
+    } finally {
+      setBulkDeleting(false);
+    }
+  }
+
+  function toggleSelect(id: string) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleSelectAll() {
+    if (selectedIds.size === results.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(results.map((m) => m.id)));
     }
   }
 
@@ -169,9 +232,73 @@ export default function MediaTable() {
   const totalPages = data?.totalPages || 1;
   const startItem = total === 0 ? 0 : (page - 1) * 10 + 1;
   const endItem = Math.min(page * 10, total);
+  const stats = data?.stats;
+  const allSelected = results.length > 0 && selectedIds.size === results.length;
 
   return (
     <div>
+      {/* Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+        <div className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">perm_media</span>
+            </div>
+            <div>
+              <p className="font-body font-bold text-2xl text-[#121c2a] leading-none">{stats?.totalFiles ?? "—"}</p>
+              <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">{t("totalFiles")}</p>
+            </div>
+          </div>
+          {loading && <><div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-[1]" /><div className="absolute bottom-0 left-0 right-0 h-[3px] overflow-hidden z-[2]"><div className="absolute h-full bg-[#2a14b4] rounded-full animate-[loading-bar_1.5s_ease-in-out_infinite]" /></div></>}
+        </div>
+        <div className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">cloud</span>
+            </div>
+            <div>
+              <p className="font-body font-bold text-2xl text-[#2a14b4] leading-none">{stats ? formatSize(stats.totalSize) : "—"}</p>
+              <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">{t("storageUsed")}</p>
+            </div>
+          </div>
+          {loading && <><div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-[1]" /><div className="absolute bottom-0 left-0 right-0 h-[3px] overflow-hidden z-[2]"><div className="absolute h-full bg-[#2a14b4] rounded-full animate-[loading-bar_1.5s_ease-in-out_infinite]" /></div></>}
+        </div>
+        <div className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
+          <div className="flex items-center gap-5">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[16px] text-[#2a14b4]">image</span>
+              </div>
+              <div>
+                <p className="font-body font-bold text-lg text-[#2a14b4] leading-none">{stats?.imageCount ?? "—"}</p>
+                <p className="text-[9px] font-body uppercase tracking-widest text-[#777586] font-bold mt-0.5">{t("images")}</p>
+              </div>
+            </div>
+            <div className="h-8 w-px bg-[#c7c4d7]/20" />
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-[#a6f2d1]/40 flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[16px] text-[#1b6b51]">audio_file</span>
+              </div>
+              <div>
+                <p className="font-body font-bold text-lg text-[#1b6b51] leading-none">{stats?.audioCount ?? "—"}</p>
+                <p className="text-[9px] font-body uppercase tracking-widest text-[#777586] font-bold mt-0.5">{t("audio")}</p>
+              </div>
+            </div>
+            <div className="h-8 w-px bg-[#c7c4d7]/20" />
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-[#ffdada]/40 flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[16px] text-[#7b0020]">video_file</span>
+              </div>
+              <div>
+                <p className="font-body font-bold text-lg text-[#7b0020] leading-none">{stats?.videoCount ?? "—"}</p>
+                <p className="text-[9px] font-body uppercase tracking-widest text-[#777586] font-bold mt-0.5">{t("videos")}</p>
+              </div>
+            </div>
+          </div>
+          {loading && <><div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-[1]" /><div className="absolute bottom-0 left-0 right-0 h-[3px] overflow-hidden z-[2]"><div className="absolute h-full bg-[#2a14b4] rounded-full animate-[loading-bar_1.5s_ease-in-out_infinite]" /></div></>}
+        </div>
+      </div>
+
       {/* Filters */}
       <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 mb-8">
         <div className="relative w-full sm:w-1/4 sm:min-w-[200px]">
@@ -180,7 +307,7 @@ export default function MediaTable() {
           </span>
           <input
             type="text"
-            placeholder="Search by file name..."
+            placeholder={t("searchByFileName")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-11 pr-4 py-2.5 bg-[#d9e3f6]/50 border-none rounded-full text-sm font-body focus:ring-2 focus:ring-[#2a14b4]/20 placeholder:text-[#464554]/50 outline-none"
@@ -190,12 +317,24 @@ export default function MediaTable() {
           value={typeFilter}
           onChange={setTypeFilter}
           options={[
-            { value: "", label: "All Types", icon: "perm_media" },
+            { value: "", label: t("allTypes"), icon: "perm_media" },
             { value: "image/", label: t("images"), icon: "image" },
             { value: "audio/", label: t("audio"), icon: "audio_file" },
             { value: "video/", label: t("videos"), icon: "video_file" },
           ]}
         />
+
+        {/* Bulk delete button */}
+        {selectedIds.size > 0 && (
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="inline-flex items-center gap-2 bg-[#7b0020] text-white px-5 py-2.5 rounded-full font-body font-bold text-sm shadow-lg shadow-[#7b0020]/15 transition-all"
+          >
+            <span className="material-symbols-outlined text-[18px]">delete</span>
+            {t("bulkDeleteMedia")} ({selectedIds.size})
+          </button>
+        )}
+
         <div className="sm:ml-auto">
           <button
             onClick={() => setShowUpload(true)}
@@ -223,13 +362,26 @@ export default function MediaTable() {
             {results.map((m) => (
               <div key={m.id} className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-4">
                 <div className="flex items-center gap-3 mb-3">
-                  {m.fileType.startsWith("image/") ? (
-                    <img src={m.fileUrl} alt={m.fileName} className="w-10 h-10 rounded-lg object-cover shrink-0" />
-                  ) : (
-                    <div className="w-10 h-10 rounded-lg bg-[#eff4ff] flex items-center justify-center shrink-0">
-                      <span className={`material-symbols-outlined ${getTypeColor(m.fileType)}`}>{getTypeIcon(m.fileType)}</span>
-                    </div>
-                  )}
+                  {/* Checkbox */}
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.has(m.id)}
+                    onChange={() => toggleSelect(m.id)}
+                    className="w-4 h-4 rounded border-[#c7c4d7] text-[#2a14b4] focus:ring-[#2a14b4]/20 shrink-0"
+                  />
+                  {/* Thumbnail */}
+                  <button
+                    onClick={() => setPreviewItem(m)}
+                    className="shrink-0 no-ripple"
+                  >
+                    {m.fileType.startsWith("image/") ? (
+                      <img src={m.fileUrl} alt={m.fileName} className="w-10 h-10 rounded-lg object-cover cursor-pointer hover:opacity-80 transition-opacity" />
+                    ) : (
+                      <div className="w-10 h-10 rounded-lg bg-[#eff4ff] flex items-center justify-center cursor-pointer hover:bg-[#e3dfff] transition-colors">
+                        <span className={`material-symbols-outlined ${getTypeColor(m.fileType)}`}>{getTypeIcon(m.fileType)}</span>
+                      </div>
+                    )}
+                  </button>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-body font-medium text-[#121c2a] truncate">{m.fileName}</p>
                     <p className="text-xs text-[#777586] font-body">{formatSize(m.fileSize)}</p>
@@ -241,14 +393,14 @@ export default function MediaTable() {
                     className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-full font-body font-medium text-[#2a14b4] hover:bg-[#e3dfff]/50 transition-all"
                   >
                     <span className="material-symbols-outlined text-[14px]">content_copy</span>
-                    Copy URL
+                    {t("copyUrl")}
                   </button>
                   <button
                     onClick={() => handleDelete(m.id)}
                     disabled={deletingId === m.id}
                     className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-full font-body font-medium text-[#7b0020] hover:bg-[#ffdada]/40 transition-all disabled:opacity-40"
                   >
-                    <span className="material-symbols-outlined text-[14px]">delete</span>
+                    <span className={`material-symbols-outlined text-[14px] ${deletingId === m.id ? "animate-spin" : ""}`}>{deletingId === m.id ? "progress_activity" : "delete"}</span>
                     {t("deleteMedia")}
                   </button>
                   <span className="ml-auto text-xs text-[#777586] font-body">
@@ -266,7 +418,15 @@ export default function MediaTable() {
         <table className="w-full text-left">
           <thead>
             <tr className="bg-[#eff4ff] text-xs font-body font-extrabold uppercase tracking-[0.08em] text-[#121c2a]">
-              <th className="px-6 py-4 w-12"></th>
+              <th className="px-4 py-4 w-10">
+                <input
+                  type="checkbox"
+                  checked={allSelected}
+                  onChange={toggleSelectAll}
+                  className="w-4 h-4 rounded border-[#c7c4d7] text-[#2a14b4] focus:ring-[#2a14b4]/20"
+                />
+              </th>
+              <th className="px-4 py-4 w-14"></th>
               <th className="px-6 py-4">{t("fileName")}</th>
               <th className="px-6 py-4">{t("publishedUrl")}</th>
               <th className="px-6 py-4">{t("fileSize")}</th>
@@ -277,13 +437,13 @@ export default function MediaTable() {
           <tbody className="divide-y divide-[#c7c4d7]/10">
             {loading ? (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center">
+                <td colSpan={7} className="px-6 py-12 text-center">
                   <span className="material-symbols-outlined animate-spin text-[#2a14b4] text-2xl">progress_activity</span>
                 </td>
               </tr>
             ) : results.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center">
+                <td colSpan={7} className="px-6 py-12 text-center">
                   <div className="flex flex-col items-center gap-2">
                     <span className="material-symbols-outlined text-3xl text-[#777586]/40">perm_media</span>
                     <p className="text-sm text-[#777586]">{t("noMedia")}</p>
@@ -292,15 +452,33 @@ export default function MediaTable() {
               </tr>
             ) : (
               results.map((m) => (
-                <tr key={m.id} className="hover:bg-[#eff4ff]/50 transition-colors">
-                  <td className="px-6 py-4">
-                    {m.fileType.startsWith("image/") ? (
-                      <img src={m.fileUrl} alt={m.fileName} className="w-10 h-10 rounded-lg object-cover" />
-                    ) : (
-                      <div className="w-10 h-10 rounded-lg bg-[#eff4ff] flex items-center justify-center">
-                        <span className={`material-symbols-outlined ${getTypeColor(m.fileType)}`}>{getTypeIcon(m.fileType)}</span>
-                      </div>
-                    )}
+                <tr
+                  key={m.id}
+                  className={`transition-colors ${
+                    selectedIds.has(m.id) ? "bg-[#e3dfff]/20" : "hover:bg-[#eff4ff]/50"
+                  }`}
+                >
+                  <td className="px-4 py-4">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.has(m.id)}
+                      onChange={() => toggleSelect(m.id)}
+                      className="w-4 h-4 rounded border-[#c7c4d7] text-[#2a14b4] focus:ring-[#2a14b4]/20"
+                    />
+                  </td>
+                  <td className="px-4 py-4">
+                    <button
+                      onClick={() => setPreviewItem(m)}
+                      className="no-ripple"
+                    >
+                      {m.fileType.startsWith("image/") ? (
+                        <img src={m.fileUrl} alt={m.fileName} className="w-10 h-10 rounded-lg object-cover cursor-pointer hover:opacity-80 transition-opacity" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-lg bg-[#eff4ff] flex items-center justify-center cursor-pointer hover:bg-[#e3dfff] transition-colors">
+                          <span className={`material-symbols-outlined ${getTypeColor(m.fileType)}`}>{getTypeIcon(m.fileType)}</span>
+                        </div>
+                      )}
+                    </button>
                   </td>
                   <td className="px-6 py-4">
                     <p className="text-sm font-body font-medium text-[#121c2a]">{m.fileName}</p>
@@ -312,7 +490,7 @@ export default function MediaTable() {
                       <button
                         onClick={() => copyUrl(m.fileUrl)}
                         className="text-[#2a14b4] hover:text-[#4338ca] transition-colors shrink-0"
-                        title="Copy URL"
+                        title={t("copyUrl")}
                       >
                         <span className="material-symbols-outlined text-[16px]">content_copy</span>
                       </button>
@@ -332,7 +510,7 @@ export default function MediaTable() {
                       disabled={deletingId === m.id}
                       className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full font-body font-medium text-[#7b0020] hover:bg-[#ffdada]/40 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                     >
-                      <span className="material-symbols-outlined text-[14px]">delete</span>
+                      <span className={`material-symbols-outlined text-[14px] ${deletingId === m.id ? "animate-spin" : ""}`}>{deletingId === m.id ? "progress_activity" : "delete"}</span>
                       {t("deleteMedia")}
                     </button>
                   </td>
@@ -421,6 +599,103 @@ export default function MediaTable() {
           onComplete={fetchMedia}
         />
       )}
+
+      {/* Bulk Delete Confirmation Modal */}
+      <ModalOverlay
+        open={showDeleteConfirm}
+        onClose={() => !bulkDeleting && setShowDeleteConfirm(false)}
+        panelClass="max-w-md"
+      >
+        <div className="p-6 md:p-8 text-center">
+          <div className="w-14 h-14 rounded-full bg-[#ffdada]/40 flex items-center justify-center mx-auto mb-5">
+            <span className="material-symbols-outlined text-[28px] text-[#7b0020]">delete_forever</span>
+          </div>
+          <h3 className="font-body font-bold text-xl text-[#121c2a] mb-2">
+            {t("confirmDeleteTitle")}
+          </h3>
+          <p className="text-sm font-body text-[#464554] mb-8 leading-relaxed">
+            {t("confirmDeleteMessage", { count: selectedIds.size })}
+          </p>
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={() => setShowDeleteConfirm(false)}
+              disabled={bulkDeleting}
+              className="px-6 py-2.5 rounded-full text-sm font-body font-medium text-[#464554] bg-[#f0eef6] hover:bg-[#e3dfff] hover:text-[#121c2a] transition-colors disabled:opacity-40"
+            >
+              {ct("cancel")}
+            </button>
+            <button
+              onClick={handleBulkDelete}
+              disabled={bulkDeleting}
+              className="px-6 py-2.5 rounded-full text-sm font-body font-bold text-white bg-[#7b0020] hover:bg-[#5c0017] shadow-lg shadow-[#7b0020]/15 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              {bulkDeleting && (
+                <span className="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
+              )}
+              {ct("confirm")}
+            </button>
+          </div>
+        </div>
+      </ModalOverlay>
+
+      {/* Preview Modal */}
+      <ModalOverlay
+        open={!!previewItem}
+        onClose={() => setPreviewItem(null)}
+        panelClass="max-w-3xl"
+      >
+        {previewItem && (
+          <div className="rounded-2xl overflow-hidden">
+            {/* Header */}
+            <div className="flex items-center justify-between p-5 border-b border-[#c7c4d7]/15">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className={`w-9 h-9 rounded-lg bg-[#eff4ff] flex items-center justify-center shrink-0`}>
+                  <span className={`material-symbols-outlined text-[18px] ${getTypeColor(previewItem.fileType)}`}>
+                    {getTypeIcon(previewItem.fileType)}
+                  </span>
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-body font-bold text-[#121c2a] truncate">{previewItem.fileName}</p>
+                  <p className="text-xs font-body text-[#777586]">{formatSize(previewItem.fileSize)}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setPreviewItem(null)}
+                className="w-9 h-9 rounded-full bg-[#f0eef6] hover:bg-[#e3dfff] flex items-center justify-center text-[#777586] hover:text-[#121c2a] transition-all shrink-0 ml-4"
+              >
+                <span className="material-symbols-outlined text-[20px]">close</span>
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="bg-[#121c2a] flex items-center justify-center min-h-[300px] max-h-[70vh]">
+              {previewItem.fileType.startsWith("image/") && (
+                <img
+                  src={previewItem.fileUrl}
+                  alt={previewItem.fileName}
+                  className="max-w-full max-h-[70vh] object-contain"
+                />
+              )}
+              {previewItem.fileType.startsWith("video/") && (
+                <video
+                  src={previewItem.fileUrl}
+                  controls
+                  autoPlay
+                  className="max-w-full max-h-[70vh]"
+                />
+              )}
+              {previewItem.fileType.startsWith("audio/") && (
+                <div className="flex flex-col items-center gap-6 p-10">
+                  <div className="w-24 h-24 rounded-full bg-[#2a14b4]/20 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-[48px] text-[#2a14b4]">audio_file</span>
+                  </div>
+                  <audio src={previewItem.fileUrl} controls autoPlay className="w-full max-w-md" />
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </ModalOverlay>
     </div>
   );
 }

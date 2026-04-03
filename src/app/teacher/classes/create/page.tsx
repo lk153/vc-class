@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { tLang } from "@/lib/i18n/tLang";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -17,10 +18,6 @@ const levelPresets: Record<string, string[]> = {
 export default function CreateClassPage() {
   const t = useTranslations("teacher");
   const ct = useTranslations("common");
-  const tLang = (name: string) => {
-    const key = `lang_${name}`;
-    return t.has(key) ? t(key) : name;
-  };
   const router = useRouter();
   const [languages, setLanguages] = useState<Language[]>([]);
   const [saving, setSaving] = useState(false);
@@ -128,7 +125,7 @@ export default function CreateClassPage() {
             >
               <option value="">{t("selectLanguage")}</option>
               {languages.map((lang) => (
-                <option key={lang.id} value={lang.id}>{tLang(lang.name)}</option>
+                <option key={lang.id} value={lang.id}>{tLang(t, lang.name)}</option>
               ))}
             </select>
           </div>

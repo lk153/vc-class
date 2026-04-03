@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { tLang } from "@/lib/i18n/tLang";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -26,10 +27,6 @@ type Props = {
 
 export default function TopicList({ topics, languages, teacherId }: Props) {
   const t = useTranslations("teacher");
-  const tLang = (name: string) => {
-    const key = `lang_${name}`;
-    return t.has(key) ? t(key) : name;
-  };
   const ct = useTranslations("common");
   const router = useRouter();
   const [showCreate, setShowCreate] = useState(false);
@@ -105,7 +102,7 @@ export default function TopicList({ topics, languages, teacherId }: Props) {
                 <option value="">{t("topicSelectLanguage")}</option>
                 {languages.map((lang) => (
                   <option key={lang.id} value={lang.id}>
-                    {tLang(lang.name)}
+                    {tLang(t, lang.name)}
                   </option>
                 ))}
               </select>
@@ -167,7 +164,7 @@ export default function TopicList({ topics, languages, teacherId }: Props) {
                 : "bg-white text-[#464554] hover:bg-[#eff4ff] ambient-shadow"
             }`}
           >
-            {tLang(lang.name)}
+            {tLang(t, lang.name)}
           </button>
         ))}
       </div>
@@ -185,7 +182,7 @@ export default function TopicList({ topics, languages, teacherId }: Props) {
                 <span className="material-symbols-outlined text-[#2a14b4]">menu_book</span>
               </div>
               <span className="text-xs font-body font-bold px-3 py-1 rounded-full bg-[#a6f2d1]/40 text-[#1b6b51]">
-                {tLang(topic.languageName)}
+                {tLang(t, topic.languageName)}
               </span>
             </div>
             <h3 className="font-body font-bold text-2xl text-[#121c2a] mb-2 group-hover:text-[#2a14b4] transition-colors">

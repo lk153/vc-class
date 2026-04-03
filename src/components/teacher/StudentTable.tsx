@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { tLang } from "@/lib/i18n/tLang";
 import StudentDetailModal from "@/components/teacher/StudentDetailModal";
 
 type AssignedTopic = {
@@ -32,10 +33,6 @@ type Student = {
 
 export default function StudentTable({ students }: { students: Student[] }) {
   const t = useTranslations("teacher");
-  const tLang = (name: string) => {
-    const key = `lang_${name}`;
-    return t.has(key) ? t(key) : name;
-  };
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 
   const totalStudents = students.length;
@@ -131,7 +128,7 @@ export default function StudentTable({ students }: { students: Student[] }) {
                 </div>
                 <div className="flex items-center gap-4 text-xs text-[#464554] font-body">
                   <span>{t("joinedDate", { date: (() => { const d = new Date(s.createdAt); return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`; })() })}</span>
-                  {s.languageName && <span>• {tLang(s.languageName)}</span>}
+                  {s.languageName && <span>• {tLang(t, s.languageName)}</span>}
                   <span className="ml-auto font-body text-sm text-[#2a14b4]">{s.topicCount} {t("topicsCount")}</span>
                 </div>
               </button>
@@ -199,7 +196,7 @@ export default function StudentTable({ students }: { students: Student[] }) {
                         {s.status === "ACTIVE" ? t("active") : t("inactive")}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-[#464554] font-body">{tLang(s.languageName)}</td>
+                    <td className="px-6 py-4 text-[#464554] font-body">{tLang(t, s.languageName)}</td>
                     <td className="px-6 py-4 text-center">
                       <span className="font-body text-lg text-[#2a14b4]">{s.topicCount}</span>
                     </td>

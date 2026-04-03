@@ -99,6 +99,37 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
     setTimeout(() => setSwipeIn(false), 350);
   }
 
+  const waveDivider = (fillColor: string) => (
+    <svg viewBox="0 0 400 80" preserveAspectRatio="none" className="w-full h-14 block" style={{ marginTop: "-1px" }}>
+      <path d="M0,58 C60,35 120,50 180,30 C240,10 300,45 360,25 Q380,18 400,22" fill="none" stroke={`${textColor}20`} strokeWidth="2" />
+      <path d="M0,52 C70,28 140,55 210,32 C280,9 340,48 400,28 L400,80 L0,80 Z" fill={fillColor} opacity="0.5" />
+      <path d="M0,60 C80,30 160,65 240,35 C300,15 350,50 400,32 L400,80 L0,80 Z" fill={fillColor} />
+    </svg>
+  );
+
+  const swipeIndicator = (
+    <div className="h-14 flex items-center justify-center">
+      {dragX > 50 || swipeColor === "green" ? (
+        <div className="w-12 h-12 rounded-full bg-[#a6f2d1] flex items-center justify-center shadow-lg">
+          <span className="material-symbols-outlined text-[#1b6b51] text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
+        </div>
+      ) : dragX < -50 || swipeColor === "red" ? (
+        <div className="w-12 h-12 rounded-full bg-[#ffdada] flex items-center justify-center shadow-lg">
+          <span className="material-symbols-outlined text-[#7b0020] text-2xl">close</span>
+        </div>
+      ) : null}
+    </div>
+  );
+
+  const flipHint = (
+    <div className="flex items-center gap-3" style={{ color: `${textColor}80` }}>
+      <span className="material-symbols-outlined text-sm">sync</span>
+      <span className="text-[10px] uppercase font-body tracking-[0.2em] font-bold">
+        {t("tapToFlip")}
+      </span>
+    </div>
+  );
+
   const handlePointerDown = (e: React.PointerEvent) => {
     startX.current = e.clientX;
     didDrag.current = false;
@@ -145,9 +176,12 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
             {t("topic") || "Topic"}
           </Link>
           <span className="h-1 w-1 rounded-full bg-[#c7c4d7]" />
-          <span className="text-xs font-body uppercase tracking-[0.2em] text-[#121c2a] font-semibold">
+          <Link
+            href={`/topics/${topicId}`}
+            className="text-xs font-body uppercase tracking-[0.2em] text-[#121c2a] font-semibold hover:text-[#2a14b4] transition-colors"
+          >
             {topicTitle}
-          </span>
+          </Link>
         </div>
         <p className="text-sm font-body text-[#777586] tracking-wider">
           {t("cardProgress", { current: Math.min(currentIndex + 1, totalCount), total: totalCount })}
@@ -235,37 +269,12 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
                   </div>
                 </div>
 
-                {/* Wave divider */}
-                <svg viewBox="0 0 400 80" preserveAspectRatio="none" className="w-full h-14 block" style={{ marginTop: "-1px" }}>
-                  {/* Thin accent swoosh */}
-                  <path d="M0,58 C60,35 120,50 180,30 C240,10 300,45 360,25 Q380,18 400,22" fill="none" stroke={`${textColor}20`} strokeWidth="2" />
-                  {/* Secondary wave */}
-                  <path d="M0,52 C70,28 140,55 210,32 C280,9 340,48 400,28 L400,80 L0,80 Z" fill={bottomColor} opacity="0.5" />
-                  {/* Main wave */}
-                  <path d="M0,60 C80,30 160,65 240,35 C300,15 350,50 400,32 L400,80 L0,80 Z" fill={bottomColor} />
-                </svg>
+                {waveDivider(bottomColor)}
 
                 {/* Bottom section */}
                 <div className="flex-[1] flex flex-col items-center justify-between px-10 pb-8 pt-2" style={{ backgroundColor: bottomColor }}>
-                  {/* Swipe indicator */}
-                  <div className="h-14 flex items-center justify-center">
-                    {dragX > 50 || swipeColor === "green" ? (
-                      <div className="w-12 h-12 rounded-full bg-[#a6f2d1] flex items-center justify-center shadow-lg">
-                        <span className="material-symbols-outlined text-[#1b6b51] text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
-                      </div>
-                    ) : dragX < -50 || swipeColor === "red" ? (
-                      <div className="w-12 h-12 rounded-full bg-[#ffdada] flex items-center justify-center shadow-lg">
-                        <span className="material-symbols-outlined text-[#7b0020] text-2xl">close</span>
-                      </div>
-                    ) : null}
-                  </div>
-
-                  <div className="flex items-center gap-3" style={{ color: `${textColor}80` }}>
-                    <span className="material-symbols-outlined text-sm">sync</span>
-                    <span className="text-[10px] uppercase font-body tracking-[0.2em] font-bold">
-                      {t("tapToFlip")}
-                    </span>
-                  </div>
+                  {swipeIndicator}
+                  {flipHint}
                 </div>
               </div>
 
@@ -301,37 +310,12 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
                   </div>
                 </div>
 
-                {/* Wave divider */}
-                <svg viewBox="0 0 400 80" preserveAspectRatio="none" className="w-full h-14 block" style={{ marginTop: "-1px" }}>
-                  {/* Thin accent swoosh */}
-                  <path d="M0,58 C60,35 120,50 180,30 C240,10 300,45 360,25 Q380,18 400,22" fill="none" stroke={`${textColor}20`} strokeWidth="2" />
-                  {/* Secondary wave */}
-                  <path d="M0,52 C70,28 140,55 210,32 C280,9 340,48 400,28 L400,80 L0,80 Z" fill={topColor} opacity="0.5" />
-                  {/* Main wave */}
-                  <path d="M0,60 C80,30 160,65 240,35 C300,15 350,50 400,32 L400,80 L0,80 Z" fill={topColor} />
-                </svg>
+                {waveDivider(topColor)}
 
                 {/* Bottom section */}
                 <div className="flex-[1] flex flex-col items-center justify-between px-10 pb-8 pt-2" style={{ backgroundColor: topColor }}>
-                  {/* Swipe indicator */}
-                  <div className="h-14 flex items-center justify-center">
-                    {dragX > 50 || swipeColor === "green" ? (
-                      <div className="w-12 h-12 rounded-full bg-[#a6f2d1] flex items-center justify-center shadow-lg">
-                        <span className="material-symbols-outlined text-[#1b6b51] text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
-                      </div>
-                    ) : dragX < -50 || swipeColor === "red" ? (
-                      <div className="w-12 h-12 rounded-full bg-[#ffdada] flex items-center justify-center shadow-lg">
-                        <span className="material-symbols-outlined text-[#7b0020] text-2xl">close</span>
-                      </div>
-                    ) : null}
-                  </div>
-
-                  <div className="flex items-center gap-3" style={{ color: `${textColor}80` }}>
-                    <span className="material-symbols-outlined text-sm">sync</span>
-                    <span className="text-[10px] uppercase font-body tracking-[0.2em] font-bold">
-                      {t("tapToFlip")}
-                    </span>
-                  </div>
+                  {swipeIndicator}
+                  {flipHint}
                 </div>
               </div>
             </div>

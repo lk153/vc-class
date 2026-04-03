@@ -3,16 +3,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
-
-const dayKeys: Record<string, string> = {
-  Monday: "dayMonday",
-  Tuesday: "dayTuesday",
-  Wednesday: "dayWednesday",
-  Thursday: "dayThursday",
-  Friday: "dayFriday",
-  Saturday: "daySaturday",
-  Sunday: "daySunday",
-};
+import { DAY_TRANSLATION_KEYS } from "@/lib/days";
 
 function formatSchedule(schedule: string, t: (key: string) => string): string {
   try {
@@ -21,7 +12,7 @@ function formatSchedule(schedule: string, t: (key: string) => string): string {
       return sessions
         .filter((s: { day?: string; startTime?: string; endTime?: string }) => s.day && s.startTime && s.endTime)
         .map((s: { day: string; startTime: string; endTime: string }) => {
-          const dayLabel = dayKeys[s.day] ? t(dayKeys[s.day]) : s.day;
+          const dayLabel = DAY_TRANSLATION_KEYS[s.day] ? t(DAY_TRANSLATION_KEYS[s.day]) : s.day;
           return `${dayLabel} ${s.startTime}–${s.endTime}`;
         })
         .join(" | ");

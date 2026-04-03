@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { del } from "@vercel/blob";
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -24,7 +25,13 @@ export async function GET(request: Request) {
     }),
   };
 
-  const [results, total] = await Promise.all([
+  // Always fetch stats from ALL user media (unfiltered)
+  const allMedia = prisma.media.findMany({
+    where: { uploadedById: session.user.id },
+    select: { fileType: true, fileSize: true },
+  });
+
+  const [results, total, allItems] = await Promise.all([
     prisma.media.findMany({
       where,
       include: { uploadedBy: { select: { email: true } } },
@@ -33,6 +40,7 @@ export async function GET(request: Request) {
       take: limit,
     }),
     prisma.media.count({ where }),
+    allMedia,
   ]);
 
   return NextResponse.json({
@@ -48,6 +56,13 @@ export async function GET(request: Request) {
     total,
     page,
     totalPages: Math.ceil(total / limit),
+    stats: {
+      totalFiles: allItems.length,
+      totalSize: allItems.reduce((sum: number, m: { fileSize: number }) => sum + m.fileSize, 0),
+      imageCount: allItems.filter((m: { fileType: string }) => m.fileType.startsWith("image/")).length,
+      audioCount: allItems.filter((m: { fileType: string }) => m.fileType.startsWith("audio/")).length,
+      videoCount: allItems.filter((m: { fileType: string }) => m.fileType.startsWith("video/")).length,
+    },
   });
 }
 
@@ -82,4 +97,32 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({ count: records.length, records }, { status: 201 });
+}
+
+export async function DELETE(request: Request) {
+  const session = await auth();
+  if (!session?.user || session.user.role !== "TEACHER") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { ids } = await request.json();
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return NextResponse.json({ error: "No ids provided" }, { status: 400 });
+  }
+
+  const mediaItems = await prisma.media.findMany({
+    where: { id: { in: ids }, uploadedById: session.user.id },
+  });
+
+  // Delete from Vercel Blob
+  for (const m of mediaItems) {
+    try { await del(m.fileUrl); } catch { /* ignore */ }
+  }
+
+  // Delete from DB
+  await prisma.media.deleteMany({
+    where: { id: { in: mediaItems.map((m) => m.id) } },
+  });
+
+  return NextResponse.json({ deleted: mediaItems.length });
 }

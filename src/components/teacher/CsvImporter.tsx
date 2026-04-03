@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useTranslations } from "next-intl";
+import { tLang } from "@/lib/i18n/tLang";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Papa from "papaparse";
@@ -26,10 +27,6 @@ type Props = { topics: Topic[] };
 
 export default function CsvImporter({ topics }: Props) {
   const t = useTranslations("teacher");
-  const tLang = (name: string) => {
-    const key = `lang_${name}`;
-    return t.has(key) ? t(key) : name;
-  };
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [topicId, setTopicId] = useState("");
@@ -162,7 +159,7 @@ export default function CsvImporter({ topics }: Props) {
               <option value="">{t("csvSelectTopic")}</option>
               {topics.map((topic) => (
                 <option key={topic.id} value={topic.id}>
-                  {topic.title} ({tLang(topic.languageName)})
+                  {topic.title} ({tLang(t, topic.languageName)})
                 </option>
               ))}
             </select>

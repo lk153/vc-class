@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { DAYS, DAY_TRANSLATION_KEYS } from "@/lib/days";
 
 type Session = {
   day: string;
@@ -12,26 +13,6 @@ type Session = {
 type Props = {
   sessions: Session[];
   onChange: (sessions: Session[]) => void;
-};
-
-const DAYS = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
-
-const dayTranslationKeys: Record<string, string> = {
-  Monday: "dayMonday",
-  Tuesday: "dayTuesday",
-  Wednesday: "dayWednesday",
-  Thursday: "dayThursday",
-  Friday: "dayFriday",
-  Saturday: "daySaturday",
-  Sunday: "daySunday",
 };
 
 function DayPicker({
@@ -54,7 +35,7 @@ function DayPicker({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const label = value && dayTranslationKeys[value] ? t(dayTranslationKeys[value]) : t("selectDay");
+  const label = value && DAY_TRANSLATION_KEYS[value] ? t(DAY_TRANSLATION_KEYS[value]) : t("selectDay");
 
   return (
     <div ref={ref} className="relative no-ripple flex-1 sm:flex-none sm:w-40">
@@ -88,7 +69,7 @@ function DayPicker({
                   : "text-[#464554] hover:bg-[#f8f9ff]"
               }`}
             >
-              <span>{t(dayTranslationKeys[d])}</span>
+              <span>{t(DAY_TRANSLATION_KEYS[d])}</span>
               {value === d && (
                 <span className="material-symbols-outlined text-[16px] text-[#2a14b4]">check</span>
               )}
@@ -191,7 +172,7 @@ export function formatSessions(sessions: Session[], tDay?: (key: string) => stri
   return sessions
     .filter((s) => s.day && s.startTime && s.endTime)
     .map((s) => {
-      const dayLabel = tDay && dayTranslationKeys[s.day] ? tDay(dayTranslationKeys[s.day]) : s.day;
+      const dayLabel = tDay && DAY_TRANSLATION_KEYS[s.day] ? tDay(DAY_TRANSLATION_KEYS[s.day]) : s.day;
       return `${dayLabel} ${s.startTime}–${s.endTime}`;
     })
     .join(" | ");

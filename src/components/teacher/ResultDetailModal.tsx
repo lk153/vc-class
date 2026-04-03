@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { tLang } from "@/lib/i18n/tLang";
 import { toast } from "sonner";
+import ModalOverlay from "@/components/ModalOverlay";
 
 type Answer = {
   id: string;
@@ -41,10 +43,6 @@ type Props = {
 
 export default function ResultDetailModal({ resultId, onClose }: Props) {
   const t = useTranslations("teacher");
-  const tLang = (name: string) => {
-    const key = `lang_${name}`;
-    return t.has(key) ? t(key) : name;
-  };
   const [data, setData] = useState<ResultDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [feedbackContent, setFeedbackContent] = useState("");
@@ -68,22 +66,6 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
     fetchDetail();
   }, [fetchDetail]);
 
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
-
-  // Close on Escape key
-  useEffect(() => {
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
-    }
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [onClose]);
 
   async function handlePostFeedback() {
     if (!feedbackContent.trim()) return;
@@ -118,13 +100,8 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
     : "";
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 backdrop-blur-sm p-4 pt-[5vh] overflow-y-auto"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div className="bg-[#f8f9ff] rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative animate-in fade-in zoom-in-95 duration-200">
+    <ModalOverlay open={true} onClose={onClose} panelClass="max-w-4xl">
+      <div className="bg-[#f8f9ff] max-h-[90vh] overflow-y-auto rounded-2xl">
         {/* Close button */}
         <div className="sticky top-0 z-10 flex justify-end p-4 pb-0">
           <button
@@ -161,7 +138,7 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
                 </div>
               </div>
               <span className="text-[10px] font-bold uppercase tracking-widest text-[#1b6b51] bg-[#a6f2d1]/40 px-3 py-1.5 rounded-full w-fit shrink-0">
-                {tLang(data.language)}
+                {tLang(t, data.language)}
               </span>
             </div>
 
@@ -330,6 +307,6 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
           </div>
         )}
       </div>
-    </div>
+    </ModalOverlay>
   );
 }

@@ -2,8 +2,10 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
+import { tLang } from "@/lib/i18n/tLang";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import ModalOverlay from "@/components/ModalOverlay";
 
 type AssignedTopic = {
   id: string;
@@ -43,10 +45,6 @@ type Props = {
 
 export default function StudentDetailModal({ student, onClose }: Props) {
   const t = useTranslations("teacher");
-  const tLang = (name: string) => {
-    const key = `lang_${name}`;
-    return t.has(key) ? t(key) : name;
-  };
   const router = useRouter();
   const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
   const [unassigning, setUnassigning] = useState<string | null>(null);
@@ -87,27 +85,12 @@ export default function StudentDetailModal({ student, onClose }: Props) {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
-
-  useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (langRef.current && !langRef.current.contains(e.target as Node)) setLangOpen(false);
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  useEffect(() => {
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
-    }
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [onClose]);
 
   async function handleSave() {
     if (!editName.trim() || !editEmail.trim()) {
@@ -180,13 +163,8 @@ export default function StudentDetailModal({ student, onClose }: Props) {
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 backdrop-blur-sm p-4 pt-[5vh] overflow-y-auto"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div className="bg-[#f8f9ff] rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative">
+    <ModalOverlay open={true} onClose={onClose} panelClass="max-w-3xl">
+      <div className="bg-[#f8f9ff] max-h-[90vh] overflow-y-auto rounded-2xl">
         {/* Close button */}
         <div className="sticky top-0 z-10 flex justify-end p-4 pb-0">
           <button
@@ -263,7 +241,7 @@ export default function StudentDetailModal({ student, onClose }: Props) {
                 >
                   <span className="whitespace-nowrap">
                     {editLanguageId
-                      ? tLang(languages.find((l) => l.id === editLanguageId)?.name || "—")
+                      ? tLang(t, languages.find((l) => l.id === editLanguageId)?.name || "—")
                       : "—"}
                   </span>
                   <span
@@ -286,7 +264,7 @@ export default function StudentDetailModal({ student, onClose }: Props) {
                             : "text-[#464554] hover:bg-[#f8f9ff]"
                         }`}
                       >
-                        <span>{tLang(lang.name)}</span>
+                        <span>{tLang(t, lang.name)}</span>
                         {editLanguageId === lang.id && (
                           <span className="material-symbols-outlined text-[16px] text-[#2a14b4]">check</span>
                         )}
@@ -373,7 +351,7 @@ export default function StudentDetailModal({ student, onClose }: Props) {
                               </td>
                               <td className="px-5 py-3">
                                 <span className="text-xs font-body font-bold px-2.5 py-0.5 rounded-full bg-[#a6f2d1]/40 text-[#1b6b51]">
-                                  {tLang(topic.languageName)}
+                                  {tLang(t, topic.languageName)}
                                 </span>
                               </td>
                               <td className="px-5 py-3 text-xs text-[#777586] font-body">
@@ -429,6 +407,6 @@ export default function StudentDetailModal({ student, onClose }: Props) {
           </div>
         </div>
       </div>
-    </div>
+    </ModalOverlay>
   );
 }

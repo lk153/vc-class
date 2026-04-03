@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { tLang } from "@/lib/i18n/tLang";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -18,10 +19,6 @@ type Props = { topics: Topic[]; classes: ClassItem[] };
 
 export default function AssignmentPanel({ topics, classes }: Props) {
   const t = useTranslations("teacher");
-  const tLang = (name: string) => {
-    const key = `lang_${name}`;
-    return t.has(key) ? t(key) : name;
-  };
   const router = useRouter();
   const [selectedTopics, setSelectedTopics] = useState<Set<string>>(new Set());
   const [selectedClasses, setSelectedClasses] = useState<Set<string>>(new Set());
@@ -155,7 +152,7 @@ export default function AssignmentPanel({ topics, classes }: Props) {
                   </span>
                   <div className="flex-1 min-w-0">
                     <p className="font-body font-medium text-[#121c2a]">{topic.title}</p>
-                    <p className="text-xs text-[#777586] font-body">{tLang(topic.languageName)}</p>
+                    <p className="text-xs text-[#777586] font-body">{tLang(t, topic.languageName)}</p>
                   </div>
                 </button>
               );
@@ -200,7 +197,7 @@ export default function AssignmentPanel({ topics, classes }: Props) {
                       <div className="flex-1 min-w-0">
                         <p className="font-body font-medium text-[#121c2a] text-sm">{cls.name}</p>
                         <p className="text-xs text-[#777586] font-body truncate">
-                          {tLang(cls.languageName)} · {cls.studentCount} {t("studentsCount")} · {cls.assignedTopicIds.length} {t("topicsCount")}
+                          {tLang(t, cls.languageName)} · {cls.studentCount} {t("studentsCount")} · {cls.assignedTopicIds.length} {t("topicsCount")}
                         </p>
                       </div>
                       <span

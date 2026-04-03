@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { upload } from "@vercel/blob/client";
 import { toast } from "sonner";
+import ModalOverlay from "@/components/ModalOverlay";
 
 type UploadedFile = {
   fileName: string;
@@ -51,18 +51,6 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
 
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
-  }, []);
-
-  useEffect(() => {
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape" && !uploading) onClose();
-    }
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [onClose, uploading]);
 
   const totalSize = entries.reduce((sum, e) => sum + e.file.size, 0);
   const hasInvalidType = entries.some((e) => !ALLOWED_TYPES.includes(e.file.type));
@@ -106,14 +94,30 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
       );
 
       try {
-        const blob = await upload(entry.file.name, entry.file, {
-          access: "public",
-          handleUploadUrl: "/api/teacher/media/upload",
-          onUploadProgress: ({ percentage }) => {
-            setEntries((prev) =>
-              prev.map((e, idx) => idx === i ? { ...e, progress: percentage } : e)
-            );
-          },
+        const formData = new FormData();
+        formData.append("file", entry.file);
+
+        const blob: { url: string } = await new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open("POST", "/api/teacher/media/upload");
+          xhr.upload.onprogress = (e) => {
+            if (e.lengthComputable) {
+              const percentage = Math.round((e.loaded / e.total) * 100);
+              setEntries((prev) =>
+                prev.map((en, idx) => idx === i ? { ...en, progress: percentage } : en)
+              );
+            }
+          };
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              resolve(JSON.parse(xhr.responseText));
+            } else {
+              const body = JSON.parse(xhr.responseText || "{}");
+              reject(new Error(body.error || "Upload failed"));
+            }
+          };
+          xhr.onerror = () => reject(new Error("Upload failed"));
+          xhr.send(formData);
         });
 
         const result: UploadedFile = {
@@ -129,7 +133,7 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
         );
       } catch (err) {
         const errMsg = (err as Error).message || "Upload failed";
-        const isConfigError = errMsg.includes("client token") || errMsg.includes("not configured");
+        const isConfigError = errMsg.includes("not configured");
         const displayError = isConfigError
           ? t("storageNotConfigured")
           : errMsg;
@@ -174,13 +178,8 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
   const doneCount = entries.filter((e) => e.status === "done").length;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 backdrop-blur-sm p-4 pt-[10vh] overflow-y-auto"
-      onClick={(e) => {
-        if (e.target === e.currentTarget && !uploading) onClose();
-      }}
-    >
-      <div className="bg-[#f8f9ff] rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto relative">
+    <ModalOverlay open={true} onClose={uploading ? () => {} : onClose} panelClass="max-w-xl">
+      <div className="bg-[#f8f9ff] max-h-[90vh] overflow-y-auto rounded-2xl">
         {/* Close button - sticky top right */}
         {!uploading && (
           <div className="sticky top-0 z-10 flex justify-end p-4 pb-0">
@@ -193,7 +192,7 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
           </div>
         )}
 
-        <div className="px-6 md:px-8 pb-6 md:pb-8">
+        <div className={`px-6 md:px-8 pb-6 md:pb-8 ${uploading ? "pt-6" : ""}`}>
           {/* Header */}
           <div className="flex items-center gap-3 mb-6">
             <div className="w-11 h-11 rounded-xl bg-[#e3dfff] flex items-center justify-center">
@@ -243,10 +242,10 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
           {/* Validation errors */}
           {hasValidation && !uploading && (
             <div className="text-xs font-body text-[#7b0020] space-y-1 mb-4 bg-[#ffdada]/20 rounded-lg p-3">
-              {tooManyFiles && <p>Maximum {MAX_FILES} files allowed.</p>}
-              {totalTooLarge && <p>Total size exceeds {formatSize(MAX_TOTAL_SIZE)}.</p>}
-              {hasOversizedFile && <p>Individual files must be under {formatSize(MAX_FILE_SIZE)}.</p>}
-              {hasInvalidType && <p>Only PNG, JPG, MP3, and MP4 files are allowed.</p>}
+              {tooManyFiles && <p>{t("maxFilesAllowed", { count: MAX_FILES })}</p>}
+              {totalTooLarge && <p>{t("totalSizeExceeds", { size: formatSize(MAX_TOTAL_SIZE) })}</p>}
+              {hasOversizedFile && <p>{t("fileTooLarge", { size: formatSize(MAX_FILE_SIZE) })}</p>}
+              {hasInvalidType && <p>{t("onlyAllowedTypes")}</p>}
             </div>
           )}
 
@@ -254,7 +253,8 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
           {entries.length > 0 && (
             <div className="space-y-2 mb-5">
               {uploading && (
-                <p className="text-xs font-body text-[#777586] mb-1">
+                <p className="text-xs font-body text-[#777586] mb-1 flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[14px] text-[#2a14b4] animate-spin">progress_activity</span>
                   {t("uploading")} {doneCount} / {entries.length}...
                 </p>
               )}
@@ -286,10 +286,10 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
                         <span className="text-xs font-body text-[#7b0020]">{entry.error}</span>
                       )}
                       {!ALLOWED_TYPES.includes(entry.file.type) && entry.status === "pending" && (
-                        <span className="text-xs font-body text-[#7b0020]">Unsupported type</span>
+                        <span className="text-xs font-body text-[#7b0020]">{t("unsupportedType")}</span>
                       )}
                       {entry.file.size > MAX_FILE_SIZE && entry.status === "pending" && (
-                        <span className="text-xs font-body text-[#7b0020]">Too large</span>
+                        <span className="text-xs font-body text-[#7b0020]">{t("tooLarge")}</span>
                       )}
                     </div>
                     {entry.status === "uploading" && (
@@ -323,7 +323,7 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
           {entries.length > 0 && !uploading && (
             <div className="flex items-center justify-between pt-3">
               <p className="text-xs font-body text-[#777586]">
-                {entries.length} file(s) &middot; {formatSize(totalSize)}
+                {t("filesCount", { count: entries.length })} &middot; {formatSize(totalSize)}
               </p>
               <div className="flex gap-3">
                 <button
@@ -346,6 +346,6 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
           )}
         </div>
       </div>
-    </div>
+    </ModalOverlay>
   );
 }

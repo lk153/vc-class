@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { tLang } from "@/lib/i18n/tLang";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import ClassSessionEditor, { parseSessions, formatSessions } from "@/components/teacher/ClassSessionEditor";
@@ -68,10 +69,6 @@ export default function ClassDetailClient({
   topics,
 }: Props) {
   const t = useTranslations("teacher");
-  const tLang = (name: string) => {
-    const key = `lang_${name}`;
-    return t.has(key) ? t(key) : name;
-  };
   const router = useRouter();
 
   // Editable class fields
@@ -238,7 +235,7 @@ export default function ClassDetailClient({
             </span>
           </div>
           <p className="text-sm font-body text-[#464554]">
-            {selectedLang?.name ? tLang(selectedLang.name) : tLang(classInfo.languageName)} · {editLevel} · {formatSessions(editSessions, t)}
+            {selectedLang?.name ? tLang(t, selectedLang.name) : tLang(t, classInfo.languageName)} · {editLevel} · {formatSessions(editSessions, t)}
           </p>
         </div>
         <div ref={statusRef} className="relative no-ripple shrink-0">
@@ -297,7 +294,7 @@ export default function ClassDetailClient({
                   : "border-[#c7c4d7]/30 bg-[#f8f9ff] hover:border-[#c7c4d7]/60"
               } text-[#121c2a]`}
             >
-              <span className="truncate">{selectedLang ? tLang(selectedLang.name) : "—"}</span>
+              <span className="truncate">{selectedLang ? tLang(t, selectedLang.name) : "—"}</span>
               <span
                 className="material-symbols-outlined text-[16px] text-[#777586] transition-transform shrink-0"
                 style={{ transform: langOpen ? "rotate(180deg)" : "rotate(0deg)" }}
@@ -318,7 +315,7 @@ export default function ClassDetailClient({
                         : "text-[#464554] hover:bg-[#f8f9ff]"
                     }`}
                   >
-                    <span>{tLang(l.name)}</span>
+                    <span>{tLang(t, l.name)}</span>
                     {editLanguageId === l.id && (
                       <span className="material-symbols-outlined text-[16px] text-[#2a14b4]">check</span>
                     )}
@@ -587,7 +584,7 @@ export default function ClassDetailClient({
                   <p className="font-body font-medium text-[#121c2a] text-sm">{topic.title}</p>
                 </div>
                 <span className="text-xs font-body font-bold px-2.5 py-0.5 rounded-full bg-[#a6f2d1]/40 text-[#1b6b51] shrink-0">
-                  {tLang(topic.languageName)}
+                  {tLang(t, topic.languageName)}
                 </span>
                 <span className="text-xs text-[#777586] font-body hidden sm:block shrink-0">
                   {(() => { const d = new Date(topic.assignedAt); return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`; })()}
