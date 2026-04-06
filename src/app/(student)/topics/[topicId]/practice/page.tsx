@@ -32,8 +32,19 @@ export default async function PracticePage({
       include: { questions: { orderBy: { questionNumber: "asc" } } },
     });
   } else {
+    const now = new Date();
     practiceTest = await prisma.practiceTest.findFirst({
-      where: { topicId, status: "published" },
+      where: {
+        topicId,
+        status: "published",
+        OR: [
+          { availableFrom: null },
+          { availableFrom: { lte: now } },
+        ],
+        AND: [
+          { OR: [{ availableTo: null }, { availableTo: { gte: now } }] },
+        ],
+      },
       include: { questions: { orderBy: { questionNumber: "asc" } } },
     });
   }

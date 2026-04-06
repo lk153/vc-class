@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { topicId, word, meaning, example, sortOrder } = await request.json();
+  const { topicId, word, type, pronunciation, meaning, example, sortOrder } = await request.json();
 
   // Verify topic ownership
   const topic = await prisma.topic.findUnique({ where: { id: topicId } });
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
   }
 
   const vocab = await prisma.vocabulary.create({
-    data: { topicId, word, meaning, example, sortOrder: sortOrder || 0 },
+    data: { topicId, word, type: type || null, pronunciation: pronunciation || null, meaning, example, sortOrder: sortOrder || 0 },
   });
 
   return NextResponse.json(vocab, { status: 201 });
@@ -29,7 +29,7 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { id, word, meaning, example } = await request.json();
+  const { id, word, type, pronunciation, meaning, example } = await request.json();
 
   // Verify ownership via topic
   const vocab = await prisma.vocabulary.findUnique({
@@ -42,7 +42,7 @@ export async function PUT(request: Request) {
 
   const updated = await prisma.vocabulary.update({
     where: { id },
-    data: { word, meaning, example },
+    data: { word, type: type ?? undefined, pronunciation: pronunciation ?? undefined, meaning, example },
   });
 
   return NextResponse.json(updated);

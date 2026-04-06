@@ -122,14 +122,16 @@ model Topic {
 }
 
 model Vocabulary {
-  id        String   @id @default(cuid())
-  word      String
-  meaning   String
-  example   String?
-  topicId   String   @map("topic_id")
-  topic     Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
-  sortOrder Int      @default(0) @map("sort_order")
-  createdAt DateTime @default(now()) @map("created_at")
+  id            String   @id @default(cuid())
+  word          String
+  type          String?  // e.g. "(n)", "(v)", "(adj)"
+  pronunciation String?  // e.g. "/kəˈmjuːnɪkeɪt/"
+  meaning       String
+  example       String?
+  topicId       String   @map("topic_id")
+  topic         Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  sortOrder     Int      @default(0) @map("sort_order")
+  createdAt     DateTime @default(now()) @map("created_at")
 
   flashcardProgress FlashcardProgress[]
 

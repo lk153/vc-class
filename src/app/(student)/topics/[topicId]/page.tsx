@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-type VocabItem = { id: string; word: string; meaning: string; example: string | null };
+type VocabItem = { id: string; word: string; type: string | null; pronunciation: string | null; meaning: string; example: string | null };
 type PracticeTestItem = { id: string; title: string; _count: { questions: number } };
 type ProgressItem = { vocabularyId: string };
 type PracticeResultItem = { id: string; practiceTestId: string; score: number };
@@ -35,6 +35,7 @@ export default async function TopicDetailPage({
       language: true,
       vocabulary: { orderBy: { sortOrder: "asc" } },
       practiceTests: {
+        where: { status: "published" },
         include: { _count: { select: { questions: true } } },
       },
     },
@@ -221,10 +222,20 @@ export default async function TopicDetailPage({
                   )}
                 </div>
 
-                {/* Word */}
-                <h3 className="text-xl font-body font-bold text-[#121c2a] mb-2 leading-tight">
-                  {vocab.word}
-                </h3>
+                {/* Word + type */}
+                <div className="flex items-baseline gap-2 mb-1">
+                  <h3 className="text-xl font-body font-bold text-[#121c2a] leading-tight">
+                    {vocab.word}
+                  </h3>
+                  {vocab.type && (
+                    <span className="text-xs font-body text-[#2a14b4]/50 italic">{vocab.type}</span>
+                  )}
+                </div>
+
+                {/* Pronunciation */}
+                {vocab.pronunciation && (
+                  <p className="text-xs font-body text-[#777586] italic mb-2">{vocab.pronunciation}</p>
+                )}
 
                 {/* Meaning */}
                 <p className="text-sm text-[#464554] leading-relaxed mb-4">{vocab.meaning}</p>

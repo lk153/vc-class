@@ -99,6 +99,7 @@ export default async function PracticeTestsPage() {
             topicTitle: test.topic.title,
             languageName: test.topic.language.name,
             questionCount: test._count.questions,
+            status: test.status,
           }))}
         />
       )}

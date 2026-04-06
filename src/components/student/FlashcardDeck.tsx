@@ -7,6 +7,8 @@ import Link from "next/link";
 type Vocab = {
   id: string;
   word: string;
+  type: string | null;
+  pronunciation: string | null;
   meaning: string;
   example: string | null;
   learned: boolean;
@@ -271,10 +273,24 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
                       {cardNumber}
                     </span>
                   </div>
-                  <div className="flex-1 flex flex-col items-center justify-center text-center">
+                  <div className="flex-1 flex flex-col items-center justify-center text-center gap-2">
                     <h1 className="font-body text-5xl md:text-6xl tracking-tight font-bold" style={{ color: textColor }}>
                       {currentCard.word}
                     </h1>
+                    {(currentCard.type || currentCard.pronunciation) && (
+                      <div className="flex items-center gap-2 flex-wrap justify-center">
+                        {currentCard.type && (
+                          <span className="font-body text-sm font-medium px-3 py-0.5 rounded-full" style={{ backgroundColor: `${textColor}15`, color: `${textColor}cc` }}>
+                            {currentCard.type}
+                          </span>
+                        )}
+                        {currentCard.pronunciation && (
+                          <span className="font-body text-sm italic" style={{ color: `${textColor}90` }}>
+                            {currentCard.pronunciation}
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 

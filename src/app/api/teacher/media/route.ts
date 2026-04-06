@@ -43,6 +43,41 @@ export async function GET(request: Request) {
     allMedia,
   ]);
 
+  // Compute usage count for each media file in current page
+  const fileUrls = results.map((m: any) => m.fileUrl);
+  const usageResults = fileUrls.length > 0
+    ? await prisma.question.findMany({
+        where: {
+          OR: fileUrls.flatMap((url: string) => [
+            { contentMediaUrl: url },
+            { answer1MediaUrl: url },
+            { answer2MediaUrl: url },
+            { answer3MediaUrl: url },
+            { answer4MediaUrl: url },
+            { explanationMediaUrl: url },
+          ]),
+        },
+        select: {
+          contentMediaUrl: true,
+          answer1MediaUrl: true,
+          answer2MediaUrl: true,
+          answer3MediaUrl: true,
+          answer4MediaUrl: true,
+          explanationMediaUrl: true,
+        },
+      })
+    : [];
+
+  // Count how many questions reference each URL
+  const usageMap = new Map<string, number>();
+  for (const q of usageResults) {
+    for (const url of [q.contentMediaUrl, q.answer1MediaUrl, q.answer2MediaUrl, q.answer3MediaUrl, q.answer4MediaUrl, q.explanationMediaUrl]) {
+      if (url && fileUrls.includes(url)) {
+        usageMap.set(url, (usageMap.get(url) || 0) + 1);
+      }
+    }
+  }
+
   return NextResponse.json({
     results: results.map((m: any) => ({
       id: m.id,
@@ -52,6 +87,7 @@ export async function GET(request: Request) {
       fileSize: m.fileSize,
       ownerEmail: m.uploadedBy.email,
       createdAt: m.createdAt.toISOString(),
+      usageCount: usageMap.get(m.fileUrl) || 0,
     })),
     total,
     page,

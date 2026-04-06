@@ -1,0 +1,58 @@
+number,word,type,pronunciation,meaning
+1,communication,(n),/kəˌmjuːnɪˈkeɪʃən/,sự giao tiếp
+2,communicate,(v),/kəˈmjuːnɪkeɪt/,giao tiếp
+3,communicate with,,/kəˈmjuːnɪkeɪt wɪð/,giao tiếp với
+4,technology,(n),/tekˈnɒlədʒi/,công nghệ
+5,technology club,,/tekˈnɒlədʒi klʌb/,câu lạc bộ công nghệ
+6,conference,(n),/ˈkɒnfərəns/,hội nghị
+7,video conference,,/ˈvɪdiəʊ ˈkɒnfərəns/,hội nghị trực tuyến
+8,video call,(n),/ˈvɪdiəʊ kɔːl/,cuộc gọi video
+9,make a video call,,/meɪk ə ˈvɪdiəʊ kɔːl/,thực hiện cuộc gọi video
+10,group call,,/ɡruːp kɔːl/,cuộc gọi nhóm
+11,message,"(n, v)",/ˈmesɪdʒ/,"tin nhắn, nhắn tin"
+12,voice message,,/vɔɪs ˈmesɪdʒ/,tin nhắn thoại
+13,text message,,/tekst ˈmesɪdʒ/,tin nhắn văn bản
+14,telepathy,(n),/təˈlepəθi/,"hình thức giao tiếp bằng ý nghĩ, thần giao cách cảm"
+15,holography,(n),/hɒlˈɒɡrəfi/,hình thức giao tiếp bằng ảnh không gian ba chiều
+16,translation,(n),/trænzˈleɪʃən/,"sự phiên dịch, biên dịch"
+17,translation machine,,/trænzˈleɪʃən məˈʃiːn/,máy dịch thuật
+18,translate,(v),/trænzˈleɪt/,"phiên dịch, biên dịch"
+19,translator,(n),/trænzˈleɪtər/,"người phiên dịch, biên dịch"
+20,computer,(n),/kəmˈpjuːtər/,máy vi tính
+21,tablet,(n),/ˈtæblət/,máy tính bảng
+22,webcam,(n),/ˈwebkæm/,thiết bị ghi/ truyền hình ảnh
+23,connect,(v),/kəˈnekt/,kết nối
+24,connection,(n),/kəˈnekʃən/,sự kết nối
+25,Internet connection,,/ˈɪntənet kəˈnekʃən/,"kết nối mạng, kết nối Internet"
+26,high-speed,(adj),/ˌhaɪˈspiːd/,tốc độ cao
+27,adjust,(v),/əˈdʒʌst/,điều chỉnh
+28,adjustment,(n),/əˈdʒʌstmənt/,sự điều chỉnh
+29,button,(n),/ˈbʌtən/,cái nút
+30,zoom,(v),/zuːm/,"phóng, thu phóng"
+31,zoom in,,/zuːm ɪn/,phóng to
+32,zoom out,,/zuːm aʊt/,thu nhỏ
+33,carrier,(n),/ˈkæriər/,"người vận chuyển, hãng vận chuyển"
+34,carrier pigeon,,/ˈkæriər ˈpɪdʒən/,bồ câu đưa thư
+35,telephone,(n),/ˈtelɪfəʊn/,điện thoại
+36,mobile phone,(n),/ˌməʊbaɪl ˈfəʊn/,điện thoại di động
+37,smartphone,(n),/ˈsmɑːtfəʊn/,điện thoại thông minh
+38,network,(n),/ˈnetwɜːk/,mạng
+39,social network,,/ˌsəʊʃəl ˈnetwɜːk/,mạng xã hội
+40,emoji,(n),/iˈməʊdʒi/,biểu tượng cảm xúc
+41,transmit,(v),/trænzˈmɪt/,"truyền, chuyển giao"
+42,transmission,(n),/trænzˈmɪʃən/,"sự truyền, quá trình truyền"
+43,thought,(n),/θɔːt/,ý nghĩ
+44,via,(pre),/ˈvaɪə/,"qua, theo đường (gì)"
+45,focus,(v),/ˈfəʊkəs/,tập trung
+46,focus on,,/ˈfəʊkəs/,tập trung vào
+47,real,(adj),/rɪəl/,"thực, có thật"
+48,kid,(v),/kɪd/,"đùa, nói đùa"
+49,exactly,(adv),/ɪɡˈzæktli/,một cách chính xác
+50,smoothly,(adv),/ˈsmuːðli/,thông suốt
+51,instantly,(adv),/ˈɪnstəntli/,"ngay lập tức, tức thời"
+52,automatically,(adv),/ˌɔːtəˈmætɪkəli/,tự động
+53,charge,(v),/tʃɑːdʒ/,"nạp, sạc (pin)"
+54,battery,(n),/ˈbætəri/,"pin, cục pin"
+55,advanced,(adj),/ədˈvɑːnst/,tiên tiến
+56,barrier,(n),/ˈbæriər/,rào cản
+57,language barrier,,/ ˈlæŋɡwɪdʒ ˈbæriər/,rào cản ngôn ngữ

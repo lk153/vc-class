@@ -44,9 +44,11 @@ export default async function FlashcardsPage({
     <FlashcardDeck
       topicId={topicId}
       topicTitle={topic.title}
-      vocabulary={topic.vocabulary.map((v: { id: string; word: string; meaning: string; example: string | null }) => ({
+      vocabulary={topic.vocabulary.map((v: { id: string; word: string; type: string | null; pronunciation: string | null; meaning: string; example: string | null }) => ({
         id: v.id,
         word: v.word,
+        type: v.type,
+        pronunciation: v.pronunciation,
         meaning: v.meaning,
         example: v.example,
         learned: progressMap[v.id] || false,

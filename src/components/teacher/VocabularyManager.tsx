@@ -1,14 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { motion, AnimatePresence } from "motion/react";
 import ModalOverlay from "@/components/ModalOverlay";
 
 type Vocab = {
   id: string;
   word: string;
+  type: string | null;
+  pronunciation: string | null;
   meaning: string;
   example: string | null;
   sortOrder: number;
@@ -23,6 +26,82 @@ type ModalState =
   | { mode: "closed" }
   | { mode: "add" }
   | { mode: "edit"; vocab: Vocab };
+
+function AddWordMenu({
+  onManual,
+  onImport,
+  label,
+  manualLabel,
+  importLabel,
+}: {
+  onManual: () => void;
+  onImport: () => void;
+  label: string;
+  manualLabel: string;
+  importLabel: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative">
+      <motion.button
+        onClick={() => setOpen(!open)}
+        className="inline-flex items-center gap-2 bg-[#2a14b4] text-white px-5 py-2.5 rounded-full font-body font-bold text-sm shadow-lg shadow-[#2a14b4]/15"
+        whileTap={{ scale: 0.97 }}
+      >
+        <motion.span
+          className="material-symbols-outlined text-[18px]"
+          animate={{ rotate: open ? 45 : 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          add
+        </motion.span>
+        {label}
+      </motion.button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: -4 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: -4 }}
+            transition={{ type: "spring", damping: 25, stiffness: 400 }}
+            className="absolute right-0 top-full mt-2 bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 p-2 z-20 min-w-[180px]"
+          >
+            <button
+              onClick={() => { setOpen(false); onManual(); }}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-body font-medium text-[#121c2a] hover:bg-[#f5f3ff] transition-colors"
+            >
+              <span className="w-9 h-9 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[18px] text-[#2a14b4]">edit</span>
+              </span>
+              {manualLabel}
+            </button>
+            <button
+              onClick={() => { setOpen(false); onImport(); }}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-body font-medium text-[#121c2a] hover:bg-[#f5f3ff] transition-colors"
+            >
+              <span className="w-9 h-9 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[18px] text-[#2a14b4]">upload_file</span>
+              </span>
+              {importLabel}
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export default function VocabularyManager({ topicId, vocabulary }: Props) {
   const t = useTranslations("teacher");
@@ -44,6 +123,8 @@ export default function VocabularyManager({ topicId, vocabulary }: Props) {
         body: JSON.stringify({
           topicId,
           word: formData.get("word"),
+          type: formData.get("type") || null,
+          pronunciation: formData.get("pronunciation") || null,
           meaning: formData.get("meaning"),
           example: formData.get("example") || null,
           sortOrder: vocabulary.length,
@@ -77,6 +158,8 @@ export default function VocabularyManager({ topicId, vocabulary }: Props) {
         body: JSON.stringify({
           id: vocabId,
           word: formData.get("word"),
+          type: formData.get("type") || null,
+          pronunciation: formData.get("pronunciation") || null,
           meaning: formData.get("meaning"),
           example: formData.get("example") || null,
         }),
@@ -140,13 +223,13 @@ export default function VocabularyManager({ topicId, vocabulary }: Props) {
             <p className="text-xs font-body text-[#777586]">{vocabulary.length} {t("wordsCount")}</p>
           </div>
         </div>
-        <button
-          onClick={() => setModal({ mode: "add" })}
-          className="inline-flex items-center gap-2 bg-[#2a14b4] text-white px-5 py-2.5 rounded-full font-body font-bold text-sm shadow-lg shadow-[#2a14b4]/15 transition-all"
-        >
-          <span className="material-symbols-outlined text-[18px]">add</span>
-          {t("addWord")}
-        </button>
+        <AddWordMenu
+          onManual={() => setModal({ mode: "add" })}
+          onImport={() => router.push(`/teacher/topics/${topicId}/import-vocab`)}
+          label={t("addWord")}
+          manualLabel={t("manual")}
+          importLabel={t("import")}
+        />
       </div>
 
       {/* Vocabulary grid */}
@@ -159,7 +242,13 @@ export default function VocabularyManager({ topicId, vocabulary }: Props) {
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
-                <p className="font-body font-bold text-[#121c2a] text-base mb-1">{vocab.word}</p>
+                <div className="flex items-baseline gap-2 mb-1">
+                  <p className="font-body font-bold text-[#121c2a] text-base">{vocab.word}</p>
+                  {vocab.type && <span className="text-xs font-body text-[#2a14b4]/60 italic">{vocab.type}</span>}
+                </div>
+                {vocab.pronunciation && (
+                  <p className="text-xs font-body text-[#777586] italic mb-1">{vocab.pronunciation}</p>
+                )}
                 <p className="text-sm text-[#464554] font-body leading-relaxed">{vocab.meaning}</p>
                 {vocab.example && (
                   <p className="text-xs text-[#777586] font-body mt-2 leading-relaxed">
@@ -230,6 +319,26 @@ export default function VocabularyManager({ topicId, vocabulary }: Props) {
                     className={inputClass}
                     autoFocus
                   />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelClass}>Type</label>
+                    <input
+                      name="type"
+                      defaultValue={modal.mode === "edit" ? (modal.vocab.type || "") : ""}
+                      placeholder="(n), (v), (adj)..."
+                      className={inputClass}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Pronunciation</label>
+                    <input
+                      name="pronunciation"
+                      defaultValue={modal.mode === "edit" ? (modal.vocab.pronunciation || "") : ""}
+                      placeholder="/prəˌnʌnsiˈeɪʃən/"
+                      className={inputClass}
+                    />
+                  </div>
                 </div>
                 <div>
                   <label className={labelClass}>{t("meaning")}</label>

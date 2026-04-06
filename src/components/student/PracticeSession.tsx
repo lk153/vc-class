@@ -109,10 +109,20 @@ export default function PracticeSession({
   const questionStartTime = useRef(Date.now());
   const noticeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const requeuedIds = useRef<Set<string>>(new Set());
-  const { saveDraft, clearDraft } = useSessionDraft(practiceTestId);
+  const { saveDraft, loadDraft, clearDraft } = useSessionDraft(practiceTestId);
+  const [resumePrompt, setResumePrompt] = useState<{ index: number; answersCount: number } | null>(null);
 
   // Question queue for re-queue support (practice mode)
   const [questionQueue, setQuestionQueue] = useState<Question[]>(questions);
+
+  // Check for saved draft on mount
+  useEffect(() => {
+    const draft = loadDraft();
+    if (draft && draft.currentIndex > 0 && draft.currentIndex < questions.length) {
+      setResumePrompt({ index: draft.currentIndex, answersCount: draft.answers?.length || 0 });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const currentQuestion = questionQueue[currentIndex];
   const nextQuestion = currentIndex + 1 < questionQueue.length ? questionQueue[currentIndex + 1] : null;
@@ -322,6 +332,46 @@ export default function PracticeSession({
   if (!currentQuestion) return null;
 
   const diffStars = currentQuestion.difficulty ?? 1;
+
+  // ── Resume Prompt ──
+  if (resumePrompt) {
+    return (
+      <div className="font-body min-h-[50vh] flex flex-col items-center justify-center px-6">
+        <div className="max-w-md w-full bg-white rounded-2xl ambient-shadow p-8 text-center">
+          <div className="w-16 h-16 rounded-full bg-[#e3dfff] flex items-center justify-center mx-auto mb-5">
+            <span className="material-symbols-outlined text-[32px] text-[#2a14b4]">history</span>
+          </div>
+          <h2 className="font-body font-bold text-2xl text-[#121c2a] mb-2">Resume Session?</h2>
+          <p className="text-sm font-body text-[#777586] mb-6">
+            You have a saved session at question {resumePrompt.index + 1} of {questions.length} ({resumePrompt.answersCount} answered).
+          </p>
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={() => { clearDraft(); setResumePrompt(null); }}
+              className="px-6 py-3 rounded-full text-sm font-body font-medium text-[#464554] bg-[#f0eef6] hover:bg-[#e3dfff] transition-colors"
+            >
+              Start Fresh
+            </button>
+            <button
+              onClick={() => {
+                const draft = loadDraft();
+                if (draft) {
+                  setCurrentIndex(draft.currentIndex);
+                  setAnswers(draft.answers as AnswerRecord[]);
+                  setStreak(draft.streak || 0);
+                  setTimeLeft(questions[draft.currentIndex]?.timer || 30);
+                }
+                setResumePrompt(null);
+              }}
+              className="px-6 py-3 rounded-full text-sm font-body font-bold text-white bg-[#2a14b4] hover:bg-[#4338ca] shadow-lg shadow-[#2a14b4]/20 transition-all"
+            >
+              Resume (Q{resumePrompt.index + 1})
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // ── Active Question State ──
   return (

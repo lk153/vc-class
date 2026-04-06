@@ -15,6 +15,7 @@ type MediaItem = {
   fileSize: number;
   ownerEmail: string;
   createdAt: string;
+  usageCount: number;
 };
 
 type Stats = {
@@ -445,19 +446,20 @@ export default function MediaTable() {
               <th className="px-6 py-4">{t("publishedUrl")}</th>
               <th className="px-6 py-4">{t("fileSize")}</th>
               <th className="px-6 py-4">{t("submittedDate")}</th>
+              <th className="px-6 py-4 text-center">Used</th>
               <th className="px-6 py-4 text-right"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#c7c4d7]/10">
             {loading ? (
               <tr>
-                <td colSpan={7} className="px-6 py-12 text-center">
+                <td colSpan={8} className="px-6 py-12 text-center">
                   <span className="material-symbols-outlined animate-spin text-[#2a14b4] text-2xl">progress_activity</span>
                 </td>
               </tr>
             ) : results.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-6 py-12 text-center">
+                <td colSpan={8} className="px-6 py-12 text-center">
                   <div className="flex flex-col items-center gap-2">
                     <span className="material-symbols-outlined text-3xl text-[#777586]/40">perm_media</span>
                     <p className="text-sm text-[#777586]">{t("noMedia")}</p>
@@ -517,6 +519,15 @@ export default function MediaTable() {
                     {new Date(m.createdAt).toLocaleDateString("en-US", {
                       month: "short", day: "numeric", year: "numeric",
                     })}
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    {m.usageCount > 0 ? (
+                      <span className="inline-flex items-center gap-1 text-xs font-body font-bold px-2.5 py-0.5 rounded-full bg-[#e3dfff] text-[#2a14b4]">
+                        {m.usageCount}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-[#c7c4d7]">—</span>
+                    )}
                   </td>
                   <td className="px-6 py-4 text-right">
                     <button
