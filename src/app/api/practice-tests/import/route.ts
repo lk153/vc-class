@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { topicId, title, questions } = await request.json();
+  const { topicId, title, questions, status, mode, shuffleAnswers, showReviewMoment } = await request.json();
 
   if (!topicId || !title || !questions?.length) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
@@ -19,6 +19,10 @@ export async function POST(request: Request) {
       title,
       topicId,
       createdById: session.user.id,
+      status: status || "draft",
+      mode,
+      shuffleAnswers,
+      showReviewMoment,
       questions: {
         create: questions.map(
           (q: {
@@ -31,6 +35,21 @@ export async function POST(request: Request) {
             answer4: string | null;
             correctAnswer: string;
             timer: number;
+            contentMediaUrl?: string | null;
+            contentMediaType?: string | null;
+            answer1MediaUrl?: string | null;
+            answer1MediaType?: string | null;
+            answer2MediaUrl?: string | null;
+            answer2MediaType?: string | null;
+            answer3MediaUrl?: string | null;
+            answer3MediaType?: string | null;
+            answer4MediaUrl?: string | null;
+            answer4MediaType?: string | null;
+            difficulty?: number;
+            explanation?: string | null;
+            explanationMediaUrl?: string | null;
+            explanationMediaType?: string | null;
+            audioPlayLimit?: number | null;
           }) => ({
             questionNumber: q.questionNumber,
             content: q.content,
@@ -41,6 +60,21 @@ export async function POST(request: Request) {
             answer4: q.answer4,
             correctAnswer: q.correctAnswer,
             timer: q.timer || 30,
+            contentMediaUrl: q.contentMediaUrl,
+            contentMediaType: q.contentMediaType,
+            answer1MediaUrl: q.answer1MediaUrl,
+            answer1MediaType: q.answer1MediaType,
+            answer2MediaUrl: q.answer2MediaUrl,
+            answer2MediaType: q.answer2MediaType,
+            answer3MediaUrl: q.answer3MediaUrl,
+            answer3MediaType: q.answer3MediaType,
+            answer4MediaUrl: q.answer4MediaUrl,
+            answer4MediaType: q.answer4MediaType,
+            difficulty: q.difficulty ?? 1,
+            explanation: q.explanation,
+            explanationMediaUrl: q.explanationMediaUrl,
+            explanationMediaType: q.explanationMediaType,
+            audioPlayLimit: q.audioPlayLimit,
           })
         ),
       },

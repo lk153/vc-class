@@ -258,7 +258,22 @@ async function main() {
       createdById: teacherViet.id,
     },
   });
-  console.log("✓ Practice Tests:", parkTest.title, countrysideTest1.title, countrysideTest2.title);
+  // City media-rich test (demonstrates media question features)
+  const cityMediaTest = await prisma.practiceTest.upsert({
+    where: { id: "cmmedia0001city0test0001a" },
+    update: {},
+    create: {
+      id: "cmmedia0001city0test0001a",
+      title: "City - Media Test",
+      topicId: cityTopic.id,
+      createdById: teacherNga.id,
+      status: "published",
+      mode: "test",
+      shuffleAnswers: false,
+      showReviewMoment: true,
+    },
+  });
+  console.log("✓ Practice Tests:", parkTest.title, countrysideTest1.title, countrysideTest2.title, cityMediaTest.title);
 
   // ── Questions: Park Test ──
   const parkQuestions = [
@@ -312,7 +327,60 @@ async function main() {
       },
     });
   }
-  console.log("✓ Questions: Park (3), Countryside (20)");
+  // ── Questions: City Media Test (demonstrates media features) ──
+  const cityMediaQuestions = [
+    {
+      id: "cmmedia0001q001", num: 1, content: "What type of building is this?",
+      type: "MULTIPLE_CHOICE" as const,
+      a1: "Skyscraper", a2: "Bridge", a3: "Monument", a4: "Parking lot",
+      correct: "Skyscraper",
+      contentMediaUrl: "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400", contentMediaType: "image",
+      difficulty: 1, explanation: "A skyscraper is a very tall building found in cities.",
+    },
+    {
+      id: "cmmedia0001q002", num: 2, content: "Which image shows a crosswalk?",
+      type: "MULTIPLE_CHOICE" as const,
+      a1: "Crosswalk", a2: "Sidewalk", a3: "Intersection", a4: "Alley",
+      correct: "Crosswalk",
+      difficulty: 2, explanation: "A crosswalk is a marked path for pedestrians to cross the street safely.",
+    },
+    {
+      id: "cmmedia0001q003", num: 3, content: "What do you see in this image?",
+      type: "GAP_FILL" as const,
+      a1: "bridge", a2: null, a3: null, a4: null,
+      correct: "bridge",
+      contentMediaUrl: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=400", contentMediaType: "image",
+      difficulty: 1, explanation: "A bridge connects two land areas over water or a road.",
+    },
+    {
+      id: "cmmedia0001q004", num: 4, content: "Is a taxi a form of public transportation?",
+      type: "YES_NO" as const,
+      a1: "Yes", a2: "No", a3: null, a4: null,
+      correct: "Yes",
+      difficulty: 1, explanation: "Taxis are a common form of transportation in cities.",
+    },
+    {
+      id: "cmmedia0001q005", num: 5, content: "Where can you buy food from a street vendor?",
+      type: "MULTIPLE_CHOICE" as const,
+      a1: "On the sidewalk", a2: "In a skyscraper", a3: "Under a bridge", a4: "In a parking lot",
+      correct: "On the sidewalk",
+      difficulty: 2, explanation: "Street vendors typically set up on sidewalks in busy areas.",
+    },
+  ];
+  for (const q of cityMediaQuestions) {
+    await prisma.question.upsert({
+      where: { id: q.id },
+      update: {},
+      create: {
+        id: q.id, practiceTestId: cityMediaTest.id, questionNumber: q.num, content: q.content,
+        questionType: q.type, answer1: q.a1, answer2: q.a2, answer3: q.a3, answer4: q.a4,
+        correctAnswer: q.correct, timer: 30,
+        contentMediaUrl: q.contentMediaUrl ?? null, contentMediaType: q.contentMediaType ?? null,
+        difficulty: q.difficulty ?? 1, explanation: q.explanation ?? null,
+      },
+    });
+  }
+  console.log("✓ Questions: Park (3), Countryside (20), City Media (5)");
 
   // ── Class ──
   const engClass = await prisma.class.upsert({

@@ -67,9 +67,12 @@ export async function GET(
       id: sa.id,
       questionNumber: sa.question.questionNumber,
       content: sa.question.content,
+      contentMediaUrl: sa.question.contentMediaUrl,
+      contentMediaType: sa.question.contentMediaType,
       selectedAnswer: sa.selectedAnswer,
       correctAnswer: sa.question.correctAnswer,
       isCorrect: sa.isCorrect,
+      timeSpent: sa.timeSpent,
     })),
     comments: result.comments.map((c: any) => ({
       id: c.id,

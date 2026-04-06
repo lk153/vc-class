@@ -30,12 +30,14 @@ export async function POST(
             selectedAnswer: string;
             isCorrect: boolean;
             attempts: number;
+            timeSpent?: number;
           }) => ({
             questionId: a.questionId,
             userId: session.user.id,
             selectedAnswer: a.selectedAnswer,
             isCorrect: a.isCorrect,
             attemptNumber: a.attempts,
+            timeSpent: a.timeSpent ?? null,
           })
         ),
       },

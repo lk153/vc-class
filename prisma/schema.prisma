@@ -50,6 +50,7 @@ model User {
   createdTests      PracticeTest[] @relation("TestCreator")
   teachingClasses   Class[]        @relation("ClassTeacher")
   media             Media[]
+  questionBookmarks QuestionBookmark[]
 
   @@map("users")
 }
@@ -168,6 +169,15 @@ model PracticeTest {
   createdById String   @map("created_by_id")
   createdBy   User     @relation("TestCreator", fields: [createdById], references: [id])
   createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // ── Test configuration ──
+  status            String   @default("draft")
+  mode              String   @default("test") // "practice" | "test"
+  shuffleAnswers    Boolean  @default(false)  @map("shuffle_answers")
+  showReviewMoment  Boolean  @default(true)   @map("show_review_moment")
+  availableFrom     DateTime?                 @map("available_from")
+  availableTo       DateTime?                 @map("available_to")
 
   questions       Question[]
   practiceResults PracticeResult[]
@@ -182,15 +192,39 @@ model Question {
   questionNumber Int          @map("question_number")
   content        String
   questionType   QuestionType @map("question_type")
-  answer1        String       @map("answer_1")
-  answer2        String?      @map("answer_2")
-  answer3        String?      @map("answer_3")
-  answer4        String?      @map("answer_4")
-  correctAnswer  String       @map("correct_answer")
-  timer          Int          @default(30)
-  createdAt      DateTime     @default(now()) @map("created_at")
+
+  // ── Media on question content ──
+  contentMediaUrl  String? @map("content_media_url")
+  contentMediaType String? @map("content_media_type")
+
+  answer1 String  @map("answer_1")
+  answer2 String? @map("answer_2")
+  answer3 String? @map("answer_3")
+  answer4 String? @map("answer_4")
+
+  // ── Media on each answer option ──
+  answer1MediaUrl  String? @map("answer_1_media_url")
+  answer1MediaType String? @map("answer_1_media_type")
+  answer2MediaUrl  String? @map("answer_2_media_url")
+  answer2MediaType String? @map("answer_2_media_type")
+  answer3MediaUrl  String? @map("answer_3_media_url")
+  answer3MediaType String? @map("answer_3_media_type")
+  answer4MediaUrl  String? @map("answer_4_media_url")
+  answer4MediaType String? @map("answer_4_media_type")
+
+  // ── Enhancements ──
+  difficulty           Int      @default(1)
+  explanation          String?
+  explanationMediaUrl  String?  @map("explanation_media_url")
+  explanationMediaType String?  @map("explanation_media_type")
+  audioPlayLimit       Int?     @map("audio_play_limit")
+
+  correctAnswer String   @map("correct_answer")
+  timer         Int      @default(30)
+  createdAt     DateTime @default(now()) @map("created_at")
 
   studentAnswers StudentAnswer[]
+  bookmarks      QuestionBookmark[]
 
   @@unique([practiceTestId, questionNumber])
   @@map("questions")
@@ -225,6 +259,7 @@ model StudentAnswer {
   selectedAnswer   String         @map("selected_answer")
   isCorrect        Boolean        @map("is_correct")
   attemptNumber    Int            @default(1) @map("attempt_number")
+  timeSpent        Int?           @map("time_spent")
   answeredAt       DateTime       @default(now()) @map("answered_at")
 
   @@map("student_answers")
@@ -253,4 +288,16 @@ model Media {
   createdAt    DateTime @default(now()) @map("created_at")
 
   @@map("media")
+}
+
+model QuestionBookmark {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId String   @map("question_id")
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@unique([userId, questionId])
+  @@map("question_bookmarks")
 }

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import MediaUploadModal from "@/components/teacher/MediaUploadModal";
+import AudioPlayer from "@/components/student/AudioPlayer";
 import ModalOverlay from "@/components/ModalOverlay";
 
 type MediaItem = {
@@ -164,15 +165,28 @@ export default function MediaTable() {
   // Clear selection when page changes
   useEffect(() => { setSelectedIds(new Set()); }, [page]);
 
-  async function handleDelete(id: string) {
+  async function handleDelete(id: string, force = false) {
     setDeletingId(id);
     try {
-      const res = await fetch(`/api/teacher/media/${id}`, { method: "DELETE" });
+      const url = force ? `/api/teacher/media/${id}?force=true` : `/api/teacher/media/${id}`;
+      const res = await fetch(url, { method: "DELETE" });
       if (res.ok) {
         toast.success(t("mediaDeleted"));
         fetchMedia();
       } else {
-        toast.error(t("mediaDeleteFailed"));
+        const body = await res.json().catch(() => ({}));
+        if (body.error === "media_in_use" && !force) {
+          // Show warning and ask for confirmation
+          const confirmed = window.confirm(
+            t("mediaUsedWarning", { count: body.usageCount })
+          );
+          if (confirmed) {
+            await handleDelete(id, true);
+            return;
+          }
+        } else {
+          toast.error(t("mediaDeleteFailed"));
+        }
       }
     } catch {
       toast.error(t("mediaDeleteFailed"));
@@ -685,11 +699,13 @@ export default function MediaTable() {
                 />
               )}
               {previewItem.fileType.startsWith("audio/") && (
-                <div className="flex flex-col items-center gap-6 p-10">
+                <div className="flex flex-col items-center gap-8 p-10 w-full">
                   <div className="w-24 h-24 rounded-full bg-[#2a14b4]/20 flex items-center justify-center">
                     <span className="material-symbols-outlined text-[48px] text-[#2a14b4]">audio_file</span>
                   </div>
-                  <audio src={previewItem.fileUrl} controls autoPlay className="w-full max-w-md" />
+                  <div className="w-full max-w-lg">
+                    <AudioPlayer src={previewItem.fileUrl} />
+                  </div>
                 </div>
               )}
             </div>

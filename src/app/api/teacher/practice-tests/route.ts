@@ -8,7 +8,16 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { id, title } = await request.json();
+  const {
+    id,
+    title,
+    status,
+    mode,
+    shuffleAnswers,
+    showReviewMoment,
+    availableFrom,
+    availableTo,
+  } = await request.json();
 
   if (!id || !title?.trim()) {
     return NextResponse.json({ error: "ID and title are required" }, { status: 400 });
@@ -20,9 +29,17 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
+  const data: Record<string, unknown> = { title: title.trim() };
+  if (status !== undefined) data.status = status;
+  if (mode !== undefined) data.mode = mode;
+  if (shuffleAnswers !== undefined) data.shuffleAnswers = shuffleAnswers;
+  if (showReviewMoment !== undefined) data.showReviewMoment = showReviewMoment;
+  if (availableFrom !== undefined) data.availableFrom = availableFrom ? new Date(availableFrom) : null;
+  if (availableTo !== undefined) data.availableTo = availableTo ? new Date(availableTo) : null;
+
   const test = await prisma.practiceTest.update({
     where: { id },
-    data: { title: title.trim() },
+    data,
   });
 
   return NextResponse.json(test);

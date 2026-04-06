@@ -70,6 +70,29 @@ export default async function TopicDetailPage({
     practiceResults.map((r: PracticeResultItem) => [r.practiceTestId, r])
   );
 
+  // Get bookmarked questions for this topic's tests
+  const testIds = (topic.practiceTests as PracticeTestItem[]).map((pt) => pt.id);
+  const bookmarks = await prisma.questionBookmark.findMany({
+    where: {
+      userId: session.user.id,
+      question: { practiceTestId: { in: testIds } },
+    },
+    include: {
+      question: {
+        select: {
+          id: true,
+          content: true,
+          questionNumber: true,
+          contentMediaUrl: true,
+          contentMediaType: true,
+          correctAnswer: true,
+          practiceTest: { select: { title: true } },
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
   // SVG circular progress
   const circleR = 54;
   const circleC = 2 * Math.PI * circleR;
@@ -305,6 +328,44 @@ export default async function TopicDetailPage({
                 </p>
               </div>
             )}
+          </div>
+        </section>
+      )}
+
+      {/* ── Bookmarked Questions ── */}
+      {bookmarks.length > 0 && (
+        <section className="mt-12 relative bg-white rounded-3xl overflow-hidden ambient-shadow">
+          <div className="relative z-10 p-8 md:p-12">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-[#fef3c7] flex items-center justify-center">
+                <span className="material-symbols-outlined text-[20px] text-[#f59e0b]" style={{ fontVariationSettings: "'FILL' 1" }}>bookmark</span>
+              </div>
+              <h2 className="text-2xl font-body font-bold text-[#121c2a]">{t("bookmarkedQuestions")}</h2>
+            </div>
+            <div className="space-y-3">
+              {bookmarks.map((b: any) => (
+                <div key={b.id} className="flex items-center gap-3 bg-[#f8f9ff] rounded-xl p-4 border border-[#e2e8f0]">
+                  {b.question.contentMediaUrl && b.question.contentMediaType === "image" ? (
+                    <img src={b.question.contentMediaUrl} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />
+                  ) : b.question.contentMediaType === "audio" ? (
+                    <div className="w-10 h-10 rounded-lg bg-[#a6f2d1]/30 flex items-center justify-center shrink-0">
+                      <span className="material-symbols-outlined text-[18px] text-[#1b6b51]">headphones</span>
+                    </div>
+                  ) : (
+                    <div className="w-10 h-10 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
+                      <span className="font-body font-bold text-xs text-[#2a14b4]">Q{b.question.questionNumber}</span>
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-body text-sm font-medium text-[#121c2a] truncate">{b.question.content}</p>
+                    <p className="text-[10px] font-body text-[#777586]">{b.question.practiceTest.title}</p>
+                  </div>
+                  <span className="text-xs font-body font-medium text-[#1b6b51] bg-[#a6f2d1]/30 px-2.5 py-1 rounded-full shrink-0">
+                    {b.question.correctAnswer}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       )}

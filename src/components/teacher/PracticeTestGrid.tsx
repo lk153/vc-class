@@ -28,6 +28,21 @@ type Question = {
   answer4: string | null;
   correctAnswer: string;
   timer: number;
+  contentMediaUrl?: string | null;
+  contentMediaType?: string | null;
+  answer1MediaUrl?: string | null;
+  answer1MediaType?: string | null;
+  answer2MediaUrl?: string | null;
+  answer2MediaType?: string | null;
+  answer3MediaUrl?: string | null;
+  answer3MediaType?: string | null;
+  answer4MediaUrl?: string | null;
+  answer4MediaType?: string | null;
+  difficulty?: number;
+  explanation?: string | null;
+  explanationMediaUrl?: string | null;
+  explanationMediaType?: string | null;
+  audioPlayLimit?: number | null;
 };
 
 type TestDetail = {
@@ -35,6 +50,12 @@ type TestDetail = {
   title: string;
   topicTitle: string;
   languageName: string;
+  status: string;
+  mode: string;
+  shuffleAnswers: boolean;
+  showReviewMoment: boolean;
+  availableFrom: string | null;
+  availableTo: string | null;
   questions: Question[];
 };
 

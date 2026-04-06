@@ -10,9 +10,12 @@ type Answer = {
   id: string;
   questionNumber: number;
   content: string;
+  contentMediaUrl?: string | null;
+  contentMediaType?: string | null;
   selectedAnswer: string;
   correctAnswer: string;
   isCorrect: boolean;
+  timeSpent?: number | null;
 };
 
 type Comment = {
@@ -220,7 +223,16 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
                           Q{a.questionNumber}
                         </td>
                         <td className="px-5 py-3 text-sm font-body text-[#121c2a]">
-                          {a.content}
+                          <div className="flex items-center gap-2">
+                            {a.contentMediaType && (
+                              <span className={`material-symbols-outlined text-[14px] shrink-0 ${
+                                a.contentMediaType === "audio" ? "text-[#1b6b51]" : a.contentMediaType === "video" ? "text-[#7b0020]" : "text-[#2a14b4]"
+                              }`}>
+                                {a.contentMediaType === "audio" ? "headphones" : a.contentMediaType === "video" ? "play_circle" : "image"}
+                              </span>
+                            )}
+                            <span>{a.content}</span>
+                          </div>
                         </td>
                         <td className="px-5 py-3 text-sm font-body font-medium">
                           <span className={a.isCorrect ? "text-[#1b6b51]" : "text-[#7b0020]"}>
