@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import VocabGrid from "@/components/student/VocabGrid";
 type VocabItem = { id: string; word: string; type: string | null; pronunciation: string | null; meaning: string; example: string | null };
 type PracticeTestItem = { id: string; title: string; _count: { questions: number } };
 type ProgressItem = { vocabularyId: string };
@@ -178,84 +179,18 @@ export default async function TopicDetailPage({
       </header>
 
       {/* ── Vocabulary Collection ── */}
-      <section className="mb-16">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-[#e3dfff] flex items-center justify-center">
-              <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">dictionary</span>
-            </div>
-            <h2 className="text-2xl font-body font-bold text-[#121c2a]">
-              {t("vocabularyCollection")}
-            </h2>
-          </div>
-          <span className="text-[10px] font-body uppercase tracking-[0.2em] text-[#777586] font-bold">
-            {t("items", { count: totalCount })}
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          {(topic.vocabulary as VocabItem[]).map((vocab, idx) => {
-            const isLearned = learnedSet.has(vocab.id);
-            return (
-              <div
-                key={vocab.id}
-                className={`group relative rounded-2xl p-6 transition-all duration-300 border ${
-                  isLearned
-                    ? "bg-white border-[#a6f2d1]/40 shadow-[0_4px_24px_rgba(18,28,42,0.06)] hover:shadow-[0_8px_32px_rgba(18,28,42,0.1)]"
-                    : "bg-white/60 border-[#e2e8f0] shadow-[0_2px_12px_rgba(18,28,42,0.03)] hover:shadow-[0_8px_32px_rgba(18,28,42,0.08)] hover:border-[#c7c4d7]/40"
-                }`}
-              >
-                {/* Top row: number + status */}
-                <div className="flex items-center justify-between mb-4">
-                  <span className="w-8 h-8 rounded-full bg-[#e3dfff] flex items-center justify-center text-xs font-body font-bold text-[#2a14b4]">
-                    {String(idx + 1).padStart(2, "0")}
-                  </span>
-                  {isLearned ? (
-                    <span
-                      className="material-symbols-outlined text-[18px] text-[#1b6b51]"
-                      style={{ fontVariationSettings: "'FILL' 1" }}
-                    >
-                      check_circle
-                    </span>
-                  ) : (
-                    <span className="w-[18px] h-[18px] rounded-full border-2 border-[#d9e3f6]" />
-                  )}
-                </div>
-
-                {/* Word + type */}
-                <div className="flex items-baseline gap-2 mb-1">
-                  <h3 className="text-xl font-body font-bold text-[#121c2a] leading-tight">
-                    {vocab.word}
-                  </h3>
-                  {vocab.type && (
-                    <span className="text-xs font-body text-[#2a14b4]/50 italic">{vocab.type}</span>
-                  )}
-                </div>
-
-                {/* Pronunciation */}
-                {vocab.pronunciation && (
-                  <p className="text-xs font-body text-[#777586] italic mb-2">{vocab.pronunciation}</p>
-                )}
-
-                {/* Meaning */}
-                <p className="text-sm text-[#464554] leading-relaxed mb-4">{vocab.meaning}</p>
-
-                {/* Example */}
-                {vocab.example && (
-                  <div className="pt-4 border-t border-[#e2e8f0]/60">
-                    <p className="text-[10px] font-body uppercase tracking-[0.15em] text-[#2a14b4]/50 font-bold mb-1">
-                      {t("example")}
-                    </p>
-                    <p className="text-xs font-body text-[#464554] italic leading-relaxed">
-                      &ldquo;{vocab.example}&rdquo;
-                    </p>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </section>
+      <VocabGrid
+        vocabulary={(topic.vocabulary as VocabItem[]).map((v) => ({
+          id: v.id,
+          word: v.word,
+          type: v.type,
+          pronunciation: v.pronunciation,
+          meaning: v.meaning,
+          example: v.example,
+        }))}
+        learnedIds={Array.from(learnedSet)}
+        totalCount={totalCount}
+      />
 
       {/* ── Practice Tests Section ── */}
       {topic.practiceTests.length > 0 && (

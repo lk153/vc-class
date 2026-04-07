@@ -278,14 +278,14 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
                       {currentCard.word}
                     </h1>
                     {(currentCard.type || currentCard.pronunciation) && (
-                      <div className="flex items-center gap-2 flex-wrap justify-center">
+                      <div className="flex items-center gap-2 flex-wrap justify-center mt-1 px-4 py-1.5 rounded-full" style={{ backgroundColor: `${textColor}20` }}>
                         {currentCard.type && (
-                          <span className="font-body text-sm font-medium px-3 py-0.5 rounded-full" style={{ backgroundColor: `${textColor}15`, color: `${textColor}cc` }}>
+                          <span className="font-body text-base font-bold" style={{ color: textColor }}>
                             {currentCard.type}
                           </span>
                         )}
                         {currentCard.pronunciation && (
-                          <span className="font-body text-sm italic" style={{ color: `${textColor}90` }}>
+                          <span className="font-body text-base italic font-medium" style={{ color: `${textColor}e0` }}>
                             {currentCard.pronunciation}
                           </span>
                         )}

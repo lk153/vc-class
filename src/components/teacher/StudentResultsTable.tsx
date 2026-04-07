@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import ResultDetailModal from "@/components/teacher/ResultDetailModal";
+import ModalOverlay from "@/components/ModalOverlay";
 
 type Result = {
   id: string;
@@ -26,6 +28,9 @@ type ApiResponse = {
 export default function StudentResultsTable() {
   const t = useTranslations("teacher");
   const [selectedResultId, setSelectedResultId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
   const [data, setData] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -68,6 +73,7 @@ export default function StudentResultsTable() {
   // Reset to page 1 when filters change
   useEffect(() => {
     setPage(1);
+    setSelectedIds(new Set());
   }, [debouncedSearch, dateFrom, dateTo]);
 
   const results = data?.results || [];
@@ -217,10 +223,35 @@ export default function StudentResultsTable() {
       </div>
 
       {/* Desktop Table */}
+      {/* Bulk delete toolbar */}
+      {selectedIds.size > 0 && (
+        <div className="flex items-center gap-3 mb-4 p-4 bg-white rounded-xl ambient-shadow border border-[#7b0020]/10">
+          <span className="text-sm font-body font-bold text-[#7b0020]">{selectedIds.size} selected</span>
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="ml-auto inline-flex items-center gap-2 bg-[#7b0020] text-white px-5 py-2 rounded-full font-body font-bold text-sm shadow-lg shadow-[#7b0020]/15 transition-all"
+          >
+            <span className="material-symbols-outlined text-[16px]">delete</span>
+            Delete Selected
+          </button>
+        </div>
+      )}
+
       <div className="hidden md:block bg-white rounded-xl overflow-hidden shadow-[0px_20px_40px_rgba(18,28,42,0.04)]">
         <table className="w-full text-left">
           <thead>
             <tr className="bg-[#eff4ff] text-xs font-body font-extrabold uppercase tracking-[0.08em] text-[#121c2a]">
+              <th className="px-4 py-4 w-10">
+                <input
+                  type="checkbox"
+                  checked={results.length > 0 && selectedIds.size === results.length}
+                  onChange={() => {
+                    if (selectedIds.size === results.length) setSelectedIds(new Set());
+                    else setSelectedIds(new Set(results.map((r) => r.id)));
+                  }}
+                  className="w-4 h-4 rounded border-[#c7c4d7] text-[#2a14b4] focus:ring-[#2a14b4]/20"
+                />
+              </th>
               <th className="px-6 py-4">{t("studentName")}</th>
               <th className="px-6 py-4">{t("testNameCol")}</th>
               <th className="px-6 py-4">{t("topicCol")}</th>
@@ -257,7 +288,7 @@ export default function StudentResultsTable() {
           <tbody className="divide-y divide-[#c7c4d7]/10">
             {loading ? (
               <tr>
-                <td colSpan={7} className="px-6 py-12 text-center text-sm text-[#777586]">
+                <td colSpan={8} className="px-6 py-12 text-center text-sm text-[#777586]">
                   <span className="material-symbols-outlined animate-spin text-[#2a14b4] text-2xl">
                     progress_activity
                   </span>
@@ -265,7 +296,7 @@ export default function StudentResultsTable() {
               </tr>
             ) : results.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-6 py-12 text-center">
+                <td colSpan={8} className="px-6 py-12 text-center">
                   <div className="flex flex-col items-center gap-2">
                     <span className="material-symbols-outlined text-3xl text-[#777586]/40">
                       assignment
@@ -279,8 +310,22 @@ export default function StudentResultsTable() {
                 <tr
                   key={r.id}
                   onClick={() => setSelectedResultId(r.id)}
-                  className="hover:bg-[#e3dfff]/50 transition-colors duration-200 cursor-pointer"
+                  className={`transition-colors duration-200 cursor-pointer ${
+                    selectedIds.has(r.id) ? "bg-[#e3dfff]/20" : "hover:bg-[#e3dfff]/50"
+                  }`}
                 >
+                  <td className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.has(r.id)}
+                      onChange={() => setSelectedIds((prev) => {
+                        const next = new Set(prev);
+                        if (next.has(r.id)) next.delete(r.id); else next.add(r.id);
+                        return next;
+                      })}
+                      className="w-4 h-4 rounded border-[#c7c4d7] text-[#2a14b4] focus:ring-[#2a14b4]/20"
+                    />
+                  </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-[#e3dfff] flex items-center justify-center text-xs font-bold text-[#2a14b4]">
@@ -390,6 +435,61 @@ export default function StudentResultsTable() {
           onClose={() => setSelectedResultId(null)}
         />
       )}
+
+      {/* Bulk Delete Confirmation Modal */}
+      <ModalOverlay open={showDeleteConfirm} onClose={() => !bulkDeleting && setShowDeleteConfirm(false)} panelClass="max-w-md">
+        <div className="p-6 md:p-8 text-center">
+          <div className="w-14 h-14 rounded-full bg-[#ffdada]/40 flex items-center justify-center mx-auto mb-5">
+            <span className="material-symbols-outlined text-[28px] text-[#7b0020]">delete_forever</span>
+          </div>
+          <h3 className="font-body font-bold text-xl text-[#121c2a] mb-2">Delete Results</h3>
+          <p className="text-sm font-body text-[#464554] mb-2 leading-relaxed">
+            Are you sure you want to delete {selectedIds.size} student result(s)?
+          </p>
+          <p className="text-xs font-body text-[#7b0020] mb-6">
+            All related answers and comments will be permanently removed.
+          </p>
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={() => setShowDeleteConfirm(false)}
+              disabled={bulkDeleting}
+              className="px-6 py-2.5 rounded-full text-sm font-body font-medium text-[#464554] bg-[#f0eef6] hover:bg-[#e3dfff] transition-colors disabled:opacity-40"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={async () => {
+                setBulkDeleting(true);
+                try {
+                  const res = await fetch("/api/teacher/student-results", {
+                    method: "DELETE",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ ids: Array.from(selectedIds) }),
+                  });
+                  if (res.ok) {
+                    const { deleted } = await res.json();
+                    toast.success(`${deleted} result(s) deleted`);
+                    setSelectedIds(new Set());
+                    setShowDeleteConfirm(false);
+                    fetchResults();
+                  } else {
+                    toast.error("Failed to delete results");
+                  }
+                } catch {
+                  toast.error("Failed to delete results");
+                } finally {
+                  setBulkDeleting(false);
+                }
+              }}
+              disabled={bulkDeleting}
+              className="px-6 py-2.5 rounded-full text-sm font-body font-bold text-white bg-[#7b0020] hover:bg-[#5c0017] shadow-lg shadow-[#7b0020]/15 transition-all disabled:opacity-40 flex items-center gap-2"
+            >
+              {bulkDeleting && <span className="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>}
+              Delete
+            </button>
+          </div>
+        </div>
+      </ModalOverlay>
     </div>
   );
 }

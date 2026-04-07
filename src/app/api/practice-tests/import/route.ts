@@ -50,10 +50,11 @@ export async function POST(request: Request) {
             explanationMediaUrl?: string | null;
             explanationMediaType?: string | null;
             audioPlayLimit?: number | null;
+            advancedData?: string | null;
           }) => ({
             questionNumber: q.questionNumber,
             content: q.content,
-            questionType: q.questionType as "YES_NO" | "MULTIPLE_CHOICE" | "GAP_FILL",
+            questionType: q.questionType as "MULTIPLE_CHOICE" | "GAP_FILL" | "REORDER_WORDS" | "CUE_WRITING" | "PRONUNCIATION" | "STRESS" | "CLOZE_PASSAGE" | "TRUE_FALSE" | "MATCHING" | "WORD_BANK",
             answer1: q.answer1,
             answer2: q.answer2,
             answer3: q.answer3,
@@ -75,6 +76,7 @@ export async function POST(request: Request) {
             explanationMediaUrl: q.explanationMediaUrl,
             explanationMediaType: q.explanationMediaType,
             audioPlayLimit: q.audioPlayLimit,
+            advancedData: q.advancedData,
           })
         ),
       },

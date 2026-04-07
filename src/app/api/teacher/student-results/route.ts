@@ -76,3 +76,42 @@ export async function GET(request: Request) {
     totalPages: Math.ceil(total / limit),
   });
 }
+
+export async function DELETE(request: Request) {
+  const session = await auth();
+  if (!session?.user || session.user.role !== "TEACHER") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { ids } = await request.json();
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return NextResponse.json({ error: "No ids provided" }, { status: 400 });
+  }
+
+  // Verify these results belong to teacher's students
+  const enrollments = await prisma.classEnrollment.findMany({
+    where: { class: { teacherId: session.user.id } },
+    select: { userId: true },
+  });
+  const studentIds = new Set(enrollments.map((e: { userId: string }) => e.userId));
+
+  const results = await prisma.practiceResult.findMany({
+    where: { id: { in: ids } },
+    select: { id: true, userId: true },
+  });
+
+  const validIds = results.filter((r) => studentIds.has(r.userId)).map((r) => r.id);
+
+  if (validIds.length === 0) {
+    return NextResponse.json({ error: "No valid results to delete" }, { status: 404 });
+  }
+
+  // Delete student answers first (cascade should handle this, but be explicit)
+  await prisma.studentAnswer.deleteMany({ where: { practiceResultId: { in: validIds } } });
+  // Delete comments
+  await prisma.comment.deleteMany({ where: { practiceResultId: { in: validIds } } });
+  // Delete results
+  await prisma.practiceResult.deleteMany({ where: { id: { in: validIds } } });
+
+  return NextResponse.json({ deleted: validIds.length });
+}

@@ -44,3 +44,23 @@ export async function PUT(request: Request) {
 
   return NextResponse.json(test);
 }
+
+export async function DELETE(request: Request) {
+  const session = await auth();
+  if (!session?.user || session.user.role !== "TEACHER") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { id } = await request.json();
+  if (!id) return NextResponse.json({ error: "ID required" }, { status: 400 });
+
+  const existing = await prisma.practiceTest.findUnique({ where: { id } });
+  if (!existing || existing.createdById !== session.user.id) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  // Cascade delete: questions, sections, results, student answers all cascade via schema
+  await prisma.practiceTest.delete({ where: { id } });
+
+  return NextResponse.json({ success: true });
+}

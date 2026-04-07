@@ -18,6 +18,7 @@ export async function GET(
     include: {
       topic: { include: { language: true } },
       questions: { orderBy: { questionNumber: "asc" } },
+      sections: { orderBy: { sortOrder: "asc" } },
     },
   });
 
@@ -62,6 +63,19 @@ export async function GET(
       explanationMediaUrl: q.explanationMediaUrl,
       explanationMediaType: q.explanationMediaType,
       audioPlayLimit: q.audioPlayLimit,
+      sectionId: q.sectionId,
+      advancedData: q.advancedData,
+      parentQuestionId: q.parentQuestionId,
+    })),
+    sections: ((test as Record<string, unknown>).sections as Array<Record<string, unknown>> || []).map((s) => ({
+      id: s.id,
+      parentId: s.parentId,
+      level: s.level,
+      title: s.title,
+      description: s.description,
+      sortOrder: s.sortOrder,
+      mediaUrl: s.mediaUrl,
+      mediaType: s.mediaType,
     })),
   });
 }

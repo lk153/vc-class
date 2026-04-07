@@ -1,0 +1,1 @@
+ALTER TYPE "QuestionType" ADD VALUE 'WORD_BANK';

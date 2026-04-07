@@ -115,7 +115,7 @@ export default function VocabCsvImporter({ topicId }: Props) {
             >
               <span className="material-symbols-outlined text-[20px] text-[#2a14b4]/40">upload_file</span>
               <span className="text-sm font-body text-[#777586]">
-                {fileSelected ? fileInputRef.current?.files?.[0]?.name : "Choose CSV file..."}
+                {fileSelected ? fileInputRef.current?.files?.[0]?.name : t("chooseCsvFile")}
               </span>
               <input
                 ref={fileInputRef}

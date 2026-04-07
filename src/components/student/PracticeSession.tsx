@@ -17,7 +17,7 @@ type Question = {
   id: string;
   questionNumber: number;
   content: string;
-  questionType: "YES_NO" | "MULTIPLE_CHOICE" | "GAP_FILL";
+  questionType: "MULTIPLE_CHOICE" | "GAP_FILL" | "TRUE_FALSE" | "REORDER_WORDS" | "CUE_WRITING" | "PRONUNCIATION" | "STRESS" | "CLOZE_PASSAGE" | "MATCHING" | "WORD_BANK";
   answer1: string;
   answer2: string | null;
   answer3: string | null;

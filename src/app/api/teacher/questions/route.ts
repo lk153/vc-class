@@ -32,6 +32,8 @@ export async function PUT(request: Request) {
     explanationMediaUrl,
     explanationMediaType,
     audioPlayLimit,
+    sectionId,
+    advancedData,
   } = await request.json();
 
   // Verify ownership via practice test
@@ -68,6 +70,8 @@ export async function PUT(request: Request) {
       explanationMediaUrl: explanationMediaUrl ?? undefined,
       explanationMediaType: explanationMediaType ?? undefined,
       audioPlayLimit: audioPlayLimit ?? undefined,
+      sectionId: sectionId ?? undefined,
+      advancedData: advancedData ?? undefined,
     },
   });
 

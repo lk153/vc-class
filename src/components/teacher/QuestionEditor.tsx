@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import MediaPicker from "@/components/teacher/MediaPicker";
 
@@ -34,16 +33,18 @@ type Question = {
   explanationMediaUrl?: string | null;
   explanationMediaType?: string | null;
   audioPlayLimit?: number | null;
+  advancedData?: string | null;
+  sectionId?: string | null;
+  parentQuestionId?: string | null;
 };
 
 function toMediaVal(url?: string | null, type?: string | null): MediaVal {
   return url && type ? { url, type } : null;
 }
 
-export default function QuestionEditor({ question }: { question: Question }) {
+export default function QuestionEditor({ question, onSave }: { question: Question; onSave?: (updated: Question) => void }) {
   const t = useTranslations("teacher");
   const ct = useTranslations("common");
-  const router = useRouter();
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -56,6 +57,7 @@ export default function QuestionEditor({ question }: { question: Question }) {
   const [explMedia, setExplMedia] = useState<MediaVal>(toMediaVal(question.explanationMediaUrl, question.explanationMediaType));
   const [difficulty, setDifficulty] = useState(question.difficulty ?? 1);
   const [audioPlayLimit, setAudioPlayLimit] = useState<string>(question.audioPlayLimit != null ? String(question.audioPlayLimit) : "");
+  const [advancedData, setAdvancedData] = useState<string>(question.advancedData || "");
 
   const inputClass =
     "w-full px-4 py-3 rounded-lg bg-[#d9e3f6]/30 border-0 focus:outline-none focus:ring-2 focus:ring-[#2a14b4]/30 font-body text-[#121c2a] placeholder:text-[#777586] text-sm";
@@ -95,6 +97,7 @@ export default function QuestionEditor({ question }: { question: Question }) {
           explanationMediaUrl: explMedia?.url ?? null,
           explanationMediaType: explMedia?.type ?? null,
           audioPlayLimit: audioPlayLimit ? parseInt(audioPlayLimit) : null,
+          advancedData: advancedData || null,
         }),
       });
 
@@ -105,7 +108,33 @@ export default function QuestionEditor({ question }: { question: Question }) {
 
       toast.success(t("questionSaved"));
       setEditing(false);
-      router.refresh();
+      // Pass updated data to parent — no API refetch needed
+      onSave?.({
+        ...question,
+        content: fd.get("content") as string,
+        answer1: fd.get("answer1") as string,
+        answer2: (fd.get("answer2") as string) || null,
+        answer3: (fd.get("answer3") as string) || null,
+        answer4: (fd.get("answer4") as string) || null,
+        correctAnswer: fd.get("correctAnswer") as string,
+        timer: parseInt(fd.get("timer") as string) || 30,
+        contentMediaUrl: contentMedia?.url ?? null,
+        contentMediaType: contentMedia?.type ?? null,
+        answer1MediaUrl: a1Media?.url ?? null,
+        answer1MediaType: a1Media?.type ?? null,
+        answer2MediaUrl: a2Media?.url ?? null,
+        answer2MediaType: a2Media?.type ?? null,
+        answer3MediaUrl: a3Media?.url ?? null,
+        answer3MediaType: a3Media?.type ?? null,
+        answer4MediaUrl: a4Media?.url ?? null,
+        answer4MediaType: a4Media?.type ?? null,
+        difficulty,
+        explanation: (fd.get("explanation") as string) || null,
+        explanationMediaUrl: explMedia?.url ?? null,
+        explanationMediaType: explMedia?.type ?? null,
+        audioPlayLimit: audioPlayLimit ? parseInt(audioPlayLimit) : null,
+        advancedData: advancedData || null,
+      });
     } catch {
       toast.error(t("questionSaveFailed"));
     } finally {
@@ -225,6 +254,32 @@ export default function QuestionEditor({ question }: { question: Question }) {
           </div>
         </div>
 
+        {/* Advanced Data (type-specific) */}
+        {["REORDER_WORDS", "CUE_WRITING", "PRONUNCIATION", "STRESS", "CLOZE_PASSAGE", "TRUE_FALSE", "MATCHING", "WORD_BANK"].includes(question.questionType) && (
+          <div>
+            <label className={labelClass}>
+              Advanced Data (JSON)
+              <span className="font-normal ml-2 normal-case tracking-normal text-[#777586]">
+                {question.questionType === "REORDER_WORDS" && '{"fragments":["word1","word2"],"correctOrder":[0,1]}'}
+                {question.questionType === "CUE_WRITING" && '{"cues":["word1","word2"],"hint":"..."}'}
+                {question.questionType === "PRONUNCIATION" && '{"underlinedParts":["a","u","a","a"]}'}
+                {question.questionType === "STRESS" && '{"stressPositions":[2,1,3,2]}'}
+                {question.questionType === "CLOZE_PASSAGE" && '{"passage":"Text with {1} blanks"}'}
+                {question.questionType === "TRUE_FALSE" && 'Use answer1="True", answer2="False"'}
+                {question.questionType === "MATCHING" && '{"columnA":[...],"columnB":[...],"correctPairs":[[0,1]]}'}
+                {question.questionType === "WORD_BANK" && '{"wordBank":["word1","word2"],"sentences":[{"text":"Fill ___","answer":"word1"}]}'}
+              </span>
+            </label>
+            <textarea
+              value={advancedData}
+              onChange={(e) => setAdvancedData(e.target.value)}
+              rows={4}
+              placeholder='{"fragments": [...], "correctOrder": [...]}'
+              className={`${inputClass} resize-none font-mono text-xs`}
+            />
+          </div>
+        )}
+
         {/* Explanation */}
         <div>
           <label className={labelClass}>{t("explanationLabel")}</label>
@@ -280,7 +335,7 @@ export default function QuestionEditor({ question }: { question: Question }) {
 
   return (
     <div
-      className="group flex items-start justify-between py-4 border-b border-[#c7c4d7]/15 last:border-0 last:pb-0 hover:bg-[#f5f3ff] -mx-6 px-6 transition-colors duration-200 cursor-pointer"
+      className="group flex items-start justify-between py-3 cursor-pointer"
       onClick={() => setEditing(true)}
     >
       <div className="flex-1 min-w-0">
@@ -320,7 +375,7 @@ export default function QuestionEditor({ question }: { question: Question }) {
       </div>
       <button
         onClick={(e) => { e.stopPropagation(); setEditing(true); }}
-        className="w-8 h-8 rounded-full flex items-center justify-center text-[#777586] hover:text-[#2a14b4] hover:bg-[#e3dfff] transition-colors opacity-0 group-hover:opacity-100 shrink-0 ml-3"
+        className="w-8 h-8 rounded-full flex items-center justify-center text-[#c7c4d7] hover:text-[#2a14b4] hover:bg-[#e3dfff] transition-colors shrink-0 ml-3"
       >
         <span className="material-symbols-outlined text-[18px]">edit</span>
       </button>

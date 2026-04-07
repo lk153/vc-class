@@ -247,3 +247,29 @@ a[class*="bg-[#eff4ff]"] > .ripple-effect {
   50% { left: 40%; width: 40%; }
   100% { left: 100%; width: 30%; }
 }
+
+/* Toggle switch loading spinner */
+@keyframes toggle-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.toggle-loading::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2.5px solid transparent;
+  border-top-color: #2a14b4;
+  border-right-color: #2a14b4;
+  animation: toggle-spin 0.8s linear infinite;
+}
+.toggle-loading-active::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2.5px solid transparent;
+  border-top-color: #ffffff;
+  border-right-color: #ffffff;
+  animation: toggle-spin 0.8s linear infinite;
+}

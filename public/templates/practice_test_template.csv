@@ -1,5 +1,13 @@
-question_number,content,question_type,content_media_url,answer_1,answer_1_media_url,answer_2,answer_2_media_url,answer_3,answer_3_media_url,answer_4,answer_4_media_url,correct_answer,timer,difficulty,explanation
-1,Is the sky blue?,YES_NO,,Yes,,No,,,,,,Yes,30,1,
-2,What color is grass?,MULTIPLE_CHOICE,,Red,,Blue,,Green,,Yellow,,Green,30,1,
-3,The sun rises in the ___,GAP_FILL,,east,,,,,,,,east,30,1,
-4,What animal makes this sound??,MULTIPLE_CHOICE,https://example.com/tiger.mp3,Elephant,https://example.com/elephant.jpg,Tiger,https://example.com/tiger.jpg,Lion,https://example.com/lion.jpg,Bear,https://example.com/bear.jpg,Tiger,30,2,Tigers produce a distinctive roar
+question_number,content,question_type,content_media_url,answer_1,answer_1_media_url,answer_2,answer_2_media_url,answer_3,answer_3_media_url,answer_4,answer_4_media_url,correct_answer,timer,difficulty,explanation,advanced_data
+1,Is the sky blue?,TRUE_FALSE,,True,,False,,,,,,True,30,1,The sky appears blue due to light scattering.,
+2,What color is grass?,MULTIPLE_CHOICE,,Red,,Blue,,Green,,Yellow,,Green,30,1,,
+3,The sun rises in the ___,GAP_FILL,,east,,,,,,,,east,30,1,,
+4,What animal makes this sound?,MULTIPLE_CHOICE,https://example.com/tiger.mp3,Elephant,https://example.com/elephant.jpg,Tiger,https://example.com/tiger.jpg,Lion,https://example.com/lion.jpg,Bear,https://example.com/bear.jpg,Tiger,45,2,Tigers produce a distinctive roar,
+5,Is telepathy a form of communication?,TRUE_FALSE,,True,,False,,,,,,True,30,1,,
+6,Reorder to make a sentence,REORDER_WORDS,,,,,,,,,,"Telepathy helps us feel calm.",45,2,Use present simple.,"{""fragments"":[""telepathy"",""helps"",""us feel"",""calm""],""correctOrder"":[0,1,2,3]}"
+7,Write a sentence using the cues,CUE_WRITING,,,,,,,,,,"We communicate with each other every day.",60,2,,"{""cues"":[""we"",""communicate"",""with each other"",""every day""],""hint"":""Use present simple tense""}"
+8,"Choose the word whose underlined part is pronounced differently",PRONUNCIATION,,language,,cultural,,interact,,landline,,interact,30,2,,"{""underlinedParts"":[""a"",""u"",""a"",""a""]}"
+9,"Choose the word whose main stress is different",STRESS,,social,,video,,media,,trainee,,trainee,30,2,,"{""stressPositions"":[1,1,1,2]}"
+10,"Read the passage and choose the best answer for blank (1)",CLOZE_PASSAGE,,word,,phrase,,letter,,signal,,word,45,2,"The (1) ___ 'telepathy' has been derived from 'tele' meaning distance.",
+11,"Match the words with their meanings",MATCHING,,,,,,,,,,,,45,2,,"{""columnA"":[""communication"",""telepathy"",""conference"",""translate""],""columnB"":[""a formal meeting"",""exchanging information"",""mind-to-mind contact"",""convert to another language""],""correctPairs"":[[0,1],[1,2],[2,0],[3,3]]}"
+12,"Fill in the blanks with words from the box",WORD_BANK,,,,,,,,,,,,45,2,,"{""wordBank"":[""emails"",""texting"",""signs"",""letters""],""sentences"":[{""text"":""Teenagers use abbreviations when ___."",""answer"":""texting""},{""text"":""Deaf people communicate by using ___."",""answer"":""signs""},{""text"":""People used to write ___ to keep in touch."",""answer"":""letters""},{""text"":""People send ___ to contact anyone in the world."",""answer"":""emails""}],""allowReuse"":false}"

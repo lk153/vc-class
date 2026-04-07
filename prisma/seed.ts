@@ -277,7 +277,7 @@ async function main() {
 
   // ── Questions: Park Test ──
   const parkQuestions = [
-    { id: "cmmx7zspd000145wxpesmiotj", num: 1, content: "Is the sky blue?", type: "YES_NO" as const, a1: "Yes", a2: "No", a3: null, a4: null, correct: "Yes" },
+    { id: "cmmx7zspd000145wxpesmiotj", num: 1, content: "Is the sky blue?", type: "TRUE_FALSE" as const, a1: "True", a2: "False", a3: null, a4: null, correct: "True" },
     { id: "cmmx7zspd000245wx1p1q13fm", num: 2, content: "What color is grass?", type: "MULTIPLE_CHOICE" as const, a1: "Red", a2: "Blue", a3: "Green", a4: "Yellow", correct: "Green" },
     { id: "cmmx7zspd000345wxkmorftpa", num: 3, content: "The sun rises in the ___", type: "GAP_FILL" as const, a1: "east", a2: null, a3: null, a4: null, correct: "east" },
   ];
@@ -295,21 +295,21 @@ async function main() {
 
   // ── Questions: Countryside Test 1 (20 questions) ──
   const csQuestions = [
-    { id: "cmmzr7nv60015buwx8p41htex", num: 1, content: "Is a barn used for storing crops or housing animals?", type: "YES_NO" as const, a1: "Yes", a2: "No", a3: null, a4: null, correct: "Yes" },
+    { id: "cmmzr7nv60015buwx8p41htex", num: 1, content: "Is a barn used for storing crops or housing animals?", type: "TRUE_FALSE" as const, a1: "True", a2: "False", a3: null, a4: null, correct: "True" },
     { id: "cmmzr7nv60016buwxrjy30prm", num: 2, content: "What is a meadow?", type: "MULTIPLE_CHOICE" as const, a1: "A type of flower", a2: "A field of grass for hay or grazing", a3: "A small river", a4: "A farm building", correct: "A field of grass for hay or grazing" },
     { id: "cmmzr7nv60017buwx3xn3adi5", num: 3, content: "The farmer drives the ___ across the field.", type: "GAP_FILL" as const, a1: "tractor", a2: null, a3: null, a4: null, correct: "tractor" },
     { id: "cmmzr7nv60018buwxkippywss", num: 4, content: "What is the purpose of a scarecrow?", type: "MULTIPLE_CHOICE" as const, a1: "To water crops", a2: "To scare birds away from crops", a3: "To feed animals", a4: "To mark the farm boundary", correct: "To scare birds away from crops" },
-    { id: "cmmzr7nv60019buwxm8vuepvf", num: 5, content: "Is a rooster an adult female chicken?", type: "YES_NO" as const, a1: "Yes", a2: "No", a3: null, a4: null, correct: "No" },
+    { id: "cmmzr7nv60019buwxm8vuepvf", num: 5, content: "Is a rooster an adult female chicken?", type: "TRUE_FALSE" as const, a1: "True", a2: "False", a3: null, a4: null, correct: "False" },
     { id: "cmmzr7nv6001abuwxyxuiurnc", num: 6, content: "A piece of land planted with fruit trees is called an ___.", type: "GAP_FILL" as const, a1: "orchard", a2: null, a3: null, a4: null, correct: "orchard" },
     { id: "cmmzr7nv6001bbuwxkcdl2lnj", num: 7, content: "What does a windmill use to grind grain or pump water?", type: "MULTIPLE_CHOICE" as const, a1: "Electricity", a2: "Water power", a3: "Wind power", a4: "Solar power", correct: "Wind power" },
     { id: "cmmzr7nv6001cbuwxltijnah6", num: 8, content: "The ___ keeps the sheep from wandering off.", type: "GAP_FILL" as const, a1: "fence", a2: null, a3: null, a4: null, correct: "fence" },
     { id: "cmmzr7nv6001dbuwxinu8jb3k", num: 9, content: "What is a stream?", type: "MULTIPLE_CHOICE" as const, a1: "A large lake", a2: "A small narrow river", a3: "A deep well", a4: "A wide ocean", correct: "A small narrow river" },
-    { id: "cmmzr7nv6001ebuwx14eohzq7", num: 10, content: "Is hay used as animal feed?", type: "YES_NO" as const, a1: "Yes", a2: "No", a3: null, a4: null, correct: "Yes" },
+    { id: "cmmzr7nv6001ebuwx14eohzq7", num: 10, content: "Is hay used as animal feed?", type: "TRUE_FALSE" as const, a1: "True", a2: "False", a3: null, a4: null, correct: "True" },
     { id: "cmmzr7nv6001fbuwxn90dpp3x", num: 11, content: "Grass that has been cut and dried for animal feed is called ___.", type: "GAP_FILL" as const, a1: "hay", a2: null, a3: null, a4: null, correct: "hay" },
     { id: "cmmzr7nv6001gbuwxr83t7ozf", num: 12, content: "Where are horses kept at night?", type: "MULTIPLE_CHOICE" as const, a1: "In the barn", a2: "In the orchard", a3: "In the stable", a4: "In the meadow", correct: "In the stable" },
     { id: "cmmzr7nv6001hbuwxv27wxo3x", num: 13, content: "The harvest begins in early ___.", type: "GAP_FILL" as const, a1: "autumn", a2: null, a3: null, a4: null, correct: "autumn" },
     { id: "cmmzr7nv6001ibuwxfdq889mc", num: 14, content: "What is a plough used for?", type: "MULTIPLE_CHOICE" as const, a1: "Cutting trees", a2: "Turning over soil before planting", a3: "Watering crops", a4: "Feeding animals", correct: "Turning over soil before planting" },
-    { id: "cmmzr7nv6001jbuwxpzoaspuh", num: 15, content: "Is the countryside known for being noisy and crowded?", type: "YES_NO" as const, a1: "Yes", a2: "No", a3: null, a4: null, correct: "No" },
+    { id: "cmmzr7nv6001jbuwxpzoaspuh", num: 15, content: "Is the countryside known for being noisy and crowded?", type: "TRUE_FALSE" as const, a1: "True", a2: "False", a3: null, a4: null, correct: "False" },
     { id: "cmmzr7nv6001kbuwxi8owqelb", num: 16, content: "What is a crop?", type: "MULTIPLE_CHOICE" as const, a1: "A farm building", a2: "A type of fence", a3: "A plant grown in large quantities for food", a4: "A farming tool", correct: "A plant grown in large quantities for food" },
     { id: "cmmzr7nv6001lbuwxtc9lbgdd", num: 17, content: "The ___ crows at dawn every morning.", type: "GAP_FILL" as const, a1: "rooster", a2: null, a3: null, a4: null, correct: "rooster" },
     { id: "cmmzr7nv6001mbuwx23qvoqdf", num: 18, content: "We picked apples from the ___.", type: "GAP_FILL" as const, a1: "orchard", a2: null, a3: null, a4: null, correct: "orchard" },
@@ -354,9 +354,9 @@ async function main() {
     },
     {
       id: "cmmedia0001q004", num: 4, content: "Is a taxi a form of public transportation?",
-      type: "YES_NO" as const,
-      a1: "Yes", a2: "No", a3: null, a4: null,
-      correct: "Yes",
+      type: "TRUE_FALSE" as const,
+      a1: "True", a2: "False", a3: null, a4: null,
+      correct: "True",
       difficulty: 1, explanation: "Taxis are a common form of transportation in cities.",
     },
     {
@@ -428,28 +428,28 @@ async function main() {
   const results = [
     { id: "cmmx9rxuy001345wxsox89ppq", total: 3, correct: 2, incorrect: 1, score: 66.67, date: "2026-03-19T09:30:25.445Z",
       answers: [
-        { id: "cmmx9rxv0001445wxe7j7r1fi", qId: "cmmx7zspd000145wxpesmiotj", answer: "Yes", isCorrect: true, attempt: 1 },
+        { id: "cmmx9rxv0001445wxe7j7r1fi", qId: "cmmx7zspd000145wxpesmiotj", answer: "True", isCorrect: true, attempt: 1 },
         { id: "cmmx9rxv0001545wxz7ahqxml", qId: "cmmx7zspd000245wx1p1q13fm", answer: "Green", isCorrect: true, attempt: 3 },
         { id: "cmmx9rxv0001645wxo9z40ddu", qId: "cmmx7zspd000345wxkmorftpa", answer: "aaa", isCorrect: false, attempt: 3 },
       ],
     },
     { id: "cmmxjigrc000w9swxzspx0hsc", total: 3, correct: 3, incorrect: 0, score: 100, date: "2026-03-19T14:02:59.538Z",
       answers: [
-        { id: "cmmxjigre000x9swx2vc9ufpm", qId: "cmmx7zspd000145wxpesmiotj", answer: "Yes", isCorrect: true, attempt: 1 },
+        { id: "cmmxjigre000x9swx2vc9ufpm", qId: "cmmx7zspd000145wxpesmiotj", answer: "True", isCorrect: true, attempt: 1 },
         { id: "cmmxjigre000y9swxnnupdu6t", qId: "cmmx7zspd000245wx1p1q13fm", answer: "Green", isCorrect: true, attempt: 1 },
         { id: "cmmxjigre000z9swxp2ot6lkn", qId: "cmmx7zspd000345wxkmorftpa", answer: "east", isCorrect: true, attempt: 1 },
       ],
     },
     { id: "cmmxjlgkv00109swxqe1i036d", total: 3, correct: 3, incorrect: 0, score: 100, date: "2026-03-19T14:05:19.272Z",
       answers: [
-        { id: "cmmxjlgkx00119swx7r0jd28c", qId: "cmmx7zspd000145wxpesmiotj", answer: "Yes", isCorrect: true, attempt: 1 },
+        { id: "cmmxjlgkx00119swx7r0jd28c", qId: "cmmx7zspd000145wxpesmiotj", answer: "True", isCorrect: true, attempt: 1 },
         { id: "cmmxjlgkx00129swxv74tgriq", qId: "cmmx7zspd000245wx1p1q13fm", answer: "Green", isCorrect: true, attempt: 3 },
         { id: "cmmxjlgkx00139swx275y0gdr", qId: "cmmx7zspd000345wxkmorftpa", answer: "east", isCorrect: true, attempt: 3 },
       ],
     },
     { id: "cmmxk5tpd00149swxbod2b7mq", total: 3, correct: 2, incorrect: 1, score: 66.67, date: "2026-03-19T14:21:09.402Z",
       answers: [
-        { id: "cmmxk5tpf00159swx3m43a79j", qId: "cmmx7zspd000145wxpesmiotj", answer: "Yes", isCorrect: true, attempt: 1 },
+        { id: "cmmxk5tpf00159swx3m43a79j", qId: "cmmx7zspd000145wxpesmiotj", answer: "True", isCorrect: true, attempt: 1 },
         { id: "cmmxk5tpf00169swxwtt0nats", qId: "cmmx7zspd000245wx1p1q13fm", answer: "Green", isCorrect: true, attempt: 2 },
         { id: "cmmxk5tpf00179swxkxm185ek", qId: "cmmx7zspd000345wxkmorftpa", answer: "", isCorrect: false, attempt: 3 },
       ],

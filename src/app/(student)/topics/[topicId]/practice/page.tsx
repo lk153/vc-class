@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import PracticeSession from "@/components/student/PracticeSession";
+import ExamSession from "@/components/student/ExamSession";
 
 export default async function PracticePage({
   params,
@@ -29,7 +30,10 @@ export default async function PracticePage({
   if (testId) {
     practiceTest = await prisma.practiceTest.findUnique({
       where: { id: testId, topicId },
-      include: { questions: { orderBy: { questionNumber: "asc" } } },
+      include: {
+        questions: { orderBy: { questionNumber: "asc" } },
+        sections: { orderBy: { sortOrder: "asc" } },
+      },
     });
   } else {
     const now = new Date();
@@ -45,11 +49,16 @@ export default async function PracticePage({
           { OR: [{ availableTo: null }, { availableTo: { gte: now } }] },
         ],
       },
-      include: { questions: { orderBy: { questionNumber: "asc" } } },
+      include: {
+        questions: { orderBy: { questionNumber: "asc" } },
+        sections: { orderBy: { sortOrder: "asc" } },
+      },
     });
   }
 
   if (!practiceTest || practiceTest.questions.length === 0) notFound();
+
+  const sections = (practiceTest as any).sections || [];
 
   const questions = practiceTest.questions.map((q: any) => ({
     id: q.id,
@@ -77,8 +86,33 @@ export default async function PracticePage({
     explanationMediaUrl: q.explanationMediaUrl,
     explanationMediaType: q.explanationMediaType,
     audioPlayLimit: q.audioPlayLimit,
+    sectionId: q.sectionId,
+    advancedData: q.advancedData,
   }));
 
+  // Exam mode: test has sections
+  if (sections.length > 0) {
+    return (
+      <ExamSession
+        topicId={topicId}
+        practiceTestId={practiceTest.id}
+        testTitle={practiceTest.title}
+        questions={questions}
+        sections={sections.map((s: any) => ({
+          id: s.id,
+          parentId: s.parentId,
+          level: s.level,
+          title: s.title,
+          description: s.description,
+          sortOrder: s.sortOrder,
+          mediaUrl: s.mediaUrl,
+          mediaType: s.mediaType,
+        }))}
+      />
+    );
+  }
+
+  // Classic mode: one question at a time
   return (
     <PracticeSession
       topicId={topicId}

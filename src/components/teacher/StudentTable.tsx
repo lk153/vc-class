@@ -42,48 +42,60 @@ export default function StudentTable({ students }: { students: Student[] }) {
     <div>
       {/* Stats Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-        <div className="bg-white rounded-xl ambient-shadow p-5 flex items-center gap-4">
-          <div className="w-10 h-10 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
-            <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">group</span>
-          </div>
-          <div>
-            <p className="font-body font-bold text-2xl text-[#121c2a] leading-none">{totalStudents}</p>
-            <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">{t("totalEnrolled")}</p>
-          </div>
-        </div>
-        <div className="bg-white rounded-xl ambient-shadow p-5 flex items-center gap-4">
-          <div className="w-10 h-10 rounded-lg bg-[#a6f2d1]/40 flex items-center justify-center shrink-0">
-            <span className="material-symbols-outlined text-[20px] text-[#1b6b51]">verified</span>
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <p className="font-body font-bold text-2xl text-[#1b6b51] leading-none">{activeStudents}</p>
-              <span className="w-2 h-2 rounded-full bg-[#1b6b51] animate-pulse" />
+        <div className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">group</span>
             </div>
-            <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">{t("active")}</p>
+            <div>
+              <p className="font-body font-bold text-2xl text-[#121c2a] leading-none">{totalStudents}</p>
+              <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">{t("totalEnrolled")}</p>
+            </div>
           </div>
+          <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#2a14b4]/10"><div className="h-full w-full bg-[#2a14b4] rounded-full" /></div>
         </div>
-        <div className="bg-white rounded-xl ambient-shadow p-5 flex items-center gap-4">
-          <div className="w-10 h-10 rounded-lg bg-[#d9e3f6] flex items-center justify-center shrink-0">
-            <span className="material-symbols-outlined text-[20px] text-[#777586]">person_off</span>
+        <div className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-lg bg-[#a6f2d1]/40 flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[20px] text-[#1b6b51]">verified</span>
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="font-body font-bold text-2xl text-[#1b6b51] leading-none">{activeStudents}</p>
+                <span className="w-2 h-2 rounded-full bg-[#1b6b51] animate-pulse" />
+              </div>
+              <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">{t("active")}</p>
+            </div>
           </div>
-          <div>
-            <p className="font-body font-bold text-2xl text-[#777586] leading-none">{totalStudents - activeStudents}</p>
-            <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">{t("inactive")}</p>
-          </div>
+          <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#1b6b51]/10"><div className="h-full w-full bg-[#1b6b51] rounded-full" /></div>
         </div>
-        <div className="bg-white rounded-xl ambient-shadow p-5 flex items-center gap-4">
-          <div className="w-10 h-10 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
-            <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">menu_book</span>
+        <div className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-lg bg-[#d9e3f6] flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[20px] text-[#777586]">person_off</span>
+            </div>
+            <div>
+              <p className="font-body font-bold text-2xl text-[#777586] leading-none">{totalStudents - activeStudents}</p>
+              <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">{t("inactive")}</p>
+            </div>
           </div>
-          <div>
-            <p className="font-body font-bold text-2xl text-[#2a14b4] leading-none">
-              {totalStudents > 0
-                ? (students.reduce((sum, s) => sum + s.topicCount, 0) / totalStudents).toFixed(1)
-                : "0"}
-            </p>
-            <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">{t("avgTopics")}</p>
+          <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#777586]/10"><div className="h-full w-full bg-[#777586] rounded-full" /></div>
+        </div>
+        <div className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">menu_book</span>
+            </div>
+            <div>
+              <p className="font-body font-bold text-2xl text-[#2a14b4] leading-none">
+                {totalStudents > 0
+                  ? (students.reduce((sum, s) => sum + s.topicCount, 0) / totalStudents).toFixed(1)
+                  : "0"}
+              </p>
+              <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">{t("avgTopics")}</p>
+            </div>
           </div>
+          <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#2a14b4]/10"><div className="h-full w-full bg-[#2a14b4] rounded-full" /></div>
         </div>
       </div>
 

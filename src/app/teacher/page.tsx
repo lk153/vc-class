@@ -47,6 +47,8 @@ export default async function TeacherDashboard() {
       icon: "group",
       iconBg: "bg-[#e3dfff]",
       iconColor: "text-[#2a14b4]",
+      barColor: "bg-[#2a14b4]",
+      barBg: "bg-[#2a14b4]/10",
     },
     {
       label: t("activeStudents"),
@@ -54,6 +56,8 @@ export default async function TeacherDashboard() {
       icon: "verified",
       iconBg: "bg-[#a6f2d1]/40",
       iconColor: "text-[#1b6b51]",
+      barColor: "bg-[#1b6b51]",
+      barBg: "bg-[#1b6b51]/10",
     },
     {
       label: t("totalTopics"),
@@ -61,6 +65,8 @@ export default async function TeacherDashboard() {
       icon: "menu_book",
       iconBg: "bg-[#ffdada]/40",
       iconColor: "text-[#7b0020]",
+      barColor: "bg-[#7b0020]",
+      barBg: "bg-[#7b0020]/10",
     },
   ];
 
@@ -89,17 +95,20 @@ export default async function TeacherDashboard() {
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className="bg-white rounded-xl ambient-shadow p-5 flex items-center gap-4"
+            className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden"
           >
-            <div className={`w-10 h-10 rounded-lg ${stat.iconBg} flex items-center justify-center shrink-0`}>
-              <span className={`material-symbols-outlined text-[20px] ${stat.iconColor}`}>{stat.icon}</span>
+            <div className="flex items-center gap-4">
+              <div className={`w-10 h-10 rounded-lg ${stat.iconBg} flex items-center justify-center shrink-0`}>
+                <span className={`material-symbols-outlined text-[20px] ${stat.iconColor}`}>{stat.icon}</span>
+              </div>
+              <div>
+                <p className="font-body font-bold text-2xl text-[#121c2a] leading-none">{stat.value}</p>
+                <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">
+                  {stat.label}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="font-body font-bold text-2xl text-[#121c2a] leading-none">{stat.value}</p>
-              <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mt-1">
-                {stat.label}
-              </p>
-            </div>
+            <div className={`absolute bottom-0 left-0 right-0 h-[3px] ${stat.barBg}`}><div className={`h-full w-full ${stat.barColor} rounded-full`} /></div>
           </div>
         ))}
       </div>

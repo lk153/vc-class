@@ -17,9 +17,22 @@ enum AccountStatus {
 }
 
 enum QuestionType {
-  YES_NO
   MULTIPLE_CHOICE
   GAP_FILL
+  REORDER_WORDS
+  CUE_WRITING
+  PRONUNCIATION
+  STRESS
+  CLOZE_PASSAGE
+  TRUE_FALSE
+  MATCHING
+  WORD_BANK
+}
+
+enum SectionLevel {
+  PART
+  GROUP
+  EXERCISE
 }
 
 enum ClassStatus {
@@ -183,8 +196,28 @@ model PracticeTest {
 
   questions       Question[]
   practiceResults PracticeResult[]
+  sections        TestSection[]
 
   @@map("practice_tests")
+}
+
+model TestSection {
+  id             String       @id @default(cuid())
+  practiceTestId String       @map("practice_test_id")
+  practiceTest   PracticeTest @relation(fields: [practiceTestId], references: [id], onDelete: Cascade)
+  parentId       String?      @map("parent_id")
+  parent         TestSection? @relation("SectionTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children       TestSection[] @relation("SectionTree")
+  level          SectionLevel
+  title          String
+  description    String?
+  sortOrder      Int          @default(0) @map("sort_order")
+  mediaUrl       String?      @map("media_url")
+  mediaType      String?      @map("media_type")
+
+  questions      Question[]
+
+  @@map("test_sections")
 }
 
 model Question {
@@ -224,6 +257,18 @@ model Question {
   correctAnswer String   @map("correct_answer")
   timer         Int      @default(30)
   createdAt     DateTime @default(now()) @map("created_at")
+
+  // ── Section link ──
+  sectionId  String?      @map("section_id")
+  section    TestSection? @relation(fields: [sectionId], references: [id], onDelete: SetNull)
+
+  // ── Advanced question data (JSON) ──
+  advancedData  String?  @map("advanced_data")
+
+  // ── Sub-question grouping (CLOZE_PASSAGE blanks) ──
+  parentQuestionId  String?    @map("parent_question_id")
+  parentQuestion    Question?  @relation("SubQuestions", fields: [parentQuestionId], references: [id], onDelete: Cascade)
+  subQuestions      Question[] @relation("SubQuestions")
 
   studentAnswers StudentAnswer[]
   bookmarks      QuestionBookmark[]
