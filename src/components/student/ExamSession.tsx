@@ -62,6 +62,7 @@ export default function ExamSession({
   totalTime = 2700,
 }: Props) {
   const t = useTranslations("student");
+  const ct = useTranslations("common");
   const router = useRouter();
   const { play: playAudio, stopAll } = useAudioManager();
 
@@ -219,12 +220,12 @@ export default function ExamSession({
       <div
         key={q.id}
         ref={(el) => { questionRefs.current[q.id] = el; }}
-        className={`py-4 ${submitted && selected ? (isQuestionCorrect(q, selected) ? "" : "bg-[#ffdada]/10 -mx-4 px-4 rounded-lg") : ""}`}
+        className={`py-5 ${submitted && selected ? (isQuestionCorrect(q, selected) ? "" : "bg-[#ffdada]/10 -mx-4 px-4 rounded-xl") : ""}`}
       >
-        <div className="flex gap-3">
-          <span className="font-body font-bold text-sm text-[#2a14b4] shrink-0 w-8">{q.questionNumber}.</span>
+        <div className="flex gap-4">
+          <span className="font-body font-bold text-base text-[#121c2a] shrink-0 w-8">{q.questionNumber}.</span>
           <div className="flex-1">
-            <p className="font-body text-sm text-[#121c2a] mb-2">{q.content}</p>
+            <p className="font-body text-base text-[#121c2a] leading-relaxed mb-3 font-medium">{q.content}</p>
 
             {/* Content media */}
             {q.contentMediaUrl && q.contentMediaType === "image" && (
@@ -275,43 +276,63 @@ export default function ExamSession({
                 return (
                   <input type="text" value={selected} onChange={(e) => setAnswer(q.id, e.target.value)} disabled={submitted}
                     placeholder="Type your answer..."
-                    className="w-full px-4 py-2.5 rounded-lg bg-white border border-[#c7c4d7]/20 text-sm font-body focus:ring-2 focus:ring-[#2a14b4]/20 outline-none disabled:opacity-50"
+                    className="w-full px-4 py-3.5 rounded-xl bg-white border border-[#e2e8f0] text-base font-body focus:ring-2 focus:ring-[#2a14b4]/20 focus:border-[#2a14b4]/30 outline-none disabled:opacity-50 transition-colors"
                   />
                 );
               }
 
               // Default: MCQ / TRUE_FALSE
               return (
-              <div className="flex flex-wrap gap-2">
-                {opts.map((opt, i) => (
+              <div className="space-y-2.5 ml-1">
+                {opts.map((opt, i) => {
+                  const isCorrectOpt = submitted && opt.toLowerCase().trim() === q.correctAnswer.toLowerCase().trim();
+                  const isWrongSelected = submitted && selected === opt && !isCorrectOpt;
+                  const isSelected = selected === opt && !submitted;
+
+                  return (
                   <button
                     key={i}
                     onClick={() => !submitted && setAnswer(q.id, opt)}
                     disabled={submitted}
-                    className={`px-4 py-2 rounded-lg text-sm font-body transition-all border ${
-                      submitted
-                        ? opt.toLowerCase().trim() === q.correctAnswer.toLowerCase().trim()
-                          ? "bg-[#a6f2d1]/30 border-[#1b6b51]/30 text-[#1b6b51] font-medium"
-                          : selected === opt
-                          ? "bg-[#ffdada]/30 border-[#7b0020]/30 text-[#7b0020]"
-                          : "bg-white border-[#c7c4d7]/20 text-[#777586] opacity-50"
-                        : selected === opt
-                        ? "bg-[#2a14b4]/10 border-[#2a14b4]/40 text-[#2a14b4] font-medium"
-                        : "bg-white border-[#c7c4d7]/20 text-[#464554] hover:border-[#2a14b4]/30"
+                    className={`w-full text-left px-4 py-3.5 rounded-xl flex items-center gap-4 transition-all border ${
+                      isCorrectOpt
+                        ? "bg-[#a6f2d1]/20 border-[#1b6b51]/30"
+                        : isWrongSelected
+                        ? "bg-[#ffdada]/20 border-[#7b0020]/30"
+                        : isSelected
+                        ? "bg-[#2a14b4]/5 border-[#2a14b4]/40"
+                        : submitted
+                        ? "bg-white/50 border-[#c7c4d7]/10 opacity-40"
+                        : "bg-white border-[#e2e8f0] hover:border-[#2a14b4]/30 hover:bg-[#2a14b4]/[0.02]"
                     }`}
                   >
-                    <span className="font-bold mr-1.5">{OPTION_LABELS[i]}.</span>
-                    {opt}
+                    <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-body font-bold shrink-0 ${
+                      isCorrectOpt ? "bg-[#1b6b51] text-white"
+                      : isWrongSelected ? "bg-[#7b0020] text-white"
+                      : isSelected ? "bg-[#2a14b4] text-white"
+                      : "bg-[#e3dfff] text-[#2a14b4]"
+                    }`}>{OPTION_LABELS[i]}</span>
+                    <span className={`text-[15px] font-body ${
+                      isCorrectOpt ? "text-[#1b6b51] font-semibold"
+                      : isWrongSelected ? "text-[#7b0020] font-medium"
+                      : isSelected ? "text-[#2a14b4] font-semibold"
+                      : "text-[#121c2a]"
+                    }`}>{opt}</span>
+                    {isCorrectOpt && <span className="material-symbols-outlined text-[#1b6b51] text-[18px] ml-auto" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>}
+                    {isWrongSelected && <span className="material-symbols-outlined text-[#7b0020] text-[18px] ml-auto" style={{ fontVariationSettings: "'FILL' 1" }}>cancel</span>}
+                    {isSelected && <span className="material-symbols-outlined text-[#2a14b4] text-[18px] ml-auto">check_circle</span>}
                   </button>
-                ))}
+                  );
+                })}
               </div>
               );
             })()}
 
             {/* Show correct answer after submit if wrong */}
             {submitted && selected && selected.toLowerCase().trim() !== q.correctAnswer.toLowerCase().trim() && (
-              <p className="text-xs font-body text-[#1b6b51] mt-1">
-                Correct: <span className="font-medium">{q.correctAnswer}</span>
+              <p className="text-sm font-body text-[#1b6b51] mt-2 flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                <span className="font-semibold">{q.correctAnswer}</span>
               </p>
             )}
           </div>
@@ -325,16 +346,37 @@ export default function ExamSession({
     const children = getChildren(section.id);
     const sectionQuestions = getQuestionsForSection(section.id);
 
-    const levelStyle = {
-      PART: "text-xl font-bold text-[#2a14b4] mt-8 mb-4 pb-2 border-b-2 border-[#2a14b4]/20",
-      GROUP: "text-base font-bold text-[#1b6b51] mt-6 mb-3 uppercase tracking-wider",
-      EXERCISE: "text-sm text-[#464554] mt-4 mb-2 italic",
-    };
+    // Compute question range for EXERCISE level
+    let questionRange = "";
+    if (section.level === "EXERCISE" && sectionQuestions.length > 0) {
+      const first = sectionQuestions[0].questionNumber;
+      const last = sectionQuestions[sectionQuestions.length - 1].questionNumber;
+      questionRange = first === last ? `Question ${first}` : `Questions ${first}–${last}`;
+    }
 
     return (
       <div key={section.id}>
-        <h3 className={`font-body ${levelStyle[section.level]}`}>{section.title}</h3>
-        {section.description && (
+        {section.level === "PART" && (
+          <h3 className="font-body text-xl font-bold text-[#2a14b4] mt-10 mb-4 pb-2 border-b-2 border-[#2a14b4]/20">
+            {section.title}
+          </h3>
+        )}
+        {section.level === "GROUP" && (
+          <h4 className="font-body text-base font-bold text-[#1b6b51] mt-6 mb-3 uppercase tracking-wider">
+            {section.title}
+          </h4>
+        )}
+        {section.level === "EXERCISE" && (
+          <div className="mt-5 mb-3 flex items-baseline gap-3 flex-wrap">
+            <p className="text-sm font-body text-[#464554] italic">{section.title}</p>
+            {questionRange && (
+              <span className="text-[10px] font-body font-bold uppercase tracking-widest text-[#2a14b4] bg-[#e3dfff] px-2.5 py-0.5 rounded-full">
+                {questionRange}
+              </span>
+            )}
+          </div>
+        )}
+        {section.description && section.level !== "EXERCISE" && (
           <p className="text-sm font-body text-[#777586] mb-3 -mt-1">{section.description}</p>
         )}
         {/* Section-level media */}
@@ -470,7 +512,7 @@ export default function ExamSession({
               onClick={() => setShowSubmitConfirm(false)}
               className="px-6 py-2.5 rounded-full text-sm font-body font-medium text-[#464554] bg-[#f0eef6] hover:bg-[#e3dfff] hover:text-[#121c2a] transition-colors"
             >
-              {t("cancel") || "Cancel"}
+              {ct("cancel")}
             </button>
             <button
               onClick={() => { setShowSubmitConfirm(false); handleSubmit(); }}
