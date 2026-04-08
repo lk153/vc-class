@@ -49,16 +49,19 @@ export async function PUT(request: Request) {
   }
 
   const now = learned ? new Date() : null;
-  const ops = vocabularyIds.map((vocabularyId: string) =>
-    prisma.flashcardProgress.upsert({
-      where: {
-        userId_vocabularyId: { userId: session.user.id, vocabularyId },
-      },
-      update: { learned, learnedAt: now },
-      create: { userId: session.user.id, vocabularyId, learned, learnedAt: now },
-    })
+  const userId = session.user.id;
+
+  await prisma.$executeRawUnsafe(
+    `INSERT INTO flashcard_progress (id, vocabulary_id, user_id, learned, learned_at)
+     SELECT gen_random_uuid(), vid, $1, $2, $3
+     FROM unnest($4::text[]) AS vid
+     ON CONFLICT (user_id, vocabulary_id)
+     DO UPDATE SET learned = $2, learned_at = $3`,
+    userId,
+    learned,
+    now,
+    vocabularyIds,
   );
-  await prisma.$transaction(ops);
 
   return NextResponse.json({ updated: vocabularyIds.length });
 }

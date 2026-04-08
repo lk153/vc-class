@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
+
+export const metadata: Metadata = { title: "Practice Tests" };
 import PracticeTestGrid from "@/components/teacher/PracticeTestGrid";
 
 export default async function PracticeTestsPage() {

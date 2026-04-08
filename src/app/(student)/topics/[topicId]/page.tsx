@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
@@ -8,6 +9,22 @@ type VocabItem = { id: string; word: string; type: string | null; pronunciation:
 type PracticeTestItem = { id: string; title: string; _count: { questions: number } };
 type ProgressItem = { vocabularyId: string };
 type PracticeResultItem = { id: string; practiceTestId: string; score: number };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ topicId: string }>;
+}): Promise<Metadata> {
+  const { topicId } = await params;
+  const topic = await prisma.topic.findUnique({
+    where: { id: topicId },
+    select: { title: true, description: true },
+  });
+  return {
+    title: topic?.title ?? "Topic Detail",
+    description: topic?.description ?? "Study vocabulary and take practice tests for this topic.",
+  };
+}
 
 export default async function TopicDetailPage({
   params,

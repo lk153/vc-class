@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import StudentTable from "@/components/teacher/StudentTable";
+
+export const metadata: Metadata = { title: "Students" };
 
 export default async function StudentsPage() {
   const session = await auth();

@@ -1,7 +1,24 @@
+import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import FlashcardDeck from "@/components/student/FlashcardDeck";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ topicId: string }>;
+}): Promise<Metadata> {
+  const { topicId } = await params;
+  const topic = await prisma.topic.findUnique({
+    where: { id: topicId },
+    select: { title: true },
+  });
+  return {
+    title: topic ? `Flashcards — ${topic.title}` : "Flashcards",
+    description: `Study vocabulary flashcards${topic ? ` for ${topic.title}` : ""}. Flip cards to memorize words and track your progress.`,
+  };
+}
 
 export default async function FlashcardsPage({
   params,

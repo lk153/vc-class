@@ -1,6 +1,15 @@
+import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import TeacherShell from "@/components/teacher/TeacherShell";
+
+export const metadata: Metadata = {
+  title: {
+    default: "Teacher Dashboard",
+    template: "%s | VC Class Teacher",
+  },
+  robots: { index: false, follow: false },
+};
 
 export default async function TeacherLayout({
   children,

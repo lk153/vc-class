@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import AssignmentPanel from "@/components/teacher/AssignmentPanel";
+
+export const metadata: Metadata = { title: "Assignments" };
 
 export default async function AssignmentsPage() {
   const session = await auth();

@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import TopicList from "@/components/teacher/TopicList";
+
+export const metadata: Metadata = { title: "Topics" };
 
 export default async function TeacherTopicsPage() {
   const session = await auth();

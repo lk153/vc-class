@@ -1,5 +1,8 @@
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import StudentResultsTable from "@/components/teacher/StudentResultsTable";
+
+export const metadata: Metadata = { title: "Student Results" };
 
 export default async function StudentResultsPage() {
   const t = await getTranslations("teacher");

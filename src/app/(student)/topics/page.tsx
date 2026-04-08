@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import TopicGrid from "@/components/student/TopicGrid";
 import { getTranslations } from "next-intl/server";
+
+export const metadata: Metadata = {
+  title: "My Topics",
+  description: "Browse your assigned topics, study vocabulary, and track your learning progress.",
+};
 
 export default async function TopicsPage() {
   const session = await auth();

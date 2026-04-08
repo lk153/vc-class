@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import MediaTable from "@/components/teacher/MediaTable";
+
+export const metadata: Metadata = { title: "Media Library" };
 
 export default async function MediaPage() {
   const session = await auth();

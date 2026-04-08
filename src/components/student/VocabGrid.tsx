@@ -210,8 +210,8 @@ export default function VocabGrid({ vocabulary, learnedIds, totalCount }: Props)
           </h3>
           <p className="text-sm font-body text-[#464554] mb-6 leading-relaxed">
             {confirmAction === "learn"
-              ? `Mark all ${totalCount} words as learned?`
-              : `Reset all ${totalCount} words to not learned?`
+              ? t("markAllLearned", { count: totalCount })
+              : t("resetAllLearned", { count: totalCount })
             }
           </p>
           <div className="flex gap-3 justify-center">
@@ -237,14 +237,14 @@ export default function VocabGrid({ vocabulary, learnedIds, totalCount }: Props)
                   });
                   if (res.ok) {
                     setCurrentLearnedIds(learned ? vocabulary.map((v) => v.id) : []);
-                    toast.success(learned ? `${totalCount} words marked as learned` : `${totalCount} words reset`);
+                    toast.success(learned ? t("markedAsLearned", { count: totalCount }) : t("wordsReset", { count: totalCount }));
                     setConfirmAction(null);
                     router.refresh();
                   } else {
-                    toast.error("Failed to update");
+                    toast.error(t("failedToUpdate"));
                   }
                 } catch {
-                  toast.error("Failed to update");
+                  toast.error(t("failedToUpdate"));
                 } finally {
                   setSaving(false);
                 }

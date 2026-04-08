@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
+
+export const metadata: Metadata = { title: "Classes" };
 import { DAY_TRANSLATION_KEYS } from "@/lib/days";
 
 function formatSchedule(schedule: string, t: (key: string) => string): string {

@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import PracticeSession from "@/components/student/PracticeSession";
 import ExamSession from "@/components/student/ExamSession";
+
+export const metadata: Metadata = {
+  title: "Practice Test",
+  description: "Take a practice test to assess your vocabulary knowledge and language skills.",
+};
 
 export default async function PracticePage({
   params,
