@@ -45,6 +45,7 @@ export async function GET(request: Request) {
 
   // Compute usage count for each media file in current page
   const fileUrls = results.map((m: any) => m.fileUrl);
+  const fileUrlSet = new Set(fileUrls);
   const usageResults = fileUrls.length > 0
     ? await prisma.question.findMany({
         where: {
@@ -72,7 +73,7 @@ export async function GET(request: Request) {
   const usageMap = new Map<string, number>();
   for (const q of usageResults) {
     for (const url of [q.contentMediaUrl, q.answer1MediaUrl, q.answer2MediaUrl, q.answer3MediaUrl, q.answer4MediaUrl, q.explanationMediaUrl]) {
-      if (url && fileUrls.includes(url)) {
+      if (url && fileUrlSet.has(url)) {
         usageMap.set(url, (usageMap.get(url) || 0) + 1);
       }
     }
@@ -92,13 +93,17 @@ export async function GET(request: Request) {
     total,
     page,
     totalPages: Math.ceil(total / limit),
-    stats: {
-      totalFiles: allItems.length,
-      totalSize: allItems.reduce((sum: number, m: { fileSize: number }) => sum + m.fileSize, 0),
-      imageCount: allItems.filter((m: { fileType: string }) => m.fileType.startsWith("image/")).length,
-      audioCount: allItems.filter((m: { fileType: string }) => m.fileType.startsWith("audio/")).length,
-      videoCount: allItems.filter((m: { fileType: string }) => m.fileType.startsWith("video/")).length,
-    },
+    stats: allItems.reduce(
+      (acc, m: { fileType: string; fileSize: number }) => {
+        acc.totalFiles++;
+        acc.totalSize += m.fileSize;
+        if (m.fileType.startsWith("image/")) acc.imageCount++;
+        else if (m.fileType.startsWith("audio/")) acc.audioCount++;
+        else if (m.fileType.startsWith("video/")) acc.videoCount++;
+        return acc;
+      },
+      { totalFiles: 0, totalSize: 0, imageCount: 0, audioCount: 0, videoCount: 0 },
+    ),
   });
 }
 
@@ -150,10 +155,8 @@ export async function DELETE(request: Request) {
     where: { id: { in: ids }, uploadedById: session.user.id },
   });
 
-  // Delete from Vercel Blob
-  for (const m of mediaItems) {
-    try { await del(m.fileUrl); } catch { /* ignore */ }
-  }
+  // Delete from Vercel Blob (parallel)
+  await Promise.all(mediaItems.map((m) => del(m.fileUrl).catch(() => null)));
 
   // Delete from DB
   await prisma.media.deleteMany({

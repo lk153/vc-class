@@ -2,6 +2,14 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+async function getTeacherStudentIds(teacherId: string) {
+  const enrollments = await prisma.classEnrollment.findMany({
+    where: { class: { teacherId } },
+    select: { userId: true },
+  });
+  return [...new Set(enrollments.map((e: { userId: string }) => e.userId))];
+}
+
 export async function GET(request: Request) {
   const session = await auth();
   if (!session?.user || session.user.role !== "TEACHER") {
@@ -15,12 +23,7 @@ export async function GET(request: Request) {
   const dateFrom = searchParams.get("dateFrom") || "";
   const dateTo = searchParams.get("dateTo") || "";
 
-  // Get student IDs enrolled in this teacher's classes
-  const enrollments = await prisma.classEnrollment.findMany({
-    where: { class: { teacherId: session.user.id } },
-    select: { userId: true },
-  });
-  const studentIds = [...new Set(enrollments.map((e: any) => e.userId))];
+  const studentIds = await getTeacherStudentIds(session.user.id);
 
   const where = {
     userId: { in: studentIds },
@@ -89,11 +92,7 @@ export async function DELETE(request: Request) {
   }
 
   // Verify these results belong to teacher's students
-  const enrollments = await prisma.classEnrollment.findMany({
-    where: { class: { teacherId: session.user.id } },
-    select: { userId: true },
-  });
-  const studentIds = new Set(enrollments.map((e: { userId: string }) => e.userId));
+  const studentIds = new Set(await getTeacherStudentIds(session.user.id));
 
   const results = await prisma.practiceResult.findMany({
     where: { id: { in: ids } },
@@ -106,11 +105,11 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: "No valid results to delete" }, { status: 404 });
   }
 
-  // Delete student answers first (cascade should handle this, but be explicit)
-  await prisma.studentAnswer.deleteMany({ where: { practiceResultId: { in: validIds } } });
-  // Delete comments
-  await prisma.comment.deleteMany({ where: { practiceResultId: { in: validIds } } });
-  // Delete results
+  // Delete dependent records in parallel, then results
+  await Promise.all([
+    prisma.studentAnswer.deleteMany({ where: { practiceResultId: { in: validIds } } }),
+    prisma.comment.deleteMany({ where: { practiceResultId: { in: validIds } } }),
+  ]);
   await prisma.practiceResult.deleteMany({ where: { id: { in: validIds } } });
 
   return NextResponse.json({ deleted: validIds.length });

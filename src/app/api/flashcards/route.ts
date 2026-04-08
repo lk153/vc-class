@@ -48,17 +48,17 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  let updated = 0;
-  for (const vocabularyId of vocabularyIds) {
-    await prisma.flashcardProgress.upsert({
+  const now = learned ? new Date() : null;
+  const ops = vocabularyIds.map((vocabularyId: string) =>
+    prisma.flashcardProgress.upsert({
       where: {
         userId_vocabularyId: { userId: session.user.id, vocabularyId },
       },
-      update: { learned, learnedAt: learned ? new Date() : null },
-      create: { userId: session.user.id, vocabularyId, learned, learnedAt: learned ? new Date() : null },
-    });
-    updated++;
-  }
+      update: { learned, learnedAt: now },
+      create: { userId: session.user.id, vocabularyId, learned, learnedAt: now },
+    })
+  );
+  await prisma.$transaction(ops);
 
-  return NextResponse.json({ updated });
+  return NextResponse.json({ updated: vocabularyIds.length });
 }
