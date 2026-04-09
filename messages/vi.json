@@ -25,6 +25,8 @@
     "loggingIn": "Đang đăng nhập...",
     "register": "Đăng ký",
     "logout": "Đăng xuất",
+    "loggingOut": "Đang đăng xuất...",
+    "loggingOutHint": "Vui lòng chờ trong khi chúng tôi đăng xuất",
     "email": "Email",
     "password": "Mật khẩu",
     "name": "Họ và tên",

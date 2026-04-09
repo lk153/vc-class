@@ -25,6 +25,8 @@
     "loggingIn": "Logging in...",
     "register": "Register",
     "logout": "Logout",
+    "loggingOut": "Logging out...",
+    "loggingOutHint": "Please wait while we sign you out",
     "email": "Email",
     "password": "Password",
     "name": "Full Name",
