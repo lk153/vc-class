@@ -118,11 +118,11 @@ export default async function TeacherDashboard() {
 
       {/* Recent Results Table */}
       <div className="bg-white rounded-xl ambient-shadow p-4 md:p-8">
-        <div className="flex items-baseline justify-between mb-8">
-          <h2 className="font-body font-bold text-2xl text-[#121c2a]">{t("recentResults")}</h2>
+        <div className="flex items-center justify-between gap-4 mb-8">
+          <h2 className="font-body font-bold text-xl sm:text-2xl text-[#121c2a]">{t("recentResults")}</h2>
           <Link
             href="/teacher/student-results"
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[14px] font-body font-bold text-[#2a14b4] bg-[#eff4ff] hover:bg-[#2a14b4] hover:text-white transition-all"
+            className="inline-flex items-center gap-1 shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-[13px] sm:text-[14px] font-body font-bold text-[#2a14b4] bg-[#eff4ff] hover:bg-[#2a14b4] hover:text-white transition-all whitespace-nowrap"
           >
             {t("viewAll")}
             <span className="material-symbols-outlined text-[12px]">arrow_forward</span>

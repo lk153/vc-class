@@ -16,6 +16,22 @@ export default function LoginPage() {
   const error = searchParams.get("error");
   const callbackUrl = searchParams.get("callbackUrl") || "/topics";
 
+  function handleRipple(e: React.MouseEvent<HTMLButtonElement>) {
+    const button = e.currentTarget;
+    const rect = button.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+
+    const ripple = document.createElement("span");
+    ripple.className = "ripple-effect";
+    ripple.style.width = ripple.style.height = `${size}px`;
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+    button.appendChild(ripple);
+    ripple.addEventListener("animationend", () => ripple.remove());
+  }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
@@ -49,110 +65,202 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#e8e6ef] px-6 py-8">
-      <div className="w-[90vw] max-w-6xl h-[75vh] min-h-[500px] bg-white rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.15)] overflow-hidden flex flex-col md:flex-row">
-        {/* Left Panel — Branding */}
-        <div className="relative md:w-[45%] bg-gradient-to-br from-[#2a14b4] via-[#3d2cc7] to-[#6c3fd6] p-10 md:p-14 flex flex-col justify-end overflow-hidden">
-          {/* Decorative elements */}
-          <svg className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none" viewBox="0 0 400 500" fill="none">
-            <circle cx="50" cy="80" r="6" fill="white" />
-            <circle cx="350" cy="60" r="4" fill="white" />
-            <circle cx="80" cy="420" r="5" fill="white" />
-            <circle cx="320" cy="380" r="3" fill="white" />
-            <rect x="160" y="40" width="40" height="40" rx="4" stroke="white" strokeWidth="2" strokeDasharray="4 4" />
-            <path d="M30 350 Q100 300 80 400 Q60 450 150 430 Q200 420 180 460" stroke="white" strokeWidth="1.5" fill="none" />
-            <path d="M250 350 Q320 310 300 410 Q280 460 370 440" stroke="white" strokeWidth="1.5" fill="none" />
-            <rect x="40" y="200" width="8" height="8" fill="white" opacity="0.4" transform="rotate(45 44 204)" />
-            <rect x="300" y="150" width="12" height="12" fill="white" opacity="0.3" transform="rotate(45 306 156)" />
-            <path d="M340 100 L350 90 M345 95 L345 95" stroke="white" strokeWidth="2" strokeLinecap="round" />
-            <path d="M60 130 L70 120 M65 125 L65 125" stroke="white" strokeWidth="2" strokeLinecap="round" />
-          </svg>
+    <>
+      <style>{`
+        .login-glass {
+          background: rgba(255,255,255,0.75);
+          backdrop-filter: blur(24px);
+          -webkit-backdrop-filter: blur(24px);
+          border-radius: 1rem;
+          padding: 1.75rem;
+          box-shadow: 0 10px 40px -10px rgba(74,58,255,0.12);
+        }
+        @media (min-width: 1024px) {
+          .login-glass {
+            background: transparent !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            border-radius: 0 !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+          }
+        }
+      `}</style>
 
-          <div className="relative z-10">
-            <h2 className="font-body text-4xl md:text-5xl text-white font-bold leading-tight mb-4">
-              {t("welcomeBack")}
-            </h2>
-            <p className="text-white/80 font-body text-base leading-relaxed">
-              {t("welcomeMessage")}
+      <div className="min-h-screen flex flex-col lg:flex-row bg-[#f8f9ff]">
+        {/* ── Left Panel: Branding ── */}
+        <section className="relative lg:w-[45%] flex flex-col justify-end lg:justify-center items-center overflow-hidden h-[280px] lg:h-auto lg:min-h-screen">
+          {/* Gradient background */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,#5e42ce,#4a3aff_50%,#1a0b4e)]" />
+
+          {/* Dot pattern overlay */}
+          <div
+            className="absolute inset-0 opacity-[0.03] pointer-events-none"
+            style={{
+              backgroundImage: "radial-gradient(#fff 1px, transparent 1px)",
+              backgroundSize: "40px 40px",
+            }}
+          />
+
+          {/* Decorative blurred orbs */}
+          <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#e0e7ff] rounded-full mix-blend-screen blur-[80px] opacity-30" />
+          <div className="absolute -bottom-24 -left-24 w-[400px] lg:w-[600px] h-[400px] lg:h-[600px] bg-[#4a3aff]/20 rounded-full blur-[120px]" />
+
+          {/* Mobile branding */}
+          <div className="relative z-10 text-center px-8 pb-14 lg:hidden">
+            <h1 className="font-headline text-3xl font-black text-white tracking-tight drop-shadow-lg">
+              VC Class
+            </h1>
+            <p className="font-headline text-base text-white/80 font-semibold mt-1">
+              {t("brandingSubtitle")}
             </p>
           </div>
-        </div>
 
-        {/* Right Panel — Form */}
-        <div className="md:w-[55%] p-10 md:px-16 md:py-14 flex flex-col justify-center bg-white">
-          <h1 className="font-body font-bold text-3xl md:text-4xl text-[#121c2a] mb-2">
-            {t("welcomeBack")}
-          </h1>
-          <p className="text-[#777586] font-body text-base mb-10">
-            {t("welcomeMessage")}
-          </p>
-
-          {error === "inactive" && (
-            <div className="bg-warning-light text-warning rounded-lg p-3 mb-6 text-sm font-body">
-              {t("inactiveError")}
+          {/* Desktop branding */}
+          <div className="relative z-10 w-full max-w-xl px-14 xl:px-16 hidden lg:flex lg:flex-col lg:gap-8">
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full text-white/90 text-sm font-semibold tracking-wide uppercase bg-white/5 backdrop-blur-xl border border-white/10 w-fit">
+              <span className="w-2 h-2 rounded-full bg-[#818cf8] animate-pulse" />
+              {t("brandingSubtitle")}
             </div>
-          )}
+            <h1 className="font-headline text-5xl xl:text-6xl font-extrabold text-white leading-[1.1] tracking-tight">
+              {t("brandingTitle")}
+            </h1>
+            <p className="text-white/60 text-lg leading-relaxed max-w-md">
+              {t("brandingMessage")}
+            </p>
+          </div>
+        </section>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="relative">
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                disabled={loading}
-                placeholder=" "
-                className="peer w-full px-4 pt-6 pb-2 rounded-xl border border-[#d0cde0] bg-white font-body text-sm text-[#121c2a] focus:outline-none focus:ring-2 focus:ring-[#2a14b4]/30 focus:border-[#2a14b4] transition disabled:opacity-60"
-              />
-              <label
-                htmlFor="email"
-                className="absolute left-4 top-2 text-[11px] font-body text-[#777586] pointer-events-none transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-focus:top-2 peer-focus:text-[11px] peer-focus:text-[#2a14b4]"
-              >
-                {t("email")}
-              </label>
-            </div>
+        {/* ── Right Panel: Login Form ── */}
+        <section className="relative flex-1 flex flex-col items-center justify-start lg:justify-center px-5 lg:px-16 -mt-8 lg:mt-0 z-20">
+          {/* Ambient blurs — desktop only */}
+          <div className="hidden lg:block absolute top-0 right-0 w-64 h-64 bg-[#e0e7ff]/20 blur-[100px] rounded-full pointer-events-none" />
+          <div className="hidden lg:block absolute bottom-0 left-0 w-96 h-96 bg-[#4a3aff]/8 blur-[120px] rounded-full pointer-events-none" />
 
-            <div className="relative">
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                disabled={loading}
-                placeholder=" "
-                className="peer w-full px-4 pt-6 pb-2 rounded-xl border border-[#d0cde0] bg-white font-body text-sm text-[#121c2a] focus:outline-none focus:ring-2 focus:ring-[#2a14b4]/30 focus:border-[#2a14b4] transition disabled:opacity-60"
-              />
-              <label
-                htmlFor="password"
-                className="absolute left-4 top-2 text-[11px] font-body text-[#777586] pointer-events-none transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-focus:top-2 peer-focus:text-[11px] peer-focus:text-[#2a14b4]"
-              >
-                {t("password")}
-              </label>
-            </div>
+          <div className="w-full max-w-md lg:max-w-lg">
+            <div className="login-glass">
+              {/* Heading */}
+              <div className="text-center lg:text-left mb-8 lg:mb-10">
+                <h2 className="font-headline text-3xl lg:text-4xl xl:text-5xl font-extrabold text-[#1e1b4b] tracking-tight mb-2">
+                  {t("welcomeBack")}
+                </h2>
+                <p className="text-[#5a5d7e] font-medium text-sm lg:text-base">
+                  {t("welcomeSubtitle")}
+                </p>
+              </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-[#2a14b4] to-[#5c3fd6] hover:from-[#2310a0] hover:to-[#5235c0] text-white font-body font-bold py-3.5 rounded-full shadow-lg shadow-[#2a14b4]/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base"
-            >
-              {loading && (
-                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
+              {error === "inactive" && (
+                <div className="bg-warning-light text-warning rounded-xl p-3 mb-6 text-sm font-body">
+                  {t("inactiveError")}
+                </div>
               )}
-              {loading ? t("loggingIn") : t("login")}
-            </button>
-          </form>
 
-          <p className="text-center text-sm text-[#777586] font-body mt-8">
-            {t("noAccount")}{" "}
-            <Link href="/register" className="text-[#2a14b4] hover:underline font-bold">
-              {t("register")}
-            </Link>
-          </p>
-        </div>
+              {/* Form */}
+              <form onSubmit={handleSubmit} className="space-y-5 lg:space-y-6">
+                {/* Email */}
+                <div className="space-y-1.5">
+                  <label
+                    htmlFor="email"
+                    className="font-headline text-[11px] font-bold text-[#4a3aff] uppercase tracking-widest ml-1"
+                  >
+                    {t("email")}
+                  </label>
+                  <div className="relative">
+                    <svg
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#7c7ea1]"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={1.5}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
+                      />
+                    </svg>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      required
+                      disabled={loading}
+                      placeholder={t("emailPlaceholder")}
+                      className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white border border-[#c4c6d0]/30 focus:border-[#4a3aff]/50 focus:ring-2 focus:ring-[#4a3aff]/10 placeholder:text-[#7c7ea1]/50 transition-all text-[#1e1b4b] font-medium disabled:opacity-60 outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Password */}
+                <div className="space-y-1.5">
+                  <label
+                    htmlFor="password"
+                    className="font-headline text-[11px] font-bold text-[#4a3aff] uppercase tracking-widest ml-1"
+                  >
+                    {t("password")}
+                  </label>
+                  <div className="relative">
+                    <svg
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#7c7ea1]"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={1.5}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+                      />
+                    </svg>
+                    <input
+                      id="password"
+                      name="password"
+                      type="password"
+                      required
+                      disabled={loading}
+                      placeholder="••••••••"
+                      className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white border border-[#c4c6d0]/30 focus:border-[#4a3aff]/50 focus:ring-2 focus:ring-[#4a3aff]/10 placeholder:text-[#7c7ea1]/50 transition-all text-[#1e1b4b] font-medium disabled:opacity-60 outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Login Button */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  onClick={handleRipple}
+                  className="relative overflow-hidden !mt-8 w-full py-4 bg-gradient-to-r from-[#4a3aff] to-[#5e42ce] text-white font-headline font-extrabold text-lg rounded-full shadow-lg shadow-[#4a3aff]/25 hover:shadow-xl hover:shadow-[#4a3aff]/30 hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {loading ? (
+                    <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                  ) : null}
+                  {loading ? t("loggingIn") : t("login")}
+                  {!loading && (
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                  )}
+                </button>
+              </form>
+
+              {/* Register link */}
+              <p className="text-center text-sm text-[#5a5d7e] font-medium mt-8 lg:mt-10">
+                {t("noAccount")}{" "}
+                <Link
+                  href="/register"
+                  className="text-[#4a3aff] font-bold hover:underline decoration-2 underline-offset-4"
+                >
+                  {t("register")}
+                </Link>
+              </p>
+            </div>
+          </div>
+        </section>
       </div>
-    </div>
+    </>
   );
 }

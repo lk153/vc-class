@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aura Lexicon Assessment - IELTS Writing Task 2</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-high": "#ebe6f1",
+                    "on-tertiary": "#fff7f9",
+                    "surface-container-highest": "#e5e0ed",
+                    "on-secondary": "#fcf7ff",
+                    "on-primary-container": "#ffffff",
+                    "on-primary-fixed": "#ffffff",
+                    "on-tertiary-container": "#664263",
+                    "on-secondary-fixed-variant": "#5d596e",
+                    "surface-container-low": "#f7f2fa",
+                    "inverse-surface": "#0e0e12",
+                    "secondary-fixed": "#e6dff9",
+                    "surface-container-lowest": "#ffffff",
+                    "error": "#a8364b",
+                    "on-secondary-fixed": "#403d51",
+                    "outline": "#7c7984",
+                    "tertiary": "#795374",
+                    "primary-fixed": "#6b45fe",
+                    "primary": "#5e35f1",
+                    "surface-dim": "#ddd8e4",
+                    "on-surface": "#33313a",
+                    "surface-container": "#f1ecf6",
+                    "secondary": "#605c72",
+                    "outline-variant": "#b4b0bc",
+                    "surface-variant": "#e5e0ed",
+                    "tertiary-dim": "#6c4768",
+                    "on-surface-variant": "#605e68",
+                    "on-tertiary-fixed": "#52304f",
+                    "tertiary-fixed": "#ffcef6",
+                    "tertiary-container": "#ffcef6",
+                    "surface-bright": "#fdf8fe",
+                    "on-background": "#33313a",
+                    "error-container": "#f97386",
+                    "primary-dim": "#5221e6",
+                    "error-dim": "#6b0221",
+                    "on-error": "#fff7f7",
+                    "on-secondary-container": "#534f64",
+                    "surface": "#fdf8fe",
+                    "on-primary-fixed-variant": "#dbd3ff",
+                    "primary-container": "#6b45fe",
+                    "tertiary-fixed-dim": "#f0c0e7",
+                    "on-error-container": "#6e0523",
+                    "primary-fixed-dim": "#5e35f1",
+                    "secondary-container": "#e6dff9",
+                    "inverse-primary": "#927dff",
+                    "surface-tint": "#5e35f1",
+                    "secondary-fixed-dim": "#d7d1ea",
+                    "inverse-on-surface": "#9f9ca2",
+                    "on-primary": "#fbf6ff",
+                    "secondary-dim": "#545065",
+                    "on-tertiary-fixed-variant": "#714c6d",
+                    "background": "#fdf8fe"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .writing-canvas::-webkit-scrollbar { width: 6px; }
+        .writing-canvas::-webkit-scrollbar-track { background: transparent; }
+        .writing-canvas::-webkit-scrollbar-thumb { background: #e5e0ed; border-radius: 10px; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface overflow-hidden">
+<!-- Top Progress Focus Bar -->
+<div class="fixed top-0 left-0 w-full h-1 bg-surface-variant z-[60]">
+<div class="h-full bg-gradient-to-r from-primary to-primary-container w-[65%]"></div>
+</div>
+<!-- Navigation Drawer -->
+<aside class="fixed left-0 top-0 h-full w-72 z-40 p-6 bg-[#f7f2fa] dark:bg-[#1c1b1f] rounded-r-2xl shadow-[32px_0_32px_rgba(94,53,241,0.06)] hidden md:block">
+<div class="flex flex-col h-full">
+<div class="mb-8 px-2">
+<h2 class="font-manrope text-sm font-medium text-[#5e35f1] dark:text-[#d0bcff] uppercase tracking-widest">Exam Progress</h2>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 p-3 transition-colors text-[#33313a] dark:text-[#e6e1e9] opacity-70 hover:bg-[#f1ecf6] dark:hover:bg-[#312e37] hover:translate-x-1 duration-200 font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="headset">headset</span>
+<span>Listening Section</span>
+</a>
+<a class="flex items-center gap-3 p-3 transition-colors text-[#33313a] dark:text-[#e6e1e9] opacity-70 hover:bg-[#f1ecf6] dark:hover:bg-[#312e37] hover:translate-x-1 duration-200 font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="edit_note">edit_note</span>
+<span>Writing Task 1</span>
+</a>
+<a class="flex items-center gap-3 p-3 transition-colors bg-[#e5e0ed] dark:bg-[#49454f] text-[#5e35f1] dark:text-[#d0bcff] font-bold rounded-lg hover:translate-x-1 duration-200 font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="history_edu" style="font-variation-settings: 'FILL' 1;">history_edu</span>
+<span>Writing Task 2</span>
+</a>
+<a class="flex items-center gap-3 p-3 transition-colors text-[#33313a] dark:text-[#e6e1e9] opacity-70 hover:bg-[#f1ecf6] dark:hover:bg-[#312e37] hover:translate-x-1 duration-200 font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="list_alt">list_alt</span>
+<span>Exam Overview</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-outline-variant/15">
+<div class="flex items-center gap-4 px-2">
+<img class="w-10 h-10 rounded-full bg-surface-container" data-alt="professional portrait of an academic proctor in a clean studio setting with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDna0rH8EjZnoWI5ypulBgKelxIrQkVwCWf7MwOUK8Z7_mGtWZo1JsVcmPrqH4jI4-0nTOtyC1iFOPOKr36Q_RJR_HjNaZdtj1xEMsBp-0zPLFWv9d3hcYRiplMMni2ZITEJ_3soxdZeeqOCKSo6bmWdBRpfbHNuhxIdNNxoI52FhyV7gHYH9MG5FdoUUNm46hfj3N6WaIQQ1N8Qn1Np_jPEgBXgyNkHQ33oVBbnImAgNaO383S7JYenPsuwzF923M9JOVpFJbt_5Q"/>
+<div>
+<p class="text-xs font-bold">Academic Proctor</p>
+<p class="text-[10px] opacity-60">Session #742-A</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Workspace -->
+<main class="md:ml-72 flex flex-col h-screen">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-8 py-4 w-full max-w-full bg-[#fdf8fe] dark:bg-[#1c1b1f] z-30">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#5e35f1]" data-icon="school">school</span>
+<h1 class="font-manrope tracking-tight font-bold text-lg text-[#5e35f1] dark:text-[#d0bcff]">Aura Lexicon Assessment</h1>
+</div>
+<div class="flex items-center gap-6">
+<!-- Timer Display -->
+<div class="flex items-center gap-3 px-4 py-2 bg-surface-container rounded-full">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="timer">timer</span>
+<span class="font-mono font-bold text-primary tracking-widest text-sm">34:12</span>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center">
+<img class="rounded-full" data-alt="minimalist user avatar initials on a soft lavender background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_miqoyfetNSHHQIlesFptRj4fbOYx43Lrolr8VRtJad7La1by9enaMLRRIQL3B2F57B2QQKrQfyBMorxHLu5xM6v1YDR6980_7tWAkSsxIO_a9ZrYkzNeLV4Uh7Z_mHoOWRLcswuSm_VYW_OyI_OJDOiZwX6ksX5inFMeozlEPvuQmbxEeykFV64XI22jJUPNi7vcZ8eURaq1_eXsglFaa_zaXz-t94ybZA-Q6cO14qQBZ4_x0L5WxhAabFjY4i2UaKOSPy3mn38"/>
+</div>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto px-8 md:px-16 lg:px-24 py-8 pb-32">
+<!-- Question Content -->
+<div class="max-w-4xl mx-auto space-y-12">
+<!-- Prompt Card -->
+<section class="bg-surface-container-low p-8 rounded-xl relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-8xl" data-icon="format_quote">format_quote</span>
+</div>
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-4">
+<span class="bg-primary/10 text-primary text-[10px] font-extrabold px-2 py-0.5 rounded tracking-tighter uppercase">Academic Module</span>
+<span class="text-on-surface-variant text-[10px] font-bold uppercase tracking-widest">Task 2: Opinion Essay</span>
+</div>
+<h2 class="text-2xl font-headline font-bold text-on-surface leading-tight mb-6">
+                            Some people believe that the best way to reduce crime is to give longer prison sentences. Others, however, believe there are better alternative ways to reduce crime.
+                        </h2>
+<div class="space-y-4 text-on-surface-variant font-body leading-relaxed text-lg italic border-l-4 border-primary/20 pl-6 py-2">
+                            Discuss both views and give your own opinion. You should write at least 250 words and spend about 40 minutes on this task.
+                        </div>
+</div>
+</section>
+<!-- Writing Canvas Area -->
+<section class="relative">
+<div class="flex justify-between items-center mb-4">
+<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant opacity-60" for="writing-input">Your Response</label>
+<div class="flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest">
+<span class="flex items-center gap-1.5 px-3 py-1 bg-surface-container rounded-full text-primary">
+<span class="material-symbols-outlined text-xs" data-icon="description">description</span>
+                                Word Count: 152
+                            </span>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_24px_rgba(94,53,241,0.04)] focus-within:ring-2 focus-within:ring-primary/40 transition-all group min-h-[500px] flex flex-col">
+<textarea class="writing-canvas w-full flex-1 p-10 bg-transparent border-none focus:ring-0 text-on-surface font-body text-lg leading-[1.8] resize-none outline-none" id="writing-input" placeholder="Begin typing your essay here..." spellcheck="false">It is often argued that lengthening the duration of incarceration for offenders is the most effective deterrent to criminal activity. While this approach provides a sense of retributive justice for many in society, I would argue that it is a short-sighted solution. Focusing purely on punishment ignores the underlying socio-economic factors that drive individuals towards crime in the first place.
+
+Alternative measures, such as community service and rehabilitation programs, offer a more nuanced approach to public safety. For instance, vocational training within correctional facilities can provide inmates with the necessary skills to transition back into society as productive citizens. This proactive stance on rehabilitation has been shown to significantly reduce recidivism rates in various Nordic countries.
+
+Furthermore, investment in early childhood education and local community infrastructure...</textarea>
+<!-- Utility Footer -->
+<div class="flex items-center justify-between px-6 py-4 border-t border-outline-variant/10 bg-surface-container-low/30">
+<div class="flex gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="undo">undo</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="redo">redo</span>
+</button>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Auto-saved 2 minutes ago</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 left-0 md:left-72 right-0 flex justify-around items-center h-20 px-12 bg-[#fdf8fe]/70 dark:bg-[#1c1b1f]/70 backdrop-blur-xl border-t-[0.5px] border-[#5e35f1]/15 z-50 shadow-[0_-12px_32px_rgba(94,53,241,0.06)]">
+<button class="flex flex-col items-center justify-center text-[#33313a] dark:text-[#e6e1e9] opacity-60 hover:opacity-100 transition-opacity active:scale-90 duration-100">
+<span class="material-symbols-outlined mb-1" data-icon="arrow_back">arrow_back</span>
+<span class="font-manrope text-[10px] uppercase tracking-widest font-semibold">Previous</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#33313a] dark:text-[#e6e1e9] opacity-60 hover:opacity-100 transition-opacity active:scale-90 duration-100">
+<span class="material-symbols-outlined mb-1" data-icon="flag">flag</span>
+<span class="font-manrope text-[10px] uppercase tracking-widest font-semibold">Flag Question</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#5e35f1] dark:text-[#d0bcff] scale-110 active:scale-90 duration-100">
+<span class="material-symbols-outlined mb-1" data-icon="arrow_forward">arrow_forward</span>
+<span class="font-manrope text-[10px] uppercase tracking-widest font-semibold">Next</span>
+</button>
+</nav>
+<!-- Signature Texture Decoration -->
+<div class="fixed bottom-24 right-8 w-64 h-64 bg-gradient-to-tr from-primary/5 to-transparent rounded-full -z-10 blur-3xl"></div>
+</main>
+</body></html>

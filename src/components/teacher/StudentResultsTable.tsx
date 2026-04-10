@@ -98,30 +98,30 @@ export default function StudentResultsTable() {
             className="w-full pl-11 pr-4 py-2.5 bg-[#d9e3f6]/50 border-none rounded-full text-sm font-body focus:ring-2 focus:ring-[#2a14b4]/20 placeholder:text-[#464554]/50 outline-none"
           />
         </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 bg-white border border-[#c7c4d7]/40 rounded-lg px-3 py-1.5 focus-within:border-[#2a14b4] focus-within:ring-1 focus-within:ring-[#2a14b4]/20 transition-all">
+        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+          <div className="flex items-center gap-1.5 sm:gap-2 bg-white border border-[#c7c4d7]/40 rounded-lg px-2 sm:px-3 py-1.5 focus-within:border-[#2a14b4] focus-within:ring-1 focus-within:ring-[#2a14b4]/20 transition-all flex-1 sm:flex-none min-w-0">
             <label className="text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] shrink-0">{t("dateFrom")}</label>
             <input
               type="date"
               value={dateFrom}
               onChange={(e) => setDateFrom(e.target.value)}
-              className="date-input bg-transparent border-none text-sm font-body text-[#121c2a] outline-none focus:ring-0 w-[130px]"
+              className="date-input bg-transparent border-none text-sm font-body text-[#121c2a] outline-none focus:ring-0 w-full sm:w-[130px] min-w-0"
             />
           </div>
-          <span className="text-[#c7c4d7] text-sm">—</span>
-          <div className="flex items-center gap-2 bg-white border border-[#c7c4d7]/40 rounded-lg px-3 py-1.5 focus-within:border-[#2a14b4] focus-within:ring-1 focus-within:ring-[#2a14b4]/20 transition-all">
+          <span className="text-[#c7c4d7] text-sm shrink-0">—</span>
+          <div className="flex items-center gap-1.5 sm:gap-2 bg-white border border-[#c7c4d7]/40 rounded-lg px-2 sm:px-3 py-1.5 focus-within:border-[#2a14b4] focus-within:ring-1 focus-within:ring-[#2a14b4]/20 transition-all flex-1 sm:flex-none min-w-0">
             <label className="text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] shrink-0">{t("dateTo")}</label>
             <input
               type="date"
               value={dateTo}
               onChange={(e) => setDateTo(e.target.value)}
-              className="date-input bg-transparent border-none text-sm font-body text-[#121c2a] outline-none focus:ring-0 w-[130px]"
+              className="date-input bg-transparent border-none text-sm font-body text-[#121c2a] outline-none focus:ring-0 w-full sm:w-[130px] min-w-0"
             />
           </div>
           {(dateFrom || dateTo) && (
             <button
               onClick={() => { setDateFrom(""); setDateTo(""); }}
-              className="w-7 h-7 rounded-full bg-[#f0eef6] flex items-center justify-center text-[#777586] hover:bg-[#ffdada]/60 hover:text-[#7b0020] transition-all"
+              className="w-7 h-7 rounded-full bg-[#f0eef6] flex items-center justify-center text-[#777586] hover:bg-[#ffdada]/60 hover:text-[#7b0020] transition-all shrink-0"
               title={t("clearDates")}
             >
               <span className="material-symbols-outlined text-[14px]">close</span>
