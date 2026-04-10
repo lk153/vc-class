@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import ReactDOM from "react-dom";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import MediaUploadModal from "@/components/teacher/MediaUploadModal";
@@ -116,6 +117,27 @@ function TypeFilterDropdown({
         </div>
       )}
     </div>
+  );
+}
+
+
+function MobileUploadButton({ onClick }: { onClick: () => void }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) return null;
+
+  return ReactDOM.createPortal(
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick(); }}
+      className="sm:hidden fixed! bottom-6 right-6 z-[9999] w-14 h-14 rounded-full bg-[#2a14b4] text-white shadow-xl shadow-[#2a14b4]/30 flex items-center justify-center active:scale-90 transition-all cursor-pointer"
+    >
+      <span className="material-symbols-outlined text-[26px]">cloud_upload</span>
+    </div>,
+    document.body
   );
 }
 
@@ -253,7 +275,7 @@ export default function MediaTable() {
   return (
     <div>
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
         <div className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
@@ -279,34 +301,34 @@ export default function MediaTable() {
           {loading && <><div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-[1]" /><div className="absolute bottom-0 left-0 right-0 h-[3px] overflow-hidden z-[2]"><div className="absolute h-full bg-[#2a14b4] rounded-full animate-[loading-bar_1.5s_ease-in-out_infinite]" /></div></>}
         </div>
         <div className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
-          <div className="flex items-center gap-5">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
-                <span className="material-symbols-outlined text-[16px] text-[#2a14b4]">image</span>
+          <div className="flex items-center gap-3 sm:gap-5">
+            <div className="flex items-center gap-1.5 sm:gap-3">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[14px] sm:text-[16px] text-[#2a14b4]">image</span>
               </div>
               <div>
-                <p className="font-body font-bold text-lg text-[#2a14b4] leading-none">{stats?.imageCount ?? "—"}</p>
-                <p className="text-[9px] font-body uppercase tracking-widest text-[#777586] font-bold mt-0.5">{t("images")}</p>
+                <p className="font-body font-bold text-base sm:text-lg text-[#2a14b4] leading-none">{stats?.imageCount ?? "—"}</p>
+                <p className="text-[8px] sm:text-[9px] font-body uppercase tracking-widest text-[#777586] font-bold mt-0.5">{t("images")}</p>
               </div>
             </div>
-            <div className="h-8 w-px bg-[#c7c4d7]/20" />
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#a6f2d1]/40 flex items-center justify-center shrink-0">
-                <span className="material-symbols-outlined text-[16px] text-[#1b6b51]">audio_file</span>
+            <div className="h-6 sm:h-8 w-px bg-[#c7c4d7]/20" />
+            <div className="flex items-center gap-1.5 sm:gap-3">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#a6f2d1]/40 flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[14px] sm:text-[16px] text-[#1b6b51]">audio_file</span>
               </div>
               <div>
-                <p className="font-body font-bold text-lg text-[#1b6b51] leading-none">{stats?.audioCount ?? "—"}</p>
-                <p className="text-[9px] font-body uppercase tracking-widest text-[#777586] font-bold mt-0.5">{t("audio")}</p>
+                <p className="font-body font-bold text-base sm:text-lg text-[#1b6b51] leading-none">{stats?.audioCount ?? "—"}</p>
+                <p className="text-[8px] sm:text-[9px] font-body uppercase tracking-widest text-[#777586] font-bold mt-0.5">{t("audio")}</p>
               </div>
             </div>
-            <div className="h-8 w-px bg-[#c7c4d7]/20" />
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#ffdada]/40 flex items-center justify-center shrink-0">
-                <span className="material-symbols-outlined text-[16px] text-[#7b0020]">video_file</span>
+            <div className="h-6 sm:h-8 w-px bg-[#c7c4d7]/20" />
+            <div className="flex items-center gap-1.5 sm:gap-3">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#ffdada]/40 flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[14px] sm:text-[16px] text-[#7b0020]">video_file</span>
               </div>
               <div>
-                <p className="font-body font-bold text-lg text-[#7b0020] leading-none">{stats?.videoCount ?? "—"}</p>
-                <p className="text-[9px] font-body uppercase tracking-widest text-[#777586] font-bold mt-0.5">{t("videos")}</p>
+                <p className="font-body font-bold text-base sm:text-lg text-[#7b0020] leading-none">{stats?.videoCount ?? "—"}</p>
+                <p className="text-[8px] sm:text-[9px] font-body uppercase tracking-widest text-[#777586] font-bold mt-0.5">{t("videos")}</p>
               </div>
             </div>
           </div>
@@ -315,7 +337,7 @@ export default function MediaTable() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 mb-8">
+      <div className="sticky top-[50px] sm:static z-40 bg-[#f8f9ff] pt-6 pb-4 sm:py-0 -mx-4 px-4 sm:mx-0 sm:px-0 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-8">
         <div className="relative w-full sm:w-1/4 sm:min-w-[200px]">
           <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#777586]/50 text-[20px]">
             search
@@ -339,7 +361,6 @@ export default function MediaTable() {
           ]}
         />
 
-        {/* Bulk delete button */}
         {selectedIds.size > 0 && (
           <button
             onClick={() => setShowDeleteConfirm(true)}
@@ -350,7 +371,7 @@ export default function MediaTable() {
           </button>
         )}
 
-        <div className="sm:ml-auto">
+        <div className="hidden sm:block sm:ml-auto">
           <button
             onClick={() => setShowUpload(true)}
             className="inline-flex items-center gap-2 bg-[#2a14b4] text-white px-6 py-2.5 rounded-full font-body font-bold text-sm shadow-lg shadow-[#2a14b4]/20 transition-all"
@@ -723,6 +744,9 @@ export default function MediaTable() {
           </div>
         )}
       </ModalOverlay>
+
+      {/* Sticky upload button — mobile only */}
+      <MobileUploadButton onClick={() => setShowUpload((v) => !v)} />
     </div>
   );
 }
