@@ -14,7 +14,10 @@ export async function PUT(request: Request) {
     status,
     mode,
     shuffleAnswers,
+    shuffleQuestions,
     showReviewMoment,
+    totalTime,
+    maxAttempts,
     availableFrom,
     availableTo,
   } = await request.json();
@@ -33,7 +36,10 @@ export async function PUT(request: Request) {
   if (status !== undefined) data.status = status;
   if (mode !== undefined) data.mode = mode;
   if (shuffleAnswers !== undefined) data.shuffleAnswers = shuffleAnswers;
+  if (shuffleQuestions !== undefined) data.shuffleQuestions = shuffleQuestions;
   if (showReviewMoment !== undefined) data.showReviewMoment = showReviewMoment;
+  if (totalTime !== undefined) data.totalTime = totalTime;
+  if (maxAttempts !== undefined) data.maxAttempts = maxAttempts;
   if (availableFrom !== undefined) data.availableFrom = availableFrom ? new Date(availableFrom) : null;
   if (availableTo !== undefined) data.availableTo = availableTo ? new Date(availableTo) : null;
 
@@ -41,6 +47,29 @@ export async function PUT(request: Request) {
     where: { id },
     data,
   });
+
+  // If status changed to ACTIVE, notify enrolled students
+  if (status === "ACTIVE" && existing.status !== "ACTIVE") {
+    const topicAssignments = await prisma.topicAssignment.findMany({
+      where: { topicId: existing.topicId },
+      include: { class: { include: { enrollments: { select: { userId: true } } } } },
+    });
+    const studentIds = new Set<string>();
+    for (const ta of topicAssignments) {
+      for (const enrollment of ta.class.enrollments) {
+        studentIds.add(enrollment.userId);
+      }
+    }
+    if (studentIds.size > 0) {
+      await prisma.notification.createMany({
+        data: Array.from(studentIds).map((userId) => ({
+          userId,
+          type: "TEST_ACTIVATED" as const,
+          referenceId: id,
+        })),
+      });
+    }
+  }
 
   return NextResponse.json(test);
 }

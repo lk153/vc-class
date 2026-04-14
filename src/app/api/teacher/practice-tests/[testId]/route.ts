@@ -34,7 +34,10 @@ export async function GET(
     status: test.status,
     mode: test.mode,
     shuffleAnswers: test.shuffleAnswers,
+    shuffleQuestions: test.shuffleQuestions,
     showReviewMoment: test.showReviewMoment,
+    totalTime: test.totalTime,
+    maxAttempts: test.maxAttempts,
     availableFrom: test.availableFrom,
     availableTo: test.availableTo,
     questions: test.questions.map((q) => ({

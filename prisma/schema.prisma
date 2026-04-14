@@ -42,6 +42,24 @@ enum ClassStatus {
   CANCELLED
 }
 
+enum TestStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+}
+
+enum ExamSessionStatus {
+  DOING
+  GRADING
+  GRADED
+}
+
+enum NotificationType {
+  EXAM_SUBMITTED
+  EXAM_GRADED
+  TEST_ACTIVATED
+}
+
 model User {
   id              String        @id @default(cuid())
   email           String        @unique
@@ -64,6 +82,8 @@ model User {
   teachingClasses   Class[]        @relation("ClassTeacher")
   media             Media[]
   questionBookmarks QuestionBookmark[]
+  examSessions      ExamSession[]
+  notifications     Notification[]
 
   @@map("users")
 }
@@ -187,16 +207,20 @@ model PracticeTest {
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   // ── Test configuration ──
-  status            String   @default("draft")
-  mode              String   @default("test") // "practice" | "test"
-  shuffleAnswers    Boolean  @default(false)  @map("shuffle_answers")
-  showReviewMoment  Boolean  @default(true)   @map("show_review_moment")
-  availableFrom     DateTime?                 @map("available_from")
-  availableTo       DateTime?                 @map("available_to")
+  status            TestStatus @default(DRAFT)
+  mode              String     @default("test") // "practice" | "test"
+  shuffleAnswers    Boolean    @default(false)  @map("shuffle_answers")
+  shuffleQuestions  Boolean    @default(false)  @map("shuffle_questions")
+  showReviewMoment  Boolean    @default(true)   @map("show_review_moment")
+  totalTime         Int        @default(2700)   @map("total_time")
+  maxAttempts       Int        @default(1)      @map("max_attempts")
+  availableFrom     DateTime?                   @map("available_from")
+  availableTo       DateTime?                   @map("available_to")
 
   questions       Question[]
   practiceResults PracticeResult[]
   sections        TestSection[]
+  examSessions    ExamSession[]
 
   @@map("practice_tests")
 }
@@ -291,6 +315,7 @@ model PracticeResult {
 
   studentAnswers StudentAnswer[]
   comments       Comment[]
+  examSession    ExamSession?
 
   @@map("practice_results")
 }
@@ -308,6 +333,12 @@ model StudentAnswer {
   attemptNumber    Int            @default(1) @map("attempt_number")
   timeSpent        Int?           @map("time_spent")
   answeredAt       DateTime       @default(now()) @map("answered_at")
+
+  // ── Teacher grading ──
+  teacherOverride  Boolean?       @map("teacher_override")
+  teacherScore     Float?         @map("teacher_score")
+  teacherComment   String?        @map("teacher_comment")
+  teacherGradedAt  DateTime?      @map("teacher_graded_at")
 
   @@map("student_answers")
 }
@@ -347,4 +378,50 @@ model QuestionBookmark {
 
   @@unique([userId, questionId])
   @@map("question_bookmarks")
+}
+
+model ExamSession {
+  id                String            @id @default(cuid())
+  userId            String            @map("user_id")
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  practiceTestId    String            @map("practice_test_id")
+  practiceTest      PracticeTest      @relation(fields: [practiceTestId], references: [id], onDelete: Cascade)
+  status            ExamSessionStatus @default(DOING)
+  attemptNumber     Int               @default(1) @map("attempt_number")
+
+  // ── Progress tracking ──
+  currentPhaseIndex Int               @default(0) @map("current_phase_index")
+  timeRemaining     Int               @map("time_remaining")
+  answersJson       Json              @default("{}") @map("answers_json")
+  flaggedJson       Json              @default("[]") @map("flagged_json")
+
+  // ── Exam integrity ──
+  tabSwitchCount    Int               @default(0) @map("tab_switch_count")
+  ipAddress         String?           @map("ip_address")
+  userAgent         String?           @map("user_agent")
+
+  // ── Timestamps ──
+  startedAt         DateTime          @default(now()) @map("started_at")
+  lastSavedAt       DateTime          @default(now()) @map("last_saved_at")
+  submittedAt       DateTime?         @map("submitted_at")
+  gradedAt          DateTime?         @map("graded_at")
+
+  // ── Link to final result ──
+  practiceResultId  String?           @unique @map("practice_result_id")
+  practiceResult    PracticeResult?   @relation(fields: [practiceResultId], references: [id])
+
+  @@unique([userId, practiceTestId, attemptNumber])
+  @@map("exam_sessions")
+}
+
+model Notification {
+  id          String           @id @default(cuid())
+  userId      String           @map("user_id")
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        NotificationType
+  referenceId String           @map("reference_id")
+  read        Boolean          @default(false)
+  createdAt   DateTime         @default(now()) @map("created_at")
+
+  @@map("notifications")
 }

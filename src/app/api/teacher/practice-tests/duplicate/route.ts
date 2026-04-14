@@ -32,10 +32,13 @@ export async function POST(request: Request) {
       title: `${original.title} (Copy)`,
       topicId: original.topicId,
       createdById: session.user.id,
-      status: "draft",
+      status: "DRAFT",
       mode: original.mode,
       shuffleAnswers: original.shuffleAnswers,
+      shuffleQuestions: original.shuffleQuestions,
       showReviewMoment: original.showReviewMoment,
+      totalTime: original.totalTime,
+      maxAttempts: original.maxAttempts,
       questions: {
         create: original.questions.map((q) => ({
           questionNumber: q.questionNumber,

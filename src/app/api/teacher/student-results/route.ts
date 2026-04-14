@@ -44,15 +44,25 @@ export async function GET(request: Request) {
       : {}),
   };
 
+  const statusFilter = searchParams.get("status") || "";
+
   const [results, total] = await Promise.all([
     prisma.practiceResult.findMany({
-      where,
+      where: {
+        ...where,
+        ...(statusFilter && {
+          examSession: { status: statusFilter as any },
+        }),
+      },
       include: {
         user: { select: { name: true } },
         practiceTest: {
           include: {
             topic: { include: { language: true } },
           },
+        },
+        examSession: {
+          select: { status: true, attemptNumber: true, tabSwitchCount: true },
         },
       },
       orderBy: { completedAt: "desc" },
@@ -73,6 +83,9 @@ export async function GET(request: Request) {
       correctCount: r.correctCount,
       totalQuestions: r.totalQuestions,
       completedAt: r.completedAt.toISOString(),
+      sessionStatus: r.examSession?.status || null,
+      attemptNumber: r.examSession?.attemptNumber || 1,
+      tabSwitchCount: r.examSession?.tabSwitchCount || 0,
     })),
     total,
     page,

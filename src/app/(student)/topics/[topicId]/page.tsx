@@ -5,8 +5,9 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import VocabGrid from "@/components/student/VocabGrid";
+import ExamStatusBadge from "@/components/exam/ExamStatusBadge";
 type VocabItem = { id: string; word: string; type: string | null; pronunciation: string | null; meaning: string; example: string | null };
-type PracticeTestItem = { id: string; title: string; _count: { questions: number } };
+type PracticeTestItem = { id: string; title: string; status: string; _count: { questions: number } };
 type ProgressItem = { vocabularyId: string };
 type PracticeResultItem = { id: string; practiceTestId: string; score: number };
 
@@ -53,7 +54,7 @@ export default async function TopicDetailPage({
       language: true,
       vocabulary: { orderBy: { sortOrder: "asc" } },
       practiceTests: {
-        where: { status: "published" },
+        where: { status: { in: ["ACTIVE", "INACTIVE"] } },
         include: { _count: { select: { questions: true } } },
       },
     },
@@ -87,6 +88,20 @@ export default async function TopicDetailPage({
 
   const resultsByTest = new Map<string, PracticeResultItem>(
     practiceResults.map((r: PracticeResultItem) => [r.practiceTestId, r])
+  );
+
+  // Get exam sessions for status badges
+  const examSessions = await prisma.examSession.findMany({
+    where: {
+      userId: session.user.id,
+      practiceTestId: { in: (topic.practiceTests as PracticeTestItem[]).map((pt) => pt.id) },
+    },
+    orderBy: { attemptNumber: "desc" },
+    distinct: ["practiceTestId"],
+    select: { practiceTestId: true, status: true, attemptNumber: true },
+  });
+  const sessionsByTest = new Map(
+    examSessions.map((s: any) => [s.practiceTestId, s])
   );
 
   // Get bookmarked questions for this topic's tests
@@ -234,26 +249,38 @@ export default async function TopicDetailPage({
               {(topic.practiceTests as PracticeTestItem[]).map((test) => {
                 const result = resultsByTest.get(test.id);
                 const score = result ? Math.round(result.score) : null;
+                const examSession = sessionsByTest.get(test.id) as { status: string; attemptNumber: number } | undefined;
+                const isInactive = test.status === "INACTIVE";
+
                 return (
-                  <div
+                  <Link
                     key={test.id}
-                    className="bg-[#f8f9ff] rounded-2xl p-6 border border-[#e2e8f0] hover:border-[#c7c4d7]/50 transition-all duration-300 hover:shadow-[0_4px_24px_rgba(18,28,42,0.06)]"
+                    href={isInactive ? "#" : `/topics/${topicId}/practice?testId=${test.id}`}
+                    className={`block bg-[#f8f9ff] rounded-2xl p-6 transition-all duration-300 ${
+                      isInactive
+                        ? "opacity-50 cursor-not-allowed"
+                        : "hover:shadow-[0_4px_24px_rgba(94,53,241,0.06)] exam-ghost-border"
+                    }`}
+                    onClick={(e) => isInactive && e.preventDefault()}
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div className="w-11 h-11 rounded-xl bg-[#e3dfff] flex items-center justify-center">
                         <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">assignment</span>
                       </div>
-                      {score !== null && (
-                        <div className={`px-3 py-1 rounded-full text-xs font-body font-bold ${
-                          score >= 80
-                            ? "bg-[#a6f2d1]/30 text-[#1b6b51]"
-                            : score >= 50
-                            ? "bg-[#fef3c7] text-[#92400e]"
-                            : "bg-[#ffdada]/50 text-[#7b0020]"
-                        }`}>
-                          {score}%
-                        </div>
-                      )}
+                      <div className="flex items-center gap-2">
+                        {score !== null && (
+                          <span className={`px-3 py-1 rounded-full text-xs font-body font-bold ${
+                            score >= 80
+                              ? "bg-[#a6f2d1]/30 text-[#1b6b51]"
+                              : score >= 50
+                              ? "bg-[#fef3c7] text-[#92400e]"
+                              : "bg-[#ffdada]/50 text-[#7b0020]"
+                          }`}>
+                            {score}%
+                          </span>
+                        )}
+                        <ExamStatusBadge testStatus={test.status} sessionStatus={examSession?.status} />
+                      </div>
                     </div>
 
                     <h4 className="font-body font-bold text-[#121c2a] mb-1">{test.title}</h4>
@@ -261,15 +288,24 @@ export default async function TopicDetailPage({
                       {t("questionsCount", { count: test._count.questions })}
                     </p>
 
-                    {score !== null && (
-                      <div className="mt-4 flex items-center gap-2">
+                    {examSession && examSession.attemptNumber > 1 && (
+                      <div className="mt-3 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-[14px] text-[#777586]">replay</span>
+                        <span className="text-[10px] font-body uppercase tracking-[0.15em] text-[#777586] font-bold">
+                          Attempt {examSession.attemptNumber}
+                        </span>
+                      </div>
+                    )}
+
+                    {score !== null && !examSession && (
+                      <div className="mt-3 flex items-center gap-2">
                         <span className="material-symbols-outlined text-[14px] text-[#777586]">emoji_events</span>
                         <span className="text-[10px] font-body uppercase tracking-[0.15em] text-[#777586] font-bold">
                           {t("bestAttempt")}
                         </span>
                       </div>
                     )}
-                  </div>
+                  </Link>
                 );
               })}
             </div>

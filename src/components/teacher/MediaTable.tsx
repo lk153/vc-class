@@ -383,12 +383,13 @@ export default function MediaTable() {
       </div>
 
       {/* Mobile Card Layout */}
-      <div className="md:hidden">
-        {loading ? (
-          <div className="flex justify-center py-12">
-            <span className="material-symbols-outlined animate-spin text-[#2a14b4] text-2xl">progress_activity</span>
+      <div className="md:hidden relative">
+        {loading && (
+          <div className="absolute inset-0 bg-[#f8f9ff]/60 backdrop-blur-[1px] z-10 flex justify-center pt-16 pointer-events-none">
+            <div className="w-8 h-8 border-3 border-[#2a14b4]/20 border-t-[#2a14b4] rounded-full animate-spin" />
           </div>
-        ) : results.length === 0 ? (
+        )}
+        {results.length === 0 && !loading ? (
           <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] px-6 py-12 text-center">
             <span className="material-symbols-outlined text-3xl text-[#777586]/40 mb-2">perm_media</span>
             <p className="text-sm text-[#777586]">{t("noMedia")}</p>

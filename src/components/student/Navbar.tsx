@@ -6,6 +6,7 @@ import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import LogoutOverlay from "@/components/LogoutOverlay";
+import NotificationBell from "@/components/NotificationBell";
 
 type Props = {
   user: { name: string; email: string };
@@ -32,7 +33,15 @@ export default function StudentNavbar({ user }: Props) {
           </Link>
 
           <div className="flex items-center gap-3">
+            <Link
+              href="/results"
+              className="text-sm font-body font-medium text-[#777586] hover:text-[#2a14b4] transition-colors hidden sm:flex items-center gap-1"
+            >
+              <span className="material-symbols-outlined text-[18px]">assessment</span>
+              {t("student.myResults")}
+            </Link>
             <LocaleSwitcher />
+            <NotificationBell />
             <div className="h-6 w-px bg-[#c7c4d7]/30 hidden sm:block" />
             <span className="text-[#121c2a] font-body text-sm font-medium hidden sm:block">
               {user.name}

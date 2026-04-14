@@ -10,6 +10,104 @@ import QuestionEditor from "@/components/teacher/QuestionEditor";
 import EditableTitle from "@/components/teacher/EditableTitle";
 import TestSectionBuilder from "@/components/teacher/TestSectionBuilder";
 import ModalOverlay from "@/components/ModalOverlay";
+import Tooltip from "@/components/Tooltip";
+import ChipDropdown from "@/components/ChipDropdown";
+
+// ── Numeric input sub-components: local draft state, save on blur ──
+
+function TimeLimitInput({ value, onSave, saving }: { value: number; onSave: (minutes: number) => void; saving: boolean }) {
+  const [draft, setDraft] = useState(String(value));
+  useEffect(() => { setDraft(String(value)); }, [value]);
+
+  function handleBlur() {
+    const parsed = parseInt(draft);
+    // If empty or not a number, revert to server value — don't save
+    if (isNaN(parsed) || draft.trim() === "") {
+      setDraft(String(value));
+      return;
+    }
+    const clamped = Math.max(1, Math.min(300, parsed));
+    setDraft(String(clamped));
+    if (clamped !== value) onSave(clamped);
+  }
+
+  return (
+    <div className="flex items-center gap-3 bg-[#f8f9ff] rounded-xl px-4 py-3">
+      <div className="w-9 h-9 rounded-lg bg-[#f0eef6] flex items-center justify-center shrink-0">
+        <span className={`material-symbols-outlined text-[18px] ${saving ? "text-[#2a14b4] animate-spin" : "text-[#777586]"}`}>
+          {saving ? "progress_activity" : "timer"}
+        </span>
+      </div>
+      <div className="flex-1">
+        <p className="text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] flex items-center gap-1">
+          Time Limit
+          <Tooltip content="Total duration for the exam in minutes. The timer starts when the student begins and auto-submits when it reaches zero." position="top" maxWidth="max-w-[12rem]" />
+        </p>
+        <div className="flex items-center gap-1.5 mt-0.5">
+          <input
+            type="number"
+            min="1"
+            max="300"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onBlur={handleBlur}
+            onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
+            disabled={saving}
+            className="w-16 px-2 py-0.5 rounded-lg border border-[#c7c4d7]/30 text-sm font-body font-bold text-[#121c2a] focus:ring-1 focus:ring-[#2a14b4]/20 outline-none disabled:opacity-50"
+          />
+          <span className="text-xs font-body text-[#777586]">min</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MaxAttemptsInput({ value, onSave, saving }: { value: number; onSave: (val: number) => void; saving: boolean }) {
+  const [draft, setDraft] = useState(String(value));
+  useEffect(() => { setDraft(String(value)); }, [value]);
+
+  function handleBlur() {
+    const parsed = parseInt(draft);
+    // If empty or not a number, revert to server value — don't save
+    if (isNaN(parsed) || draft.trim() === "") {
+      setDraft(String(value));
+      return;
+    }
+    const clamped = Math.max(0, Math.min(99, parsed));
+    setDraft(String(clamped));
+    if (clamped !== value) onSave(clamped);
+  }
+
+  return (
+    <div className="flex items-center gap-3 bg-[#f8f9ff] rounded-xl px-4 py-3">
+      <div className="w-9 h-9 rounded-lg bg-[#f0eef6] flex items-center justify-center shrink-0">
+        <span className={`material-symbols-outlined text-[18px] ${saving ? "text-[#2a14b4] animate-spin" : "text-[#777586]"}`}>
+          {saving ? "progress_activity" : "replay"}
+        </span>
+      </div>
+      <div className="flex-1">
+        <p className="text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] flex items-center gap-1">
+          Attempts
+          <Tooltip content="How many times a student can take this exam. Set to 0 for unlimited retakes. Each attempt is tracked separately with its own score." position="top" maxWidth="max-w-[12rem]" />
+        </p>
+        <div className="flex items-center gap-1.5 mt-0.5">
+          <input
+            type="number"
+            min="0"
+            max="99"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onBlur={handleBlur}
+            onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
+            disabled={saving}
+            className="w-16 px-2 py-0.5 rounded-lg border border-[#c7c4d7]/30 text-sm font-body font-bold text-[#121c2a] focus:ring-1 focus:ring-[#2a14b4]/20 outline-none disabled:opacity-50"
+          />
+          <span className="text-xs font-body text-[#777586]">{parseInt(draft) === 0 ? "unlimited" : "max"}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 type Test = {
   id: string;
@@ -59,7 +157,10 @@ type TestDetail = {
   status: string;
   mode: string;
   shuffleAnswers: boolean;
+  shuffleQuestions: boolean;
   showReviewMoment: boolean;
+  totalTime: number;
+  maxAttempts: number;
   availableFrom: string | null;
   availableTo: string | null;
   questions: Question[];
@@ -144,8 +245,18 @@ export default function PracticeTestGrid({ tests }: Props) {
     }
   }
 
+  const fieldLabels: Record<string, string> = {
+    status: "Test status",
+    shuffle: "Shuffle answers",
+    shuffleQuestions: "Shuffle questions",
+    review: "Instant review",
+    totalTime: "Time limit",
+    maxAttempts: "Max attempts",
+  };
+
   async function updateTest(field: string, data: Record<string, unknown>) {
     setSavingField(field);
+    const label = fieldLabels[field] || "Setting";
     try {
       const res = await fetch("/api/teacher/practice-tests", {
         method: "PUT",
@@ -153,10 +264,10 @@ export default function PracticeTestGrid({ tests }: Props) {
         body: JSON.stringify({ id: detail?.id, title: detail?.title, ...data }),
       });
       if (res.ok) {
-        toast.success("Updated");
+        toast.success(`${label} saved successfully`);
         await refetchDetail();
       } else {
-        toast.error("Failed to update");
+        toast.error(`Failed to save ${label.toLowerCase()}`);
       }
     } catch {
       toast.error("Failed to update");
@@ -167,65 +278,94 @@ export default function PracticeTestGrid({ tests }: Props) {
 
   return (
     <>
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {tests.map((test) => (
+      <div className="grid gap-4 sm:gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {tests.map((test) => {
+          const statusConfig = {
+            ACTIVE:   { label: "Active",   icon: "check_circle", color: "bg-[#1b6b51]/10 text-[#1b6b51]" },
+            DRAFT:    { label: "Draft",    icon: "edit_note",    color: "bg-[#92400e]/10 text-[#92400e]" },
+            INACTIVE: { label: "Inactive", icon: "block",        color: "bg-[#777586]/10 text-[#777586]" },
+          }[test.status || "DRAFT"] || { label: test.status, icon: "help", color: "bg-[#777586]/10 text-[#777586]" };
+
+          return (
           <motion.div
             key={test.id}
             layoutId={`test-card-${test.id}`}
             onClick={() => setSelectedTestId(test.id)}
-            className="group bg-white rounded-xl ambient-shadow p-8 transition-colors duration-200 border border-transparent hover:border-[#2a14b4]/10 hover:bg-[#f5f3ff] cursor-pointer"
-            style={{ borderRadius: 12 }}
+            className={`group relative rounded-2xl p-5 cursor-pointer flex flex-col
+              transition-all duration-200
+              bg-[var(--color-card,#fff)]
+              shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)]
+              hover:shadow-[0_4px_8px_3px_rgba(0,0,0,0.08),0_1px_3px_0_rgba(0,0,0,0.1)]
+              hover:-translate-y-0.5
+              ${test.status === "INACTIVE" ? "opacity-70" : ""}`}
           >
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-[#eff4ff] flex items-center justify-center">
-                <span className="material-symbols-outlined text-[#2a14b4]">quiz</span>
+            {/* Status indicator — top-left colored bar */}
+            <div className={`absolute top-0 left-6 right-6 h-[3px] rounded-b-full ${
+              test.status === "ACTIVE" ? "bg-[#1b6b51]" :
+              test.status === "INACTIVE" ? "bg-[#777586]/40" :
+              "bg-[#f59e0b]"
+            }`} />
+
+            <div className="flex items-start justify-between mb-3 mt-1">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                test.status === "ACTIVE" ? "bg-[#e3dfff]" :
+                test.status === "INACTIVE" ? "bg-[#f0eef6]" :
+                "bg-[#fef3c7]/60"
+              }`}>
+                <span className={`material-symbols-outlined text-[20px] ${
+                  test.status === "ACTIVE" ? "text-[#2a14b4]" :
+                  test.status === "INACTIVE" ? "text-[#777586]" :
+                  "text-[#92400e]"
+                }`}>quiz</span>
               </div>
-              <div className="flex items-center gap-2">
-                {test.status && test.status !== "published" && (
-                  <span className={`text-[10px] font-body font-bold px-2.5 py-0.5 rounded-full ${
-                    test.status === "draft" ? "bg-[#fef3c7] text-[#92400e]" : "bg-[#d9e3f6] text-[#777586]"
-                  }`}>
-                    {test.status === "draft" ? "Draft" : "Archived"}
-                  </span>
-                )}
-                <span className="text-xs font-body font-bold px-3 py-1 rounded-full bg-[#a6f2d1]/40 text-[#1b6b51]">
+              <div className="flex items-center gap-1.5">
+                {/* Status badge — always shown */}
+                <span className={`inline-flex items-center gap-1 text-[9px] font-body font-bold px-2 py-0.5 rounded-full ${statusConfig.color}`}>
+                  <span className="material-symbols-outlined text-[10px]" style={{ fontVariationSettings: "'FILL' 1" }}>{statusConfig.icon}</span>
+                  {statusConfig.label}
+                </span>
+                {/* Language badge */}
+                <span className="text-[9px] font-body font-bold px-2 py-0.5 rounded-full bg-[#a6f2d1]/40 text-[#1b6b51]">
                   {tLang(t, test.languageName)}
                 </span>
               </div>
             </div>
 
-            <h3 className="font-body font-bold text-2xl text-[#121c2a] mb-1 group-hover:text-[#2a14b4] transition-colors">
+            <h3 className={`font-body font-bold text-base mb-0.5 line-clamp-2 transition-colors ${
+              test.status === "INACTIVE"
+                ? "text-[#777586]"
+                : "text-[#121c2a] group-hover:text-[#2a14b4]"
+            }`}>
               {test.title}
             </h3>
-            <p className="text-sm text-[#464554] font-body mb-6">
+            <p className="text-xs text-[#464554] font-body mb-auto">
               {test.topicTitle}
             </p>
 
-            <div className="flex items-center justify-between pt-4 border-t border-[#c7c4d7]/15">
-              <div className="flex gap-6">
-                <div className="flex items-center gap-1.5 text-xs text-[#777586] font-body">
-                  <span className="material-symbols-outlined text-[14px]">help</span>
-                  {test.questionCount} {t("questionsCount")}
-                </div>
+            <div className="flex items-center justify-between pt-3 mt-4 border-t border-[#c7c4d7]/10">
+              <div className="flex items-center gap-1.5 text-xs text-[#777586] font-body">
+                <span className="material-symbols-outlined text-[14px]">help</span>
+                {test.questionCount} {t("questionsCount")}
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 <button
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-[#c7c4d7] hover:text-[#7b0020] hover:bg-[#ffdada]/30 transition-all invisible group-hover:visible"
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-[#7b0020] bg-[#ffdada]/20 hover:bg-[#ffdada]/40 transition-all invisible group-hover:visible"
                   onClick={(e) => { e.stopPropagation(); setDeleteTestId(test.id); }}
                 >
-                  <span className="material-symbols-outlined text-[16px]">delete</span>
+                  <span className="material-symbols-outlined text-[14px]">delete</span>
                 </button>
                 <button
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-body font-bold text-white bg-[#2a14b4] transition-all invisible group-hover:visible"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-body font-bold text-white bg-[#2a14b4] transition-all invisible group-hover:visible"
                   onClick={(e) => { e.stopPropagation(); setSelectedTestId(test.id); }}
                 >
                   {t("viewDetails")}
-                  <span className="material-symbols-outlined text-[12px]">arrow_forward</span>
+                  <span className="material-symbols-outlined text-[11px]">arrow_forward</span>
                 </button>
               </div>
             </div>
           </motion.div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Shared Element Modal */}
@@ -298,20 +438,25 @@ export default function PracticeTestGrid({ tests }: Props) {
                           </p>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
-                          {/* Status toggle */}
+                          {/* Status cycle: DRAFT → ACTIVE → INACTIVE → DRAFT */}
                           <button
-                            onClick={() => updateTest("status", { status: detail.status === "published" ? "draft" : "published" })}
+                            onClick={() => {
+                              const next = detail.status === "DRAFT" ? "ACTIVE" : detail.status === "ACTIVE" ? "INACTIVE" : "DRAFT";
+                              updateTest("status", { status: next });
+                            }}
                             disabled={savingField === "status"}
                             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-body font-bold transition-colors disabled:opacity-50 ${
-                              detail.status === "published"
+                              detail.status === "ACTIVE"
                                 ? "bg-[#a6f2d1]/40 text-[#1b6b51] hover:bg-[#a6f2d1]/60"
+                                : detail.status === "INACTIVE"
+                                ? "bg-[#e5e0ed]/50 text-[#777586] hover:bg-[#e5e0ed]/80"
                                 : "bg-[#fef3c7] text-[#92400e] hover:bg-[#fef3c7]/80"
                             }`}
                           >
                             <span className={`material-symbols-outlined text-[14px] ${savingField === "status" ? "animate-spin" : ""}`}>
-                              {savingField === "status" ? "progress_activity" : detail.status === "published" ? "visibility" : "visibility_off"}
+                              {savingField === "status" ? "progress_activity" : detail.status === "ACTIVE" ? "visibility" : detail.status === "INACTIVE" ? "visibility_off" : "edit"}
                             </span>
-                            {detail.status === "published" ? "Published" : "Draft"}
+                            {detail.status === "ACTIVE" ? "Active" : detail.status === "INACTIVE" ? "Inactive" : "Draft"}
                           </button>
                           {/* Duplicate */}
                           <button
@@ -340,217 +485,293 @@ export default function PracticeTestGrid({ tests }: Props) {
                       </div>
 
                       {/* Test Settings */}
-                      <div className="bg-white rounded-xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-5">
-                        <div className="flex items-center gap-6">
-                          {/* Mode — read-only display */}
-                          <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
-                              <span className="material-symbols-outlined text-[18px] text-[#2a14b4]">
-                                {detail.mode === "test" ? "timer" : "self_improvement"}
-                              </span>
+                      <div className="bg-white rounded-xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-5 space-y-5">
+                        {/* ── Row 1: Mode + Timing ── */}
+                        <div>
+                          <p className="text-[10px] font-body font-bold uppercase tracking-widest text-[#2a14b4] mb-3 flex items-center gap-1.5">
+                            <span className="material-symbols-outlined text-[14px]">settings</span>
+                            General
+                          </p>
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            {/* Mode — read-only */}
+                            <div className="flex items-center gap-3 bg-[#f8f9ff] rounded-xl px-4 py-3">
+                              <div className="w-9 h-9 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
+                                <span className="material-symbols-outlined text-[18px] text-[#2a14b4]">
+                                  {detail.mode === "test" ? "assignment" : "self_improvement"}
+                                </span>
+                              </div>
+                              <div>
+                                <p className="text-[10px] font-body font-bold uppercase tracking-widest text-[#777586]">Mode</p>
+                                <p className="text-sm font-body font-bold text-[#121c2a]">
+                                  {detail.mode === "test" ? "Test" : "Practice"}
+                                </p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-[10px] font-body font-bold uppercase tracking-widest text-[#777586]">Mode</p>
-                              <p className="text-sm font-body font-bold text-[#121c2a]">
-                                {detail.mode === "test" ? "Test" : "Practice"}
-                              </p>
-                            </div>
+
+                            {/* Time Limit — local draft, save on blur */}
+                            <TimeLimitInput
+                              value={Math.round(detail.totalTime / 60)}
+                              onSave={(minutes) => updateTest("totalTime", { totalTime: minutes * 60 })}
+                              saving={savingField === "totalTime"}
+                            />
+
+                            {/* Max Attempts — local draft, save on blur */}
+                            <MaxAttemptsInput
+                              value={detail.maxAttempts}
+                              onSave={(val) => updateTest("maxAttempts", { maxAttempts: val })}
+                              saving={savingField === "maxAttempts"}
+                            />
                           </div>
+                        </div>
 
-                          <div className="w-px h-10 bg-[#c7c4d7]/20 shrink-0" />
+                        {/* ── Row 2: Behavior Toggles ── */}
+                        <div>
+                          <p className="text-[10px] font-body font-bold uppercase tracking-widest text-[#2a14b4] mb-3 flex items-center gap-1.5">
+                            <span className="material-symbols-outlined text-[14px]">tune</span>
+                            Behavior
+                          </p>
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            {/* Shuffle Answers */}
+                            <label className="flex items-center gap-3 cursor-pointer group bg-[#f8f9ff] rounded-xl px-4 py-3 hover:bg-[#f0eef6] transition-colors relative">
+                              <div className="w-9 h-9 rounded-lg bg-[#f0eef6] flex items-center justify-center shrink-0 group-hover:bg-[#e3dfff] transition-colors">
+                                <span className="material-symbols-outlined text-[18px] text-[#777586] group-hover:text-[#2a14b4] transition-colors">swap_horiz</span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] flex items-center gap-1">
+                                  Shuffle Answers
+                                  <Tooltip content="Randomizes the order of A/B/C/D answer options for each question. The correct answer stays mapped correctly." position="top" maxWidth="max-w-[12rem]" />
+                                </p>
+                                <p className="text-[11px] font-body text-[#777586] truncate">A, B, C, D options reordered</p>
+                              </div>
+                              <div className="relative shrink-0">
+                                <input
+                                  type="checkbox"
+                                  checked={detail.shuffleAnswers}
+                                  onChange={(e) => updateTest("shuffle", { shuffleAnswers: e.target.checked })}
+                                  disabled={savingField === "shuffle"}
+                                  className="sr-only peer"
+                                />
+                                <div className="w-10 h-6 bg-[#c7c4d7]/30 rounded-full peer-checked:bg-[#2a14b4] transition-colors" />
+                                <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm peer-checked:translate-x-4 transition-transform ${savingField === "shuffle" ? (detail.shuffleAnswers ? "toggle-loading-active" : "toggle-loading") : ""}`} />
+                              </div>
+                            </label>
 
-                          {/* Shuffle — toggle */}
-                          <label className="flex items-center gap-3 cursor-pointer group flex-1">
-                            <div className="w-9 h-9 rounded-lg bg-[#f0eef6] flex items-center justify-center shrink-0 group-hover:bg-[#e3dfff] transition-colors">
-                              <span className="material-symbols-outlined text-[18px] text-[#777586] group-hover:text-[#2a14b4] transition-colors">shuffle</span>
-                            </div>
-                            <div className="flex-1">
-                              <p className="text-[10px] font-body font-bold uppercase tracking-widest text-[#777586]">Shuffle</p>
-                              <p className="text-xs font-body text-[#777586]">Randomize answer order</p>
-                            </div>
-                            <div className="relative">
-                              <input
-                                type="checkbox"
-                                checked={detail.shuffleAnswers}
-                                onChange={(e) => updateTest("shuffle", { shuffleAnswers: e.target.checked })}
-                                disabled={savingField === "shuffle"}
-                                className="sr-only peer"
-                              />
-                              <div className="w-10 h-6 bg-[#c7c4d7]/30 rounded-full peer-checked:bg-[#2a14b4] transition-colors" />
-                              <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm peer-checked:translate-x-4 transition-transform ${savingField === "shuffle" ? (detail.shuffleAnswers ? "toggle-loading-active" : "toggle-loading") : ""}`} />
-                            </div>
-                          </label>
+                            {/* Shuffle Questions */}
+                            <label className="flex items-center gap-3 cursor-pointer group bg-[#f8f9ff] rounded-xl px-4 py-3 hover:bg-[#f0eef6] transition-colors relative">
+                              <div className="w-9 h-9 rounded-lg bg-[#f0eef6] flex items-center justify-center shrink-0 group-hover:bg-[#e3dfff] transition-colors">
+                                <span className="material-symbols-outlined text-[18px] text-[#777586] group-hover:text-[#2a14b4] transition-colors">reorder</span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] flex items-center gap-1">
+                                  Shuffle Questions
+                                  <Tooltip content="Randomizes the order of questions within each section. Each student sees a different sequence to prevent copying." position="top" maxWidth="max-w-[12rem]" />
+                                </p>
+                                <p className="text-[11px] font-body text-[#777586] truncate">Different order per student</p>
+                              </div>
+                              <div className="relative shrink-0">
+                                <input
+                                  type="checkbox"
+                                  checked={detail.shuffleQuestions}
+                                  onChange={(e) => updateTest("shuffleQuestions", { shuffleQuestions: e.target.checked })}
+                                  disabled={savingField === "shuffleQuestions"}
+                                  className="sr-only peer"
+                                />
+                                <div className="w-10 h-6 bg-[#c7c4d7]/30 rounded-full peer-checked:bg-[#2a14b4] transition-colors" />
+                                <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm peer-checked:translate-x-4 transition-transform ${savingField === "shuffleQuestions" ? (detail.shuffleQuestions ? "toggle-loading-active" : "toggle-loading") : ""}`} />
+                              </div>
+                            </label>
 
-                          <div className="w-px h-10 bg-[#c7c4d7]/20 shrink-0" />
-
-                          {/* Review — toggle */}
-                          <label className="flex items-center gap-3 cursor-pointer group flex-1">
-                            <div className="w-9 h-9 rounded-lg bg-[#f0eef6] flex items-center justify-center shrink-0 group-hover:bg-[#e3dfff] transition-colors">
-                              <span className="material-symbols-outlined text-[18px] text-[#777586] group-hover:text-[#2a14b4] transition-colors">rate_review</span>
-                            </div>
-                            <div className="flex-1">
-                              <p className="text-[10px] font-body font-bold uppercase tracking-widest text-[#777586]">Review</p>
-                              <p className="text-xs font-body text-[#777586]">Show answer after each question</p>
-                            </div>
-                            <div className="relative">
-                              <input
-                                type="checkbox"
-                                checked={detail.showReviewMoment}
-                                onChange={(e) => updateTest("review", { showReviewMoment: e.target.checked })}
-                                disabled={savingField === "review"}
-                                className="sr-only peer"
-                              />
-                              <div className="w-10 h-6 bg-[#c7c4d7]/30 rounded-full peer-checked:bg-[#2a14b4] transition-colors" />
-                              <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm peer-checked:translate-x-4 transition-transform ${savingField === "review" ? (detail.showReviewMoment ? "toggle-loading-active" : "toggle-loading") : ""}`} />
-                            </div>
-                          </label>
+                            {/* Instant Review */}
+                            <label className="flex items-center gap-3 cursor-pointer group bg-[#f8f9ff] rounded-xl px-4 py-3 hover:bg-[#f0eef6] transition-colors relative">
+                              <div className="w-9 h-9 rounded-lg bg-[#f0eef6] flex items-center justify-center shrink-0 group-hover:bg-[#e3dfff] transition-colors">
+                                <span className="material-symbols-outlined text-[18px] text-[#777586] group-hover:text-[#2a14b4] transition-colors">rate_review</span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] flex items-center gap-1">
+                                  Instant Review
+                                  <Tooltip content="Shows the correct answer immediately after the student answers each question. Only applies to Practice mode." position="top" maxWidth="max-w-[12rem]" />
+                                </p>
+                                <p className="text-[11px] font-body text-[#777586] truncate">Show answer after each question</p>
+                              </div>
+                              <div className="relative shrink-0">
+                                <input
+                                  type="checkbox"
+                                  checked={detail.showReviewMoment}
+                                  onChange={(e) => updateTest("review", { showReviewMoment: e.target.checked })}
+                                  disabled={savingField === "review"}
+                                  className="sr-only peer"
+                                />
+                                <div className="w-10 h-6 bg-[#c7c4d7]/30 rounded-full peer-checked:bg-[#2a14b4] transition-colors" />
+                                <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm peer-checked:translate-x-4 transition-transform ${savingField === "review" ? (detail.showReviewMoment ? "toggle-loading-active" : "toggle-loading") : ""}`} />
+                              </div>
+                            </label>
+                          </div>
                         </div>
                       </div>
 
                       {/* Test Structure (Sections) */}
                       <TestSectionBuilder testId={detail.id} sections={detail.sections || []} />
 
-                      {/* Questions */}
-                      <div className="relative bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] overflow-hidden">
+                      {/* Questions — M3 Surface Container */}
+                      <div className="relative rounded-2xl bg-[var(--color-card,#fff)] shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] overflow-hidden">
                         {/* Loading progress bar */}
                         {refreshing && (
                           <div className="absolute top-0 left-0 right-0 h-[3px] overflow-hidden z-10">
                             <div className="absolute h-full bg-[#2a14b4] rounded-full animate-[loading-bar_1.5s_ease-in-out_infinite]" />
                           </div>
                         )}
-                        {/* Header bar */}
-                        <div className="px-6 py-4 border-b border-[#c7c4d7]/10">
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-[#e3dfff] flex items-center justify-center">
-                                <span className="material-symbols-outlined text-[16px] text-[#2a14b4]">help</span>
+
+                        {/* Header */}
+                        <div className="px-5 py-4">
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-9 h-9 rounded-xl bg-[#e3dfff] flex items-center justify-center">
+                                <span className="material-symbols-outlined text-[18px] text-[#2a14b4]">help</span>
                               </div>
-                              <h2 className="font-body font-bold text-lg text-[#121c2a]">
+                              <h2 className="font-body font-bold text-base text-[#121c2a]">
                                 {t("questionsLabel")}
                               </h2>
-                              <span className="text-xs font-body font-bold px-2.5 py-0.5 rounded-full bg-[#f0eef6] text-[#2a14b4]">
+                              <span className="text-[11px] font-body font-bold px-2 py-0.5 rounded-full bg-[#e3dfff] text-[#2a14b4]">
                                 {detail.questions.length}
                               </span>
                             </div>
                           </div>
 
-                          {/* Search + type filters + difficulty filters */}
+                          {/* Filters — M3 Filter Chips + Search */}
                           {detail.questions.length > 3 && (
-                            <div className="flex items-center gap-3">
-                              <div className="relative flex-1 min-w-[120px] max-w-[240px]">
+                            <div className="flex flex-col sm:flex-row gap-3">
+                              {/* Search */}
+                              <div className="relative flex-1 min-w-[120px] max-w-[260px]">
                                 <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#777586]/40 text-[16px]">search</span>
                                 <input
                                   type="text"
                                   placeholder="Search..."
                                   value={qSearch}
                                   onChange={(e) => { setQSearch(e.target.value); setQPage(1); }}
-                                  className="w-full pl-9 pr-3 py-2 bg-[#f8f9ff] border border-[#c7c4d7]/15 rounded-xl text-xs font-body focus:ring-2 focus:ring-[#2a14b4]/20 focus:border-[#2a14b4]/30 outline-none transition-colors"
+                                  className="w-full pl-9 pr-3 py-2 bg-[#f7f2fa] rounded-full text-xs font-body
+                                    focus:ring-2 focus:ring-[#2a14b4]/20 outline-none transition-colors
+                                    border border-transparent focus:border-[#2a14b4]/20"
                                 />
                               </div>
-                              <div className="h-5 w-px bg-[#c7c4d7]/20" />
-                              <div className="flex gap-1">
+
+                              {/* Type chips — M3 segmented style */}
+                              <div className="flex items-center gap-1 flex-wrap">
                                 {[
-                                  { val: "", label: "All" },
-                                  { val: "MULTIPLE_CHOICE", label: "MC" },
-                                  { val: "TRUE_FALSE", label: "T/F" },
-                                  { val: "GAP_FILL", label: "Fill" },
-                                  { val: "REORDER_WORDS", label: "Reorder" },
-                                  { val: "WORD_BANK", label: "Bank" },
-                                ].map(({ val, label }) => (
+                                  { val: "", label: "All", icon: "checklist" },
+                                  { val: "MULTIPLE_CHOICE", label: "MC", icon: "radio_button_checked" },
+                                  { val: "TRUE_FALSE", label: "T/F", icon: "check_box" },
+                                  { val: "GAP_FILL", label: "Fill", icon: "edit" },
+                                  { val: "REORDER_WORDS", label: "Reorder", icon: "swap_vert" },
+                                  { val: "WORD_BANK", label: "Bank", icon: "view_module" },
+                                ].map(({ val, label, icon }) => (
                                   <button
                                     key={val}
                                     onClick={() => { setQTypeFilter(val); setQPage(1); }}
-                                    className={`px-2.5 py-1.5 rounded-lg text-[10px] font-body font-bold transition-all ${
+                                    className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-body font-bold transition-all ${
                                       qTypeFilter === val
-                                        ? "bg-[#2a14b4] text-white shadow-sm"
-                                        : "text-[#777586] hover:bg-[#f0eef6] hover:text-[#464554]"
+                                        ? "bg-[#2a14b4] text-white shadow-[0_1px_3px_rgba(42,20,180,0.3)]"
+                                        : "bg-[#f7f2fa] text-[#777586] hover:bg-[#e3dfff] hover:text-[#2a14b4]"
                                     }`}
                                   >
+                                    <span className="material-symbols-outlined text-[12px]">{icon}</span>
                                     {label}
                                   </button>
                                 ))}
                               </div>
-                              <div className="h-5 w-px bg-[#c7c4d7]/20" />
-                              <div className="flex gap-1">
+
+                              {/* Difficulty — M3 icon buttons */}
+                              <div className="flex items-center gap-0.5 bg-[#f7f2fa] rounded-full p-0.5">
                                 {["", "1", "2", "3"].map((d) => (
                                   <button
                                     key={`d${d}`}
                                     onClick={() => { setQDiffFilter(d); setQPage(1); }}
-                                    className={`w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-body font-bold transition-all ${
+                                    className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-body font-bold transition-all ${
                                       qDiffFilter === d
                                         ? "bg-[#f59e0b] text-white shadow-sm"
-                                        : "text-[#c7c4d7] hover:bg-[#fef3c7] hover:text-[#f59e0b]"
+                                        : "text-[#777586] hover:bg-[#fef3c7] hover:text-[#f59e0b]"
                                     }`}
+                                    title={d === "" ? "All difficulties" : `Difficulty ${d}`}
                                   >
                                     {d === "" ? (
                                       <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                                    ) : (
-                                      <span>{d}</span>
-                                    )}
+                                    ) : d}
                                   </button>
                                 ))}
                               </div>
                             </div>
                           )}
-                        </div>
 
-                        {/* Bulk toolbar */}
-                        {selectedQIds.size > 0 && (
-                          <div className="flex items-center gap-3 px-6 py-3 bg-[#2a14b4]/5 border-b border-[#2a14b4]/10">
+                          {/* Bulk actions — always visible: set difficulty / timer for selected */}
+                          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-[#c7c4d7]/8">
                             <input
                               type="checkbox"
-                              checked={selectedQIds.size === detail.questions.length}
+                              checked={selectedQIds.size > 0 && selectedQIds.size === detail.questions.length}
                               onChange={() => {
                                 if (selectedQIds.size === detail.questions.length) setSelectedQIds(new Set());
                                 else setSelectedQIds(new Set(detail.questions.map((q) => q.id)));
                               }}
-                              className="w-4 h-4 rounded border-[#2a14b4]/30 text-[#2a14b4] focus:ring-[#2a14b4]/20"
+                              className="w-4 h-4 rounded-sm border-[#c7c4d7] text-[#2a14b4] focus:ring-[#2a14b4]/20"
                             />
-                            <span className="text-xs font-body font-bold text-[#2a14b4]">{selectedQIds.size} selected</span>
-                            <div className="flex gap-2 ml-auto">
-                              <select
-                                onChange={async (e) => {
-                                  if (!e.target.value) return;
+                            <span className="text-[11px] font-body text-[#777586]">
+                              {selectedQIds.size > 0 ? (
+                                <span className="font-bold text-[#2a14b4]">{selectedQIds.size} selected</span>
+                              ) : (
+                                "Select questions"
+                              )}
+                            </span>
+
+                            <div className="flex items-center gap-1.5 ml-auto">
+                              {/* Difficulty dropdown */}
+                              <ChipDropdown
+                                label="Difficulty"
+                                icon="star"
+                                disabled={selectedQIds.size === 0}
+                                options={[
+                                  { value: "1", label: "Easy", icon: "star" },
+                                  { value: "2", label: "Medium", icon: "star_half" },
+                                  { value: "3", label: "Hard", icon: "stars" },
+                                ]}
+                                onSelect={async (value) => {
+                                  if (selectedQIds.size === 0) { toast.error("Select questions first"); return; }
                                   await fetch("/api/teacher/questions/bulk", {
                                     method: "PATCH",
                                     headers: { "Content-Type": "application/json" },
-                                    body: JSON.stringify({ ids: Array.from(selectedQIds), field: "difficulty", value: parseInt(e.target.value) }),
+                                    body: JSON.stringify({ ids: Array.from(selectedQIds), field: "difficulty", value: parseInt(value) }),
                                   });
                                   toast.success("Difficulty updated");
                                   setSelectedQIds(new Set());
                                   await refetchDetail();
                                 }}
-                                className="px-3 py-1.5 rounded-lg text-xs font-body bg-white border border-[#c7c4d7]/20 text-[#464554]"
-                                defaultValue=""
-                              >
-                                <option value="" disabled>Difficulty</option>
-                                <option value="1">★ Easy</option>
-                                <option value="2">★★ Medium</option>
-                                <option value="3">★★★ Hard</option>
-                              </select>
-                              <select
-                                onChange={async (e) => {
-                                  if (!e.target.value) return;
+                              />
+
+                              {/* Timer dropdown */}
+                              <ChipDropdown
+                                label="Timer"
+                                icon="timer"
+                                disabled={selectedQIds.size === 0}
+                                options={[
+                                  { value: "15", label: "15 seconds", icon: "timer" },
+                                  { value: "30", label: "30 seconds", icon: "timer" },
+                                  { value: "45", label: "45 seconds", icon: "timer" },
+                                  { value: "60", label: "60 seconds", icon: "timer" },
+                                ]}
+                                onSelect={async (value) => {
+                                  if (selectedQIds.size === 0) { toast.error("Select questions first"); return; }
                                   await fetch("/api/teacher/questions/bulk", {
                                     method: "PATCH",
                                     headers: { "Content-Type": "application/json" },
-                                    body: JSON.stringify({ ids: Array.from(selectedQIds), field: "timer", value: parseInt(e.target.value) }),
+                                    body: JSON.stringify({ ids: Array.from(selectedQIds), field: "timer", value: parseInt(value) }),
                                   });
                                   toast.success("Timer updated");
                                   setSelectedQIds(new Set());
                                   await refetchDetail();
                                 }}
-                                className="px-3 py-1.5 rounded-lg text-xs font-body bg-white border border-[#c7c4d7]/20 text-[#464554]"
-                                defaultValue=""
-                              >
-                                <option value="" disabled>Timer</option>
-                                <option value="15">15s</option>
-                                <option value="30">30s</option>
-                                <option value="45">45s</option>
-                                <option value="60">60s</option>
-                              </select>
+                              />
+
+                              {/* Delete — only enabled when selected */}
                               <button
                                 onClick={async () => {
+                                  if (selectedQIds.size === 0) { toast.error("Select questions first"); return; }
                                   if (!window.confirm(`Delete ${selectedQIds.size} question(s)?`)) return;
                                   await fetch("/api/teacher/questions/bulk", {
                                     method: "DELETE",
@@ -561,15 +782,20 @@ export default function PracticeTestGrid({ tests }: Props) {
                                   setSelectedQIds(new Set());
                                   await refetchDetail();
                                 }}
-                                className="px-3 py-1.5 rounded-lg text-xs font-body font-bold text-[#7b0020] bg-white border border-[#7b0020]/20 hover:bg-[#ffdada]/30 transition-colors"
+                                className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-body font-bold transition-all ${
+                                  selectedQIds.size > 0
+                                    ? "text-[#7b0020] bg-[#ffdada]/30 hover:bg-[#ffdada]/50"
+                                    : "text-[#c7c4d7] bg-[#f7f2fa] cursor-not-allowed"
+                                }`}
                               >
+                                <span className="material-symbols-outlined text-[12px]">delete</span>
                                 Delete
                               </button>
                             </div>
                           </div>
-                        )}
+                        </div>
 
-                        {/* Question list */}
+                        {/* Question list — M3 Elevated Cards */}
                         {(() => {
                           const filtered = detail.questions.filter((q) => {
                             if (qSearch && !q.content.toLowerCase().includes(qSearch.toLowerCase())) return false;
@@ -583,14 +809,14 @@ export default function PracticeTestGrid({ tests }: Props) {
 
                           return (
                             <>
-                              <div className="p-4 space-y-3">
+                              <div className="px-5 py-4 space-y-3">
                                 {pageItems.map((q) => (
                                   <div
                                     key={q.id}
-                                    className={`flex items-start gap-3 p-4 rounded-xl border transition-all ${
+                                    className={`flex items-start gap-3 p-4 rounded-2xl transition-all ${
                                       selectedQIds.has(q.id)
-                                        ? "border-[#2a14b4]/20 bg-[#2a14b4]/[0.02]"
-                                        : "border-[#c7c4d7]/10 hover:border-[#c7c4d7]/25 hover:bg-[#f8f9ff]"
+                                        ? "bg-[#e3dfff]/20 shadow-[0_1px_3px_1px_rgba(42,20,180,0.08),0_1px_2px_0_rgba(42,20,180,0.06)] ring-1 ring-[#2a14b4]/10"
+                                        : "bg-[var(--color-card,#fff)] shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] hover:shadow-[0_4px_8px_3px_rgba(0,0,0,0.08),0_1px_3px_0_rgba(0,0,0,0.1)]"
                                     }`}
                                   >
                                     <input
@@ -601,7 +827,7 @@ export default function PracticeTestGrid({ tests }: Props) {
                                         if (next.has(q.id)) next.delete(q.id); else next.add(q.id);
                                         return next;
                                       })}
-                                      className="w-4 h-4 rounded border-[#c7c4d7] text-[#2a14b4] focus:ring-[#2a14b4]/20 mt-1 shrink-0"
+                                      className="w-4 h-4 rounded-sm border-[#c7c4d7] text-[#2a14b4] focus:ring-[#2a14b4]/20 mt-1 shrink-0"
                                     />
                                     <div className="flex-1 min-w-0">
                                       <QuestionEditor question={q} onSave={(updated) => {
@@ -614,24 +840,24 @@ export default function PracticeTestGrid({ tests }: Props) {
                                   </div>
                                 ))}
                                 {pageItems.length === 0 && (
-                                  <div className="py-8 text-center">
-                                    <span className="material-symbols-outlined text-[#c7c4d7] text-3xl mb-2">search_off</span>
+                                  <div className="py-12 text-center">
+                                    <span className="material-symbols-outlined text-[#c7c4d7] text-4xl mb-3 block">search_off</span>
                                     <p className="text-sm font-body text-[#777586]">No questions match your filters</p>
                                   </div>
                                 )}
                               </div>
 
-                              {/* Pagination */}
+                              {/* Pagination — M3 style */}
                               {totalQPages > 1 && (
-                                <div className="flex items-center justify-between px-6 py-3 border-t border-[#c7c4d7]/10 bg-[#f8f9ff]/50">
-                                  <p className="text-xs font-body text-[#777586]">
+                                <div className="flex items-center justify-between px-5 py-3 border-t border-[#c7c4d7]/8 bg-[#f7f2fa]/30">
+                                  <p className="text-[11px] font-body text-[#777586]">
                                     {(safeQPage - 1) * Q_PER_PAGE + 1}–{Math.min(safeQPage * Q_PER_PAGE, filtered.length)} of {filtered.length}
                                   </p>
-                                  <div className="flex items-center gap-1.5">
+                                  <div className="flex items-center gap-1">
                                     <button
                                       onClick={() => setQPage((p) => Math.max(1, p - 1))}
                                       disabled={safeQPage <= 1}
-                                      className="w-8 h-8 rounded-lg flex items-center justify-center text-[#464554] hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                      className="w-8 h-8 rounded-full flex items-center justify-center text-[#464554] hover:bg-[#e3dfff]/50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                     >
                                       <span className="material-symbols-outlined text-[16px]">chevron_left</span>
                                     </button>
@@ -645,10 +871,10 @@ export default function PracticeTestGrid({ tests }: Props) {
                                         <button
                                           key={pn}
                                           onClick={() => setQPage(pn)}
-                                          className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-body font-bold transition-all ${
+                                          className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-body font-bold transition-all ${
                                             safeQPage === pn
-                                              ? "bg-[#2a14b4] text-white"
-                                              : "text-[#464554] hover:bg-white"
+                                              ? "bg-[#2a14b4] text-white shadow-[0_1px_3px_rgba(42,20,180,0.3)]"
+                                              : "text-[#464554] hover:bg-[#e3dfff]/50"
                                           }`}
                                         >
                                           {pn}
@@ -658,7 +884,7 @@ export default function PracticeTestGrid({ tests }: Props) {
                                     <button
                                       onClick={() => setQPage((p) => Math.min(totalQPages, p + 1))}
                                       disabled={safeQPage >= totalQPages}
-                                      className="w-8 h-8 rounded-lg flex items-center justify-center text-[#464554] hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                      className="w-8 h-8 rounded-full flex items-center justify-center text-[#464554] hover:bg-[#e3dfff]/50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                     >
                                       <span className="material-symbols-outlined text-[16px]">chevron_right</span>
                                     </button>

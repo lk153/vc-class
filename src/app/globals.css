@@ -15,6 +15,16 @@
   --muted: #64748b;
   --border: #e2e8f0;
   --card: #ffffff;
+
+  /* Exam design tokens */
+  --exam-surface: #fdf8fe;
+  --exam-surface-low: #f7f2fa;
+  --exam-surface-container: #f1ecf6;
+  --exam-surface-highest: #e5e0ed;
+  --exam-primary: #5e35f1;
+  --exam-primary-container: #6b45fe;
+  --exam-on-surface: #33313a;
+  --exam-on-surface-variant: #777586;
 }
 
 @theme inline {
@@ -278,4 +288,19 @@ a[class*="bg-[#eff4ff]"] > .ripple-effect {
   border-top-color: #ffffff;
   border-right-color: #ffffff;
   animation: toggle-spin 0.8s linear infinite;
+}
+
+/* ── Exam design system ── */
+.exam-glass {
+  background: rgba(253, 248, 254, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.exam-cta {
+  background: linear-gradient(45deg, var(--exam-primary), var(--exam-primary-container));
+}
+
+.exam-ghost-border {
+  outline: 1px solid rgba(199, 196, 215, 0.15);
 }

@@ -267,7 +267,7 @@ async function main() {
       title: "City - Media Test",
       topicId: cityTopic.id,
       createdById: teacherNga.id,
-      status: "published",
+      status: "ACTIVE",
       mode: "test",
       shuffleAnswers: false,
       showReviewMoment: true,

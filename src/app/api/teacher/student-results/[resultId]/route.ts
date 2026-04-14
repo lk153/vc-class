@@ -50,6 +50,12 @@ export async function GET(
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
+  // Get exam session for status + integrity data
+  const examSession = await prisma.examSession.findFirst({
+    where: { practiceResultId: result.id },
+    select: { id: true, status: true, attemptNumber: true, tabSwitchCount: true },
+  });
+
   return NextResponse.json({
     id: result.id,
     score: result.score,
@@ -63,16 +69,24 @@ export async function GET(
     testName: result.practiceTest.title,
     topicName: result.practiceTest.topic.title,
     language: result.practiceTest.topic.language.name,
+    sessionId: examSession?.id || null,
+    sessionStatus: examSession?.status || null,
+    tabSwitchCount: examSession?.tabSwitchCount || 0,
     answers: result.studentAnswers.map((sa: any) => ({
       id: sa.id,
       questionNumber: sa.question.questionNumber,
       content: sa.question.content,
+      questionType: sa.question.questionType,
       contentMediaUrl: sa.question.contentMediaUrl,
       contentMediaType: sa.question.contentMediaType,
       selectedAnswer: sa.selectedAnswer,
       correctAnswer: sa.question.correctAnswer,
       isCorrect: sa.isCorrect,
       timeSpent: sa.timeSpent,
+      teacherOverride: sa.teacherOverride,
+      teacherScore: sa.teacherScore,
+      teacherComment: sa.teacherComment,
+      teacherGradedAt: sa.teacherGradedAt?.toISOString() || null,
     })),
     comments: result.comments.map((c: any) => ({
       id: c.id,

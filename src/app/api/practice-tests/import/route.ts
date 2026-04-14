@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { topicId, title, questions, status, mode, shuffleAnswers, showReviewMoment } = await request.json();
+  const { topicId, title, questions, status, mode, shuffleAnswers, shuffleQuestions, showReviewMoment, totalTime, maxAttempts } = await request.json();
 
   if (!topicId || !title || !questions?.length) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
@@ -19,10 +19,13 @@ export async function POST(request: Request) {
       title,
       topicId,
       createdById: session.user.id,
-      status: status || "draft",
+      status: status || "DRAFT",
       mode,
       shuffleAnswers,
+      shuffleQuestions: shuffleQuestions ?? false,
       showReviewMoment,
+      totalTime: totalTime ?? 2700,
+      maxAttempts: maxAttempts ?? 1,
       questions: {
         create: questions.map(
           (q: {

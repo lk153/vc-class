@@ -306,7 +306,7 @@ export default function CsvImporter({ topics }: Props) {
         body: JSON.stringify({
           topicId,
           title,
-          status: "draft",
+          status: "DRAFT",
           questions: rows.map((r) => buildQuestionPayload(r)),
         }),
       });

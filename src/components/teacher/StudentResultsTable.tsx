@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import ResultDetailModal from "@/components/teacher/ResultDetailModal";
 import ModalOverlay from "@/components/ModalOverlay";
+import Tooltip from "@/components/Tooltip";
 
 type Result = {
   id: string;
@@ -16,6 +17,9 @@ type Result = {
   correctCount: number;
   totalQuestions: number;
   completedAt: string;
+  sessionStatus?: string | null;
+  attemptNumber?: number;
+  tabSwitchCount?: number;
 };
 
 type ApiResponse = {
@@ -37,6 +41,7 @@ export default function StudentResultsTable() {
   const [search, setSearch] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
   // Debounce search input
@@ -53,6 +58,7 @@ export default function StudentResultsTable() {
     if (debouncedSearch) params.set("search", debouncedSearch);
     if (dateFrom) params.set("dateFrom", dateFrom);
     if (dateTo) params.set("dateTo", dateTo);
+    if (statusFilter) params.set("status", statusFilter);
 
     try {
       const res = await fetch(`/api/teacher/student-results?${params}`);
@@ -64,7 +70,7 @@ export default function StudentResultsTable() {
     } finally {
       setLoading(false);
     }
-  }, [page, debouncedSearch, dateFrom, dateTo]);
+  }, [page, debouncedSearch, dateFrom, dateTo, statusFilter]);
 
   useEffect(() => {
     fetchResults();
@@ -74,7 +80,7 @@ export default function StudentResultsTable() {
   useEffect(() => {
     setPage(1);
     setSelectedIds(new Set());
-  }, [debouncedSearch, dateFrom, dateTo]);
+  }, [debouncedSearch, dateFrom, dateTo, statusFilter]);
 
   const results = data?.results || [];
   const total = data?.total || 0;
@@ -127,6 +133,24 @@ export default function StudentResultsTable() {
               <span className="material-symbols-outlined text-[14px]">close</span>
             </button>
           )}
+        </div>
+        {/* Status filter */}
+        <div className="flex items-center gap-1.5 w-full sm:w-auto">
+          {["", "GRADING", "GRADED"].map((s) => (
+            <button
+              key={s}
+              onClick={() => setStatusFilter(s)}
+              className={`px-3 py-1.5 rounded-full text-[10px] font-body font-bold uppercase tracking-wider transition-colors ${
+                statusFilter === s
+                  ? s === "GRADING"
+                    ? "bg-[#dbeafe] text-[#1e40af]"
+                    : "bg-[#2a14b4] text-white"
+                  : "bg-[#f0eef6] text-[#777586] hover:bg-[#e3dfff]"
+              }`}
+            >
+              {s === "" ? "All" : s === "GRADING" ? "Needs Grading" : "Graded"}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -257,38 +281,30 @@ export default function StudentResultsTable() {
               <th className="px-6 py-4">{t("topicCol")}</th>
               <th className="px-6 py-4">{t("languageCol")}</th>
               <th className="px-6 py-4 text-right">
-                <span className="inline-flex items-center gap-1 group/score relative">
+                <span className="inline-flex items-center gap-1">
                   {t("scoreCol")}
-                  <span className="material-symbols-outlined text-[14px] text-[#777586] cursor-help">info</span>
-                  <span className="pointer-events-none absolute top-full right-0 mt-2 opacity-0 group-hover/score:opacity-100 transition-opacity whitespace-nowrap bg-[#121c2a] text-white text-xs font-body font-medium px-3 py-1.5 rounded normal-case tracking-normal before:content-[''] before:absolute before:bottom-full before:right-3 before:border-[5px] before:border-transparent before:border-b-[#121c2a]">
-                    {t("scoreHint")}
-                  </span>
+                  <Tooltip content={t("scoreHint")} align="right" />
                 </span>
               </th>
               <th className="px-6 py-4 text-right">
-                <span className="inline-flex items-center gap-1 group/correct relative">
+                <span className="inline-flex items-center gap-1">
                   {t("correctCol")}
-                  <span className="material-symbols-outlined text-[14px] text-[#777586] cursor-help">info</span>
-                  <span className="pointer-events-none absolute top-full right-0 mt-2 opacity-0 group-hover/correct:opacity-100 transition-opacity whitespace-nowrap bg-[#121c2a] text-white text-xs font-body font-medium px-3 py-1.5 rounded normal-case tracking-normal before:content-[''] before:absolute before:bottom-full before:right-3 before:border-[5px] before:border-transparent before:border-b-[#121c2a]">
-                    {t("correctHint")}
-                  </span>
+                  <Tooltip content={t("correctHint")} align="right" />
                 </span>
               </th>
               <th className="px-6 py-4 text-right">
-                <span className="inline-flex items-center gap-1 group/tip relative">
+                <span className="inline-flex items-center gap-1">
                   {t("submittedDate")}
-                  <span className="material-symbols-outlined text-[14px] text-[#777586] cursor-help">info</span>
-                  <span className="pointer-events-none absolute top-full right-0 mt-2 opacity-0 group-hover/tip:opacity-100 transition-opacity whitespace-nowrap bg-[#121c2a] text-white text-xs font-body font-medium px-3 py-1.5 rounded normal-case tracking-normal before:content-[''] before:absolute before:bottom-full before:right-3 before:border-[5px] before:border-transparent before:border-b-[#121c2a]">
-                    {t("dateFormatHint")}
-                  </span>
+                  <Tooltip content={t("dateFormatHint")} align="right" />
                 </span>
               </th>
+              <th className="px-6 py-4 text-center">Status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#c7c4d7]/10">
             {loading ? (
               <tr>
-                <td colSpan={8} className="px-6 py-12 text-center text-sm text-[#777586]">
+                <td colSpan={9} className="px-6 py-12 text-center text-sm text-[#777586]">
                   <span className="material-symbols-outlined animate-spin text-[#2a14b4] text-2xl">
                     progress_activity
                   </span>
@@ -296,7 +312,7 @@ export default function StudentResultsTable() {
               </tr>
             ) : results.length === 0 ? (
               <tr>
-                <td colSpan={8} className="px-6 py-12 text-center">
+                <td colSpan={9} className="px-6 py-12 text-center">
                   <div className="flex flex-col items-center gap-2">
                     <span className="material-symbols-outlined text-3xl text-[#777586]/40">
                       assignment
@@ -370,6 +386,30 @@ export default function StudentResultsTable() {
                   </td>
                   <td className="px-6 py-4 text-right text-sm font-body text-[#464554]">
                     {(() => { const d = new Date(r.completedAt); return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`; })()}
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <div className="flex items-center justify-center gap-1.5">
+                      {r.sessionStatus === "GRADING" && (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-body font-bold bg-[#dbeafe] text-[#1e40af]">
+                          <span className="material-symbols-outlined text-[12px]">hourglass_top</span>
+                          Grading
+                        </span>
+                      )}
+                      {r.sessionStatus === "GRADED" && (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-body font-bold bg-[#a6f2d1]/30 text-[#1b6b51]">
+                          <span className="material-symbols-outlined text-[12px]">verified</span>
+                          Graded
+                        </span>
+                      )}
+                      {!r.sessionStatus && (
+                        <span className="text-xs text-[#c7c4d7]">—</span>
+                      )}
+                      {(r.tabSwitchCount ?? 0) > 0 && (
+                        <span className="material-symbols-outlined text-[14px] text-[#f59e0b]" title={`Tab switches: ${r.tabSwitchCount}`}>
+                          warning
+                        </span>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))
