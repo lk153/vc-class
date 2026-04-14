@@ -252,17 +252,8 @@ export default async function TopicDetailPage({
                 const examSession = sessionsByTest.get(test.id) as { status: string; attemptNumber: number } | undefined;
                 const isInactive = test.status === "INACTIVE";
 
-                return (
-                  <Link
-                    key={test.id}
-                    href={isInactive ? "#" : `/topics/${topicId}/practice?testId=${test.id}`}
-                    className={`block bg-[#f8f9ff] rounded-2xl p-6 transition-all duration-300 ${
-                      isInactive
-                        ? "opacity-50 cursor-not-allowed"
-                        : "hover:shadow-[0_4px_24px_rgba(94,53,241,0.06)] exam-ghost-border"
-                    }`}
-                    onClick={(e) => isInactive && e.preventDefault()}
-                  >
+                const cardContent = (
+                  <>
                     <div className="flex items-start justify-between mb-4">
                       <div className="w-11 h-11 rounded-xl bg-[#e3dfff] flex items-center justify-center">
                         <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">assignment</span>
@@ -305,6 +296,29 @@ export default async function TopicDetailPage({
                         </span>
                       </div>
                     )}
+                  </>
+                );
+
+                // INACTIVE: render as div (no link, no onClick needed)
+                if (isInactive) {
+                  return (
+                    <div
+                      key={test.id}
+                      className="block bg-[#f8f9ff] rounded-2xl p-6 opacity-50 cursor-not-allowed"
+                    >
+                      {cardContent}
+                    </div>
+                  );
+                }
+
+                // Active: render as Link
+                return (
+                  <Link
+                    key={test.id}
+                    href={`/topics/${topicId}/practice?testId=${test.id}`}
+                    className="block bg-[#f8f9ff] rounded-2xl p-6 transition-all duration-300 hover:shadow-[0_4px_24px_rgba(94,53,241,0.06)] exam-ghost-border"
+                  >
+                    {cardContent}
                   </Link>
                 );
               })}
