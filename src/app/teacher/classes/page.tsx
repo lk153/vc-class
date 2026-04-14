@@ -72,7 +72,7 @@ export default async function ClassesPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-        <div className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
+        <div className="relative bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-5 overflow-hidden">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
               <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">school</span>
@@ -84,7 +84,7 @@ export default async function ClassesPage() {
           </div>
           <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#2a14b4]/10"><div className="h-full w-full bg-[#2a14b4] rounded-full" /></div>
         </div>
-        <div className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
+        <div className="relative bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-5 overflow-hidden">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-lg bg-[#a6f2d1]/40 flex items-center justify-center shrink-0">
               <span className="material-symbols-outlined text-[20px] text-[#1b6b51]">verified</span>
@@ -99,7 +99,7 @@ export default async function ClassesPage() {
           </div>
           <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#1b6b51]/10"><div className="h-full w-full bg-[#1b6b51] rounded-full" /></div>
         </div>
-        <div className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
+        <div className="relative bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-5 overflow-hidden">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
               <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">group</span>
@@ -142,7 +142,7 @@ export default async function ClassesPage() {
               <Link
                 key={cls.id}
                 href={`/teacher/classes/${cls.id}`}
-                className="group bg-white rounded-xl ambient-shadow p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0px_30px_60px_rgba(18,28,42,0.1)] block border border-transparent hover:border-[#2a14b4]/10"
+                className="group bg-[var(--color-card,#fff)] rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_8px_3px_rgba(0,0,0,0.08),0_1px_3px_0_rgba(0,0,0,0.1)] block"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-11 h-11 rounded-xl bg-[#eff4ff] flex items-center justify-center">

@@ -60,7 +60,7 @@ export default function ChipDropdown({ label, icon, options, onSelect, disabled 
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 mt-1.5 min-w-32 bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50 no-ripple">
+        <div className="absolute top-full left-0 mt-1.5 min-w-32 bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50 no-ripple">
           {options.map((opt) => (
             <button
               key={opt.value}

@@ -95,7 +95,7 @@ export default function CreateClassPage() {
         {t("classes")}
       </Link>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl ambient-shadow p-8">
+      <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-8">
         <h1 className="font-body font-bold text-2xl text-[#121c2a] mb-6">
           {t("createClass")}
         </h1>

@@ -75,7 +75,7 @@ export default function TopicList({ topics, languages, teacherId }: Props) {
       {showCreate && (
         <form
           onSubmit={handleCreate}
-          className="bg-white rounded-xl ambient-shadow p-8 mb-10"
+          className="bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-8 mb-10"
         >
           <h3 className="font-body font-bold text-2xl text-[#121c2a] mb-6">{t("createNewTopic")}</h3>
           <div className="grid gap-6 sm:grid-cols-2">
@@ -149,7 +149,7 @@ export default function TopicList({ topics, languages, teacherId }: Props) {
           className={`px-4 py-1.5 rounded-full text-xs font-body font-bold transition-all ${
             filterLangId === null
               ? "bg-[#2a14b4] text-white shadow-lg shadow-[#2a14b4]/20"
-              : "bg-white text-[#464554] hover:bg-[#eff4ff] ambient-shadow"
+              : "bg-white text-[#464554] hover:bg-[#eff4ff] shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)]"
           }`}
         >
           {ct("all")}
@@ -161,7 +161,7 @@ export default function TopicList({ topics, languages, teacherId }: Props) {
             className={`px-4 py-1.5 rounded-full text-xs font-body font-bold transition-all ${
               filterLangId === lang.id
                 ? "bg-[#2a14b4] text-white shadow-lg shadow-[#2a14b4]/20"
-                : "bg-white text-[#464554] hover:bg-[#eff4ff] ambient-shadow"
+                : "bg-white text-[#464554] hover:bg-[#eff4ff] shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)]"
             }`}
           >
             {tLang(t, lang.name)}
@@ -175,7 +175,7 @@ export default function TopicList({ topics, languages, teacherId }: Props) {
           <Link
             key={topic.id}
             href={`/teacher/topics/${topic.id}`}
-            className="group bg-white rounded-xl ambient-shadow p-8 transition-colors duration-200 block border border-transparent hover:border-[#2a14b4]/10 hover:bg-[#f5f3ff]"
+            className="group bg-[var(--color-card,#fff)] rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-6 transition-all duration-200 block hover:shadow-[0_4px_8px_3px_rgba(0,0,0,0.08),0_1px_3px_0_rgba(0,0,0,0.1)] hover:-translate-y-0.5"
           >
             <div className="flex items-start justify-between mb-4">
               <div className="w-12 h-12 rounded-xl bg-[#e3dfff] flex items-center justify-center">
@@ -214,7 +214,7 @@ export default function TopicList({ topics, languages, teacherId }: Props) {
         {/* Add New Placeholder */}
         <button
           onClick={() => setShowCreate(true)}
-          className="group border-2 border-dashed border-[#c7c4d7]/50 rounded-xl p-8 flex flex-col items-center justify-center gap-4 min-h-[240px] hover:bg-white hover:border-[#2a14b4]/20 hover:ambient-shadow transition-all duration-300"
+          className="group border-2 border-dashed border-[#c7c4d7]/50 rounded-xl p-8 flex flex-col items-center justify-center gap-4 min-h-[240px] hover:bg-white hover:border-[#2a14b4]/20 hover:shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] transition-all duration-300"
         >
           <div className="w-16 h-16 rounded-full bg-[#eff4ff] flex items-center justify-center group-hover:bg-[#e3dfff] transition-colors">
             <span className="material-symbols-outlined text-[#2a14b4] text-2xl">add</span>

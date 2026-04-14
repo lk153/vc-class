@@ -473,6 +473,14 @@
     "statusUnavailable": "Chưa khả dụng",
     "statusInProgress": "Đang làm",
     "statusAwaitingGrade": "Chờ chấm",
-    "statusViewResults": "Xem kết quả"
+    "statusViewResults": "Xem kết quả",
+    "resultExcellent": "Xuất sắc!",
+    "resultExcellentDesc": "Bạn đã thể hiện sự thành thạo tuyệt vời. Hãy tiếp tục phát huy!",
+    "resultGood": "Làm tốt lắm!",
+    "resultGoodDesc": "Bạn đang tiến bộ vững chắc. Luyện tập thêm một chút và bạn sẽ thành thạo chủ đề này!",
+    "resultKeepGoing": "Cố lên!",
+    "resultKeepGoingDesc": "Mỗi lần thi là một bước tiến. Ôn lại bài và thử lại — bạn làm được!",
+    "yourScore": "Điểm của bạn",
+    "questionsCorrect": "{correct} / {total} câu đúng"
   }
 }

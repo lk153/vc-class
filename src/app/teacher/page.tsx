@@ -98,7 +98,7 @@ export default async function TeacherDashboard() {
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden"
+            className="relative bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-5 overflow-hidden"
           >
             <div className="flex items-center gap-4">
               <div className={`w-10 h-10 rounded-lg ${stat.iconBg} flex items-center justify-center shrink-0`}>
@@ -117,7 +117,7 @@ export default async function TeacherDashboard() {
       </div>
 
       {/* Recent Results Table */}
-      <div className="bg-white rounded-xl ambient-shadow p-4 md:p-8">
+      <div className="bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-4 md:p-8">
         <div className="flex items-center justify-between gap-4 mb-8">
           <h2 className="font-body font-bold text-xl sm:text-2xl text-[#121c2a]">{t("recentResults")}</h2>
           <Link

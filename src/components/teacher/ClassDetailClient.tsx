@@ -545,7 +545,7 @@ export default function ClassDetailClient({
                   key={student.id}
                   onClick={() => toggleStudent(student.id)}
                   className={`w-full text-left flex items-center gap-3 p-3 rounded-xl transition-all duration-200 ${
-                    isSelected ? "bg-white ambient-shadow" : "hover:bg-white/60"
+                    isSelected ? "bg-white shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)]" : "hover:bg-white/60"
                   }`}
                 >
                   <div className="w-8 h-8 rounded-full bg-[#e3dfff] flex items-center justify-center shrink-0">

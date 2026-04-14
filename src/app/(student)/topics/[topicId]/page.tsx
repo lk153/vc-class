@@ -135,7 +135,7 @@ export default async function TopicDetailPage({
   return (
     <div className="font-body">
       {/* ── Hero Section ── */}
-      <header className="relative bg-white rounded-3xl overflow-hidden mb-12 ambient-shadow">
+      <header className="relative bg-white rounded-3xl overflow-hidden mb-12 shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)]">
         {/* Decorative blobs */}
         <div className="absolute -top-20 -right-20 w-72 h-72 bg-[#2a14b4]/[0.04] rounded-full blur-3xl" />
         <div className="absolute -bottom-16 -left-16 w-56 h-56 bg-[#4338ca]/[0.03] rounded-full blur-3xl" />
@@ -226,7 +226,7 @@ export default async function TopicDetailPage({
 
       {/* ── Practice Tests Section ── */}
       {topic.practiceTests.length > 0 && (
-        <section className="relative bg-white rounded-3xl overflow-hidden ambient-shadow">
+        <section className="relative bg-white rounded-2xl overflow-hidden shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)]">
           {/* Decorative corner */}
           <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-[#2a14b4]/[0.04] to-transparent" />
 
@@ -347,7 +347,7 @@ export default async function TopicDetailPage({
 
       {/* ── Bookmarked Questions ── */}
       {bookmarks.length > 0 && (
-        <section className="mt-12 relative bg-white rounded-3xl overflow-hidden ambient-shadow">
+        <section className="mt-12 relative bg-white rounded-2xl overflow-hidden shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)]">
           <div className="relative z-10 p-8 md:p-12">
             <div className="flex items-center gap-4 mb-6">
               <div className="w-10 h-10 rounded-xl bg-[#fef3c7] flex items-center justify-center">

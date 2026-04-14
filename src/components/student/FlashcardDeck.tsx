@@ -252,7 +252,7 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
             >
               {/* Front Face (Word) */}
               <div
-                className="absolute inset-0 rounded-[2rem] flex flex-col overflow-hidden border-[10px] border-white shadow-[0_20px_60px_rgba(0,0,0,0.25),0_8px_20px_rgba(0,0,0,0.15)]"
+                className="absolute inset-0 rounded-[2rem] flex flex-col overflow-hidden shadow-[0_8px_24px_3px_rgba(0,0,0,0.12),0_4px_8px_0_rgba(0,0,0,0.08)]"
                 style={{
                   backfaceVisibility: "hidden",
                   background: swipeColor === "green"
@@ -305,7 +305,7 @@ export default function FlashcardDeck({ topicId, topicTitle, vocabulary }: Props
 
               {/* Back Face (Meaning) */}
               <div
-                className="absolute inset-0 rounded-[2rem] flex flex-col overflow-hidden border-[10px] border-white shadow-[0_20px_60px_rgba(0,0,0,0.25),0_8px_20px_rgba(0,0,0,0.15)]"
+                className="absolute inset-0 rounded-[2rem] flex flex-col overflow-hidden shadow-[0_8px_24px_3px_rgba(0,0,0,0.12),0_4px_8px_0_rgba(0,0,0,0.08)]"
                 style={{
                   backfaceVisibility: "hidden",
                   transform: "rotateY(180deg)",

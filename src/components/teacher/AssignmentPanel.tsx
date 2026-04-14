@@ -84,7 +84,7 @@ export default function AssignmentPanel({ topics, classes }: Props) {
   return (
     <div>
       {/* Summary Bar (Glassmorphic) */}
-      <div className="glass-card rounded-2xl ambient-shadow border border-white/40 p-4 sm:p-6 mb-10 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
+      <div className="glass-card rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] border border-white/40 p-4 sm:p-6 mb-10 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
         <div className="flex items-center gap-6 sm:gap-8">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
@@ -138,8 +138,8 @@ export default function AssignmentPanel({ topics, classes }: Props) {
                   onClick={() => toggleTopic(topic.id)}
                   className={`w-full text-left flex items-center gap-4 p-5 rounded-xl transition-all duration-200 ${
                     isSelected
-                      ? "bg-white ambient-shadow border-2 border-[#2a14b4]/20"
-                      : "bg-white/50 border border-[#c7c4d7]/10 hover:bg-white hover:ambient-shadow"
+                      ? "bg-white shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] border-2 border-[#2a14b4]/20"
+                      : "bg-white/50 border border-[#c7c4d7]/10 hover:bg-white hover:shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)]"
                   }`}
                 >
                   <span
@@ -187,7 +187,7 @@ export default function AssignmentPanel({ topics, classes }: Props) {
                       onClick={() => toggleClass(cls.id)}
                       className={`w-full text-left flex items-center gap-3 p-4 rounded-xl transition-all duration-200 ${
                         isSelected
-                          ? "bg-white ambient-shadow"
+                          ? "bg-white shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)]"
                           : "hover:bg-white/60"
                       }`}
                     >

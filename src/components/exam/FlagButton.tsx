@@ -12,7 +12,7 @@ export default function FlagButton({ isFlagged, onToggle }: Props) {
   return (
     <button
       onClick={onToggle}
-      className="w-11 h-11 flex items-center justify-center rounded-xl transition-all hover:bg-[#f7f2fa]"
+      className="w-11 h-11 flex items-center justify-center rounded-2xl transition-all hover:bg-[#f7f2fa]"
       title={isFlagged ? t("removeFlag") : t("flagForReview")}
     >
       <span

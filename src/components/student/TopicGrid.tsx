@@ -41,7 +41,7 @@ export default function TopicGrid({ items, languages }: Props) {
             className={`px-4 py-1.5 rounded-full text-xs font-body font-bold transition-all ${
               filterLangId === null
                 ? "bg-[#2a14b4] text-white shadow-lg shadow-[#2a14b4]/20"
-                : "bg-white text-[#464554] hover:bg-[#eff4ff] ambient-shadow"
+                : "bg-white text-[#464554] hover:bg-[#eff4ff] shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)]"
             }`}
           >
             {t("all")}
@@ -53,7 +53,7 @@ export default function TopicGrid({ items, languages }: Props) {
               className={`px-4 py-1.5 rounded-full text-xs font-body font-bold transition-all ${
                 filterLangId === lang.id
                   ? "bg-[#2a14b4] text-white shadow-lg shadow-[#2a14b4]/20"
-                  : "bg-white text-[#464554] hover:bg-[#eff4ff] ambient-shadow"
+                  : "bg-white text-[#464554] hover:bg-[#eff4ff] shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)]"
               }`}
             >
               {lang.name}

@@ -337,7 +337,7 @@ export default function PracticeSession({
   if (resumePrompt) {
     return (
       <div className="font-body min-h-[50vh] flex flex-col items-center justify-center px-6">
-        <div className="max-w-md w-full bg-white rounded-2xl ambient-shadow p-8 text-center">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-8 text-center">
           <div className="w-16 h-16 rounded-full bg-[#e3dfff] flex items-center justify-center mx-auto mb-5">
             <span className="material-symbols-outlined text-[32px] text-[#2a14b4]">history</span>
           </div>
@@ -379,7 +379,7 @@ export default function PracticeSession({
       {/* Inline Notification */}
       {inlineNotice && (
         <div className="fixed top-6 right-6 z-50">
-          <div className={`flex items-center gap-4 px-6 py-4 rounded-2xl ambient-shadow backdrop-blur-xl border ${
+          <div className={`flex items-center gap-4 px-6 py-4 rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] backdrop-blur-xl border ${
             inlineNotice.type === "error"
               ? "bg-[#ffdada]/90 border-[#7b0020]/10 text-[#7b0020]"
               : "bg-[#e3dfff]/90 border-[#2a14b4]/10 text-[#2a14b4]"

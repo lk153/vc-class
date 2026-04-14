@@ -399,7 +399,7 @@ export default function CsvImporter({ topics }: Props) {
   return (
     <div className="space-y-6">
       {/* Form */}
-      <div className="bg-white rounded-xl ambient-shadow p-6 md:p-8 space-y-5">
+      <div className="bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-6 md:p-8 space-y-5">
         {/* Test Type Selector */}
         <div>
           <label className="block text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] mb-2">{t("testTypeLabel")}</label>
@@ -482,7 +482,7 @@ export default function CsvImporter({ topics }: Props) {
 
       {/* Preview table */}
       {fileSelected && rows.length > 0 && (
-        <div className="bg-white rounded-xl ambient-shadow p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-6 md:p-8">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-body font-bold text-lg text-[#121c2a]">
               {t("csvPreview", { count: rows.length })}
@@ -621,7 +621,7 @@ export default function CsvImporter({ topics }: Props) {
         <div className="space-y-4">
           {/* Progress bar */}
           {importProgress && importing && (
-            <div className="bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-5 overflow-hidden">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">

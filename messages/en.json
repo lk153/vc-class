@@ -473,6 +473,14 @@
     "statusUnavailable": "Unavailable",
     "statusInProgress": "In Progress",
     "statusAwaitingGrade": "Awaiting Grade",
-    "statusViewResults": "View Results"
+    "statusViewResults": "View Results",
+    "resultExcellent": "Outstanding Achievement!",
+    "resultExcellentDesc": "You've demonstrated exceptional mastery of this material. Keep up the brilliant work!",
+    "resultGood": "Great Job!",
+    "resultGoodDesc": "You're making solid progress. A little more practice and you'll master this topic!",
+    "resultKeepGoing": "Keep Going!",
+    "resultKeepGoingDesc": "Every attempt is a step forward. Review the material and try again — you've got this!",
+    "yourScore": "Your Score",
+    "questionsCorrect": "{correct} of {total} correct"
   }
 }

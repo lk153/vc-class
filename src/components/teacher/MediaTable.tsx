@@ -276,7 +276,7 @@ export default function MediaTable() {
     <div>
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-        <div className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
+        <div className="relative bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-5 overflow-hidden">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
               <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">perm_media</span>
@@ -288,7 +288,7 @@ export default function MediaTable() {
           </div>
           {loading && <><div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-[1]" /><div className="absolute bottom-0 left-0 right-0 h-[3px] overflow-hidden z-[2]"><div className="absolute h-full bg-[#2a14b4] rounded-full animate-[loading-bar_1.5s_ease-in-out_infinite]" /></div></>}
         </div>
-        <div className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
+        <div className="relative bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-5 overflow-hidden">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
               <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">cloud</span>
@@ -300,7 +300,7 @@ export default function MediaTable() {
           </div>
           {loading && <><div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-[1]" /><div className="absolute bottom-0 left-0 right-0 h-[3px] overflow-hidden z-[2]"><div className="absolute h-full bg-[#2a14b4] rounded-full animate-[loading-bar_1.5s_ease-in-out_infinite]" /></div></>}
         </div>
-        <div className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
+        <div className="relative bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-5 overflow-hidden">
           <div className="flex items-center gap-3 sm:gap-5">
             <div className="flex items-center gap-1.5 sm:gap-3">
               <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">

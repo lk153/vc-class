@@ -117,31 +117,42 @@ export default function ExamShell({
 
   // ── Submitted state ──
   if (session.submitResult) {
+    const score = session.submitResult.score;
+    const isExcellent = score >= 80;
+    const isGood = score >= 50 && score < 80;
+
+    const mood = session.submitResult.status !== "GRADED"
+      ? { icon: "hourglass_top", title: t("examSubmitted"), desc: t("awaitingReview"), color: "text-[#1e40af]", bg: "bg-[#dbeafe]" }
+      : isExcellent
+      ? { icon: "emoji_events", title: t("examSubmitted"), desc: `${session.submitResult.correctCount} / ${session.submitResult.totalQuestions} ${t("correct")}`, color: "text-[#1b6b51]", bg: "bg-[#a6f2d1]/20" }
+      : isGood
+      ? { icon: "trending_up", title: t("examSubmitted"), desc: `${session.submitResult.correctCount} / ${session.submitResult.totalQuestions} ${t("correct")}`, color: "text-[#2a14b4]", bg: "bg-[#e3dfff]" }
+      : { icon: "fitness_center", title: t("examSubmitted"), desc: `${session.submitResult.correctCount} / ${session.submitResult.totalQuestions} ${t("correct")}`, color: "text-[#92400e]", bg: "bg-[#fef3c7]" };
+
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--exam-surface,#fdf8fe)]">
-        <div className="text-center max-w-lg px-6">
-          <div className="w-20 h-20 rounded-2xl bg-[#e3dfff] flex items-center justify-center mx-auto mb-6">
-            <span className="material-symbols-outlined text-[40px] text-[var(--exam-primary,#5e35f1)]">
-              task_alt
+        <div className="text-center max-w-md px-6">
+          {/* Icon */}
+          <div className={`w-20 h-20 rounded-2xl ${mood.bg} flex items-center justify-center mx-auto mb-6`}>
+            <span className={`material-symbols-outlined text-[40px] ${mood.color}`} style={{ fontVariationSettings: "'FILL' 1" }}>
+              {mood.icon}
             </span>
           </div>
-          <h1 className="font-body text-3xl font-bold text-[var(--exam-on-surface,#33313a)] mb-3">
-            {t("examSubmitted")}
+
+          <h1 className="font-body text-2xl font-bold text-[var(--exam-on-surface,#33313a)] mb-3">
+            {mood.title}
           </h1>
-          {session.submitResult.status === "GRADED" ? (
-            <>
-              <p className="text-5xl font-body font-bold text-[var(--exam-primary,#5e35f1)] mb-2">
-                {session.submitResult.score}%
-              </p>
-              <p className="text-base font-body text-[var(--exam-on-surface-variant,#777586)] mb-8">
-                {session.submitResult.correctCount} / {session.submitResult.totalQuestions} {t("correct")}
-              </p>
-            </>
-          ) : (
-            <p className="text-base font-body text-[var(--exam-on-surface-variant,#777586)] mb-8">
-              {t("awaitingReview")}
+
+          {session.submitResult.status === "GRADED" && (
+            <p className={`text-5xl font-body font-bold ${mood.color} mb-2`}>
+              {score}%
             </p>
           )}
+
+          <p className="text-base font-body text-[var(--exam-on-surface-variant,#777586)] mb-8">
+            {mood.desc}
+          </p>
+
           <button
             onClick={() => router.push(`/topics/${topicId}`)}
             className="px-10 py-3.5 rounded-full font-body font-bold text-sm text-white exam-cta

@@ -42,7 +42,7 @@ export default function StudentTable({ students }: { students: Student[] }) {
     <div>
       {/* Stats Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-        <div className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
+        <div className="relative bg-[var(--color-card,#fff)] rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-5 overflow-hidden">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
               <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">group</span>
@@ -54,7 +54,7 @@ export default function StudentTable({ students }: { students: Student[] }) {
           </div>
           <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#2a14b4]/10"><div className="h-full w-full bg-[#2a14b4] rounded-full" /></div>
         </div>
-        <div className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
+        <div className="relative bg-[var(--color-card,#fff)] rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-5 overflow-hidden">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-lg bg-[#a6f2d1]/40 flex items-center justify-center shrink-0">
               <span className="material-symbols-outlined text-[20px] text-[#1b6b51]">verified</span>
@@ -69,7 +69,7 @@ export default function StudentTable({ students }: { students: Student[] }) {
           </div>
           <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#1b6b51]/10"><div className="h-full w-full bg-[#1b6b51] rounded-full" /></div>
         </div>
-        <div className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
+        <div className="relative bg-[var(--color-card,#fff)] rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-5 overflow-hidden">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-lg bg-[#d9e3f6] flex items-center justify-center shrink-0">
               <span className="material-symbols-outlined text-[20px] text-[#777586]">person_off</span>
@@ -81,7 +81,7 @@ export default function StudentTable({ students }: { students: Student[] }) {
           </div>
           <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#777586]/10"><div className="h-full w-full bg-[#777586] rounded-full" /></div>
         </div>
-        <div className="relative bg-white rounded-xl ambient-shadow p-5 overflow-hidden">
+        <div className="relative bg-[var(--color-card,#fff)] rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-5 overflow-hidden">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
               <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">menu_book</span>
@@ -102,7 +102,7 @@ export default function StudentTable({ students }: { students: Student[] }) {
       {/* Mobile Card Layout */}
       <div className="md:hidden space-y-3">
         {students.length === 0 ? (
-          <div className="bg-white rounded-xl ambient-shadow px-6 py-12 text-center text-[#777586]">
+          <div className="bg-[var(--color-card,#fff)] rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] px-6 py-12 text-center text-[#777586]">
             {t("noStudentsYet")}
           </div>
         ) : (
@@ -118,7 +118,7 @@ export default function StudentTable({ students }: { students: Student[] }) {
               <button
                 key={s.id}
                 onClick={() => setSelectedStudent(s)}
-                className={`w-full text-left bg-white rounded-xl ambient-shadow p-4 hover:bg-[#e3dfff]/50 transition-colors duration-200 ${isInactive ? "opacity-60" : ""}`}
+                className={`w-full text-left bg-[var(--color-card,#fff)] rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-4 hover:bg-[#e3dfff]/50 transition-colors duration-200 ${isInactive ? "opacity-60" : ""}`}
               >
                 <div className="flex items-center gap-3 mb-3">
                   <div className={`w-10 h-10 rounded-full bg-[#e3dfff] flex items-center justify-center shrink-0 ${isInactive ? "grayscale" : ""}`}>
@@ -150,7 +150,7 @@ export default function StudentTable({ students }: { students: Student[] }) {
       </div>
 
       {/* Desktop Table */}
-      <div className="hidden md:block bg-white rounded-xl ambient-shadow overflow-hidden">
+      <div className="hidden md:block bg-[var(--color-card,#fff)] rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-[#c7c4d7]/20">

@@ -103,7 +103,7 @@ export default function VocabCsvImporter({ topicId }: Props) {
   return (
     <div className="space-y-6">
       {/* Form */}
-      <div className="bg-white rounded-xl ambient-shadow p-6 md:p-8 space-y-5">
+      <div className="bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-6 md:p-8 space-y-5">
         <div>
           <label className="block text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] mb-1.5">
             {t("uploadCsv")}
@@ -138,7 +138,7 @@ export default function VocabCsvImporter({ topicId }: Props) {
 
       {/* Preview table */}
       {fileSelected && rows.length > 0 && (
-        <div className="bg-white rounded-xl ambient-shadow p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-6 md:p-8">
           <h2 className="font-body font-bold text-lg text-[#121c2a] mb-4">
             {t("csvPreview", { count: rows.length })}
           </h2>

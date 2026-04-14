@@ -448,7 +448,7 @@ export default function ExamSession({
 
       {/* Sidebar — Question Navigator */}
       <aside className="hidden lg:block w-48 shrink-0">
-        <div className="sticky top-24 bg-white rounded-xl ambient-shadow p-4">
+        <div className="sticky top-24 bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-4">
           <p className="text-[10px] font-body font-bold uppercase tracking-widest text-[#777586] mb-3">Questions</p>
           <div className="grid grid-cols-5 gap-1.5">
             {questions.map((q) => {

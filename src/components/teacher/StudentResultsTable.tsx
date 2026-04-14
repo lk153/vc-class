@@ -249,7 +249,7 @@ export default function StudentResultsTable() {
       {/* Desktop Table */}
       {/* Bulk delete toolbar */}
       {selectedIds.size > 0 && (
-        <div className="flex items-center gap-3 mb-4 p-4 bg-white rounded-xl ambient-shadow border border-[#7b0020]/10">
+        <div className="flex items-center gap-3 mb-4 p-4 bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] border border-[#7b0020]/10">
           <span className="text-sm font-body font-bold text-[#7b0020]">{selectedIds.size} selected</span>
           <button
             onClick={() => setShowDeleteConfirm(true)}

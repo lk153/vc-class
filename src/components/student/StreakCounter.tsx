@@ -39,7 +39,7 @@ export default function StreakCounter({ streak }: Props) {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.8, y: -10 }}
           transition={{ type: "spring", damping: 15, stiffness: 300 }}
-          className="flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-lg border border-[#c7c4d7]/15"
+          className="flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-[0_4px_8px_3px_rgba(0,0,0,0.08),0_1px_3px_0_rgba(0,0,0,0.1)]"
         >
           <span className={`material-symbols-outlined text-[18px] ${info.color}`} style={{ fontVariationSettings: "'FILL' 1" }}>
             {info.icon}

@@ -76,7 +76,7 @@ export default function Tooltip({
           ${maxWidth} w-max
           bg-[#121c2a] text-white text-xs font-body font-medium
           leading-relaxed normal-case tracking-normal
-          px-3 py-1.5 rounded-lg shadow-lg
+          px-3 py-1.5 rounded-2xl shadow-lg
           before:content-[''] before:absolute before:border-[5px] before:border-transparent
           ${arrowClass}
         `}
