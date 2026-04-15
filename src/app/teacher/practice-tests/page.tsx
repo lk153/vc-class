@@ -112,6 +112,7 @@ export default async function PracticeTestsPage() {
             languageName: test.topic.language.name,
             questionCount: test._count.questions,
             status: test.status,
+            mode: test.mode,
           }))}
         />
       )}

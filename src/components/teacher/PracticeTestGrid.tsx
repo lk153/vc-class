@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { tLang } from "@/lib/i18n/tLang";
 import { useRouter } from "next/navigation";
@@ -116,6 +116,7 @@ type Test = {
   languageName: string;
   questionCount: number;
   status?: string;
+  mode?: string;
 };
 
 type Question = {
@@ -176,6 +177,22 @@ type TestDetail = {
   }[];
 };
 
+const STATUS_CHIPS = [
+  { val: "", label: "All", icon: "checklist" },
+  { val: "ACTIVE", label: "Active", icon: "check_circle" },
+  { val: "DRAFT", label: "Draft", icon: "edit_note" },
+  { val: "INACTIVE", label: "Inactive", icon: "block" },
+] as const;
+
+const Q_TYPE_CHIPS = [
+  { val: "", label: "All", icon: "checklist" },
+  { val: "MULTIPLE_CHOICE", label: "MC", icon: "radio_button_checked" },
+  { val: "TRUE_FALSE", label: "T/F", icon: "check_box" },
+  { val: "GAP_FILL", label: "Fill", icon: "edit" },
+  { val: "REORDER_WORDS", label: "Reorder", icon: "swap_vert" },
+  { val: "WORD_BANK", label: "Bank", icon: "view_module" },
+] as const;
+
 type Props = {
   tests: Test[];
 };
@@ -196,6 +213,29 @@ export default function PracticeTestGrid({ tests }: Props) {
   const Q_PER_PAGE = 10;
   const [deleteTestId, setDeleteTestId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+
+  // Filters
+  const [filterStatus, setFilterStatus] = useState("");
+  const [filterLanguage, setFilterLanguage] = useState("");
+  const [filterSearch, setFilterSearch] = useState("");
+
+  // Derived: unique languages from tests
+  const languages = useMemo(
+    () => Array.from(new Set(tests.map((t) => t.languageName))).sort(),
+    [tests],
+  );
+
+  // Filtered tests
+  const hasFilters = filterStatus || filterLanguage || filterSearch;
+  const filteredTests = useMemo(() => {
+    const search = filterSearch.toLowerCase();
+    return tests.filter((test) => {
+      if (filterStatus && test.status !== filterStatus) return false;
+      if (filterLanguage && test.languageName !== filterLanguage) return false;
+      if (search && !test.title.toLowerCase().includes(search) && !test.topicTitle.toLowerCase().includes(search)) return false;
+      return true;
+    });
+  }, [tests, filterStatus, filterLanguage, filterSearch]);
 
   useEffect(() => {
     if (selectedTestId) {
@@ -278,8 +318,81 @@ export default function PracticeTestGrid({ tests }: Props) {
 
   return (
     <>
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        {/* Search */}
+        <div className="relative flex-1 max-w-xs">
+          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#777586]/40 text-[16px]">search</span>
+          <input
+            type="text"
+            placeholder="Search tests..."
+            value={filterSearch}
+            onChange={(e) => setFilterSearch(e.target.value)}
+            className="w-full pl-9 pr-3 py-2 bg-[#f7f2fa] rounded-full text-xs font-body
+              focus:ring-2 focus:ring-[#2a14b4]/20 outline-none border border-transparent focus:border-[#2a14b4]/20"
+          />
+        </div>
+
+        {/* Status filter chips */}
+        <div className="flex items-center gap-1 flex-wrap">
+          {STATUS_CHIPS.map(({ val, label, icon }) => (
+            <button
+              key={val}
+              onClick={() => setFilterStatus(val)}
+              className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-body font-bold transition-all ${
+                filterStatus === val
+                  ? "bg-[#2a14b4] text-white shadow-[0_1px_3px_rgba(42,20,180,0.3)]"
+                  : "bg-[#f7f2fa] text-[#777586] hover:bg-[#e3dfff] hover:text-[#2a14b4]"
+              }`}
+            >
+              <span className="material-symbols-outlined text-[12px]">{icon}</span>
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Language filter chips */}
+        {languages.length > 1 && (
+          <div className="flex items-center gap-1 flex-wrap">
+            <button
+              onClick={() => setFilterLanguage("")}
+              className={`px-3 py-1.5 rounded-full text-[10px] font-body font-bold transition-all ${
+                filterLanguage === ""
+                  ? "bg-[#1b6b51] text-white shadow-sm"
+                  : "bg-[#f7f2fa] text-[#777586] hover:bg-[#a6f2d1]/30 hover:text-[#1b6b51]"
+              }`}
+            >
+              All
+            </button>
+            {languages.map((lang) => (
+              <button
+                key={lang}
+                onClick={() => setFilterLanguage(lang)}
+                className={`px-3 py-1.5 rounded-full text-[10px] font-body font-bold transition-all ${
+                  filterLanguage === lang
+                    ? "bg-[#1b6b51] text-white shadow-sm"
+                    : "bg-[#f7f2fa] text-[#777586] hover:bg-[#a6f2d1]/30 hover:text-[#1b6b51]"
+                }`}
+              >
+                {tLang(t, lang)}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Test count */}
+      {hasFilters ? (
+        <p className="text-xs font-body text-[#777586] mb-4">
+          {filteredTests.length} of {tests.length} tests
+          <button onClick={() => { setFilterSearch(""); setFilterStatus(""); setFilterLanguage(""); }} className="ml-2 text-[#2a14b4] hover:underline">
+            Clear filters
+          </button>
+        </p>
+      ) : null}
+
       <div className="grid gap-4 sm:gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {tests.map((test) => {
+        {filteredTests.map((test) => {
           const statusConfig = {
             ACTIVE:   { label: "Active",   icon: "check_circle", color: "bg-[#1b6b51]/10 text-[#1b6b51]" },
             DRAFT:    { label: "Draft",    icon: "edit_note",    color: "bg-[#92400e]/10 text-[#92400e]" },
@@ -289,7 +402,6 @@ export default function PracticeTestGrid({ tests }: Props) {
           return (
           <motion.div
             key={test.id}
-            layoutId={`test-card-${test.id}`}
             onClick={() => setSelectedTestId(test.id)}
             className={`group relative rounded-2xl p-5 cursor-pointer flex flex-col
               transition-all duration-200
@@ -343,9 +455,21 @@ export default function PracticeTestGrid({ tests }: Props) {
             </p>
 
             <div className="flex items-center justify-between pt-3 mt-4 border-t border-[#c7c4d7]/10">
-              <div className="flex items-center gap-1.5 text-xs text-[#777586] font-body">
-                <span className="material-symbols-outlined text-[14px]">help</span>
-                {test.questionCount} {t("questionsCount")}
+              <div className="flex items-center gap-3">
+                <span className={`inline-flex items-center gap-1 text-[9px] font-body font-bold px-2 py-0.5 rounded-full ${
+                  test.mode === "practice"
+                    ? "bg-[#e3dfff] text-[#5e35f1]"
+                    : "bg-[#dbeafe] text-[#1e40af]"
+                }`}>
+                  <span className="material-symbols-outlined text-[10px]">
+                    {test.mode === "practice" ? "self_improvement" : "assignment"}
+                  </span>
+                  {test.mode === "practice" ? "Practice" : "Test"}
+                </span>
+                <span className="flex items-center gap-1 text-xs text-[#777586] font-body">
+                  <span className="material-symbols-outlined text-[14px]">help</span>
+                  {test.questionCount} {t("questionsCount")}
+                </span>
               </div>
               <div className="flex items-center gap-1.5">
                 <button
@@ -398,12 +522,13 @@ export default function PracticeTestGrid({ tests }: Props) {
               transition={{ duration: 0.3 }}
             />
 
-            {/* Panel — shared layoutId morphs from the card */}
+            {/* Panel */}
             <motion.div
-              layoutId={`test-card-${selectedTestId}`}
               className="relative z-10 w-full max-w-6xl bg-[#f8f9ff] rounded-2xl shadow-[0_8px_24px_3px_rgba(0,0,0,0.12),0_4px_8px_0_rgba(0,0,0,0.08)] my-auto"
-              style={{ borderRadius: 16 }}
-              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300, duration: 0.3 }}
             >
               <div className="max-h-[90vh] overflow-y-auto rounded-2xl">
                 {/* Close button */}
@@ -656,14 +781,7 @@ export default function PracticeTestGrid({ tests }: Props) {
 
                               {/* Type chips — M3 segmented style */}
                               <div className="flex items-center gap-1 flex-wrap">
-                                {[
-                                  { val: "", label: "All", icon: "checklist" },
-                                  { val: "MULTIPLE_CHOICE", label: "MC", icon: "radio_button_checked" },
-                                  { val: "TRUE_FALSE", label: "T/F", icon: "check_box" },
-                                  { val: "GAP_FILL", label: "Fill", icon: "edit" },
-                                  { val: "REORDER_WORDS", label: "Reorder", icon: "swap_vert" },
-                                  { val: "WORD_BANK", label: "Bank", icon: "view_module" },
-                                ].map(({ val, label, icon }) => (
+                                {Q_TYPE_CHIPS.map(({ val, label, icon }) => (
                                   <button
                                     key={val}
                                     onClick={() => { setQTypeFilter(val); setQPage(1); }}
