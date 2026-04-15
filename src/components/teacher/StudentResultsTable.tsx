@@ -163,7 +163,7 @@ export default function StudentResultsTable() {
             </span>
           </div>
         ) : results.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] px-6 py-12 text-center">
+          <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] px-6 py-12 text-center">
             <div className="flex flex-col items-center gap-2">
               <span className="material-symbols-outlined text-3xl text-[#777586]/40">
                 assignment
@@ -177,7 +177,7 @@ export default function StudentResultsTable() {
               <button
                 key={r.id}
                 onClick={() => setSelectedResultId(r.id)}
-                className="w-full text-left bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-4 hover:bg-[#e3dfff]/50 hover:shadow-[0px_4px_16px_rgba(18,28,42,0.08)] transition-all duration-200"
+                className="w-full text-left bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-4 hover:bg-[#e3dfff]/50 hover:shadow-[0px_4px_16px_rgba(18,28,42,0.08)] transition-all duration-200"
               >
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-9 h-9 rounded-full bg-[#e3dfff] flex items-center justify-center text-xs font-bold text-[#2a14b4] shrink-0">
@@ -261,7 +261,7 @@ export default function StudentResultsTable() {
         </div>
       )}
 
-      <div className="hidden md:block bg-white rounded-xl overflow-hidden shadow-[0px_20px_40px_rgba(18,28,42,0.04)]">
+      <div className="hidden md:block bg-white rounded-2xl overflow-hidden shadow-[0px_20px_40px_rgba(18,28,42,0.04)]">
         <table className="w-full text-left">
           <thead>
             <tr className="bg-[#eff4ff] text-xs font-body font-extrabold uppercase tracking-[0.08em] text-[#121c2a]">

@@ -78,7 +78,7 @@ export default async function StudentResultDetailPage({
 
       {/* Test info + Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
+        <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
           <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
             {t("testNameCol")}
           </p>
@@ -86,7 +86,7 @@ export default async function StudentResultDetailPage({
             {result.practiceTest.title}
           </p>
         </div>
-        <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
+        <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
           <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
             {t("topicCol")}
           </p>
@@ -94,7 +94,7 @@ export default async function StudentResultDetailPage({
             {result.practiceTest.topic.title}
           </p>
         </div>
-        <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
+        <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
           <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
             {t("scoreCol")}
           </p>
@@ -110,7 +110,7 @@ export default async function StudentResultDetailPage({
             {Math.round(result.score)}%
           </p>
         </div>
-        <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
+        <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
           <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
             {t("submittedDate")}
           </p>
@@ -125,7 +125,7 @@ export default async function StudentResultDetailPage({
       </div>
 
       {/* Answer Details */}
-      <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] overflow-hidden overflow-x-auto">
+      <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] overflow-hidden overflow-x-auto">
         <div className="px-6 py-4 border-b border-[#c7c4d7]/15">
           <h2 className="font-body font-bold text-xl text-[#121c2a] flex items-center gap-2">
             <span className="material-symbols-outlined text-[#2a14b4]">fact_check</span>

@@ -151,7 +151,7 @@ export default function QuestionEditor({ question, onSave }: { question: Questio
     const answerDefaults = [question.answer1, question.answer2, question.answer3, question.answer4];
 
     return (
-      <form onSubmit={handleSave} className="bg-[#f8f9ff] rounded-xl border border-[#2a14b4]/10 p-6 space-y-5">
+      <form onSubmit={handleSave} className="bg-[#f8f9ff] rounded-2xl border border-[#2a14b4]/10 p-6 space-y-5">
         {/* Header */}
         <div className="flex items-center gap-2">
           <span className="w-8 h-8 rounded-full bg-[#e3dfff] flex items-center justify-center text-xs font-body font-bold text-[#2a14b4]">

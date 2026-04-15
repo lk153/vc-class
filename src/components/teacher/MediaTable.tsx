@@ -92,7 +92,7 @@ function TypeFilterDropdown({
         </span>
       </button>
       {open && (
-        <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-20">
+        <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-20">
           {options.map((option) => (
             <button
               key={option.value}
@@ -133,7 +133,7 @@ function MobileUploadButton({ onClick }: { onClick: () => void }) {
       tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick(); }}
-      className="sm:hidden fixed! bottom-6 right-6 z-[9999] w-14 h-14 rounded-full bg-[#2a14b4] text-white shadow-xl shadow-[#2a14b4]/30 flex items-center justify-center active:scale-90 transition-all cursor-pointer"
+      className="sm:hidden fixed! bottom-6 right-6 z-[9999] w-14 h-14 rounded-full bg-[#2a14b4] text-white shadow-lg shadow-[#2a14b4]/30 flex items-center justify-center active:scale-90 transition-all cursor-pointer"
     >
       <span className="material-symbols-outlined text-[26px]">cloud_upload</span>
     </div>,
@@ -390,14 +390,14 @@ export default function MediaTable() {
           </div>
         )}
         {results.length === 0 && !loading ? (
-          <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] px-6 py-12 text-center">
+          <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] px-6 py-12 text-center">
             <span className="material-symbols-outlined text-3xl text-[#777586]/40 mb-2">perm_media</span>
             <p className="text-sm text-[#777586]">{t("noMedia")}</p>
           </div>
         ) : (
           <div className="space-y-3">
             {results.map((m) => (
-              <div key={m.id} className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-4">
+              <div key={m.id} className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-4">
                 <div className="flex items-center gap-3 mb-3">
                   {/* Checkbox */}
                   <input
@@ -451,7 +451,7 @@ export default function MediaTable() {
       </div>
 
       {/* Desktop Table */}
-      <div className="hidden md:block bg-white rounded-xl overflow-hidden shadow-[0px_20px_40px_rgba(18,28,42,0.04)]">
+      <div className="hidden md:block bg-white rounded-2xl overflow-hidden shadow-[0px_20px_40px_rgba(18,28,42,0.04)]">
         <table className="w-full text-left">
           <thead>
             <tr className="bg-[#eff4ff] text-xs font-body font-extrabold uppercase tracking-[0.08em] text-[#121c2a]">

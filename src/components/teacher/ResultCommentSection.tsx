@@ -50,7 +50,7 @@ export default function ResultCommentSection({ resultId, comments }: Props) {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-6">
+    <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-6">
       <h2 className="font-body font-bold text-xl text-[#121c2a] mb-4 flex items-center gap-2">
         <span className="material-symbols-outlined text-[#2a14b4]">chat</span>
         {t("teacherFeedback")}

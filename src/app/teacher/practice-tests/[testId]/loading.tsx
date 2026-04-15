@@ -6,7 +6,7 @@ export default function Loading() {
       <div className="h-4 bg-gray-300 rounded w-40 mb-8" />
 
       {/* Questions */}
-      <div className="bg-white rounded-xl border border-gray-100 p-6">
+      <div className="bg-white rounded-2xl border border-gray-100 p-6">
         <div className="h-6 bg-gray-300 rounded w-32 mb-6" />
         <div className="space-y-4">
           {[1, 2, 3, 4].map((i) => (

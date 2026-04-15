@@ -130,11 +130,11 @@ export default function ResultsScreen({ topicId, questions, answers, streak, spe
 
         {/* Correct / Incorrect */}
         <div className="flex justify-center gap-8 mb-8">
-          <div className="text-center bg-[#a6f2d1]/20 rounded-xl px-6 py-4">
+          <div className="text-center bg-[#a6f2d1]/20 rounded-2xl px-6 py-4">
             <span className="block text-3xl font-body font-bold text-[#1b6b51]">{correctCount}</span>
             <span className="text-[10px] font-body uppercase tracking-widest text-[#464554] font-bold">{t("correct")}</span>
           </div>
-          <div className="text-center bg-[#ffdada]/20 rounded-xl px-6 py-4">
+          <div className="text-center bg-[#ffdada]/20 rounded-2xl px-6 py-4">
             <span className="block text-3xl font-body font-bold text-[#7b0020]">{totalCount - correctCount}</span>
             <span className="text-[10px] font-body uppercase tracking-widest text-[#464554] font-bold">{t("incorrect")}</span>
           </div>
@@ -144,7 +144,7 @@ export default function ResultsScreen({ topicId, questions, answers, streak, spe
         {byDifficulty.length > 1 && (
           <div className="grid grid-cols-3 gap-3 mb-8">
             {byDifficulty.map((d) => (
-              <div key={d.level} className={`${diffBg(d.level)} rounded-xl p-4 text-center`}>
+              <div key={d.level} className={`${diffBg(d.level)} rounded-2xl p-4 text-center`}>
                 <p className={`font-body font-bold text-lg ${diffColor(d.level)}`}>{d.correct}/{d.total}</p>
                 <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold">{diffLabel(d.level)}</p>
               </div>
@@ -179,7 +179,7 @@ export default function ResultsScreen({ topicId, questions, answers, streak, spe
             </h3>
             <div className="space-y-2">
               {incorrect.slice(0, 3).map((q) => (
-                <div key={q.id} className="flex items-center gap-3 bg-white rounded-xl border border-[#c7c4d7]/15 p-3">
+                <div key={q.id} className="flex items-center gap-3 bg-white rounded-2xl border border-[#c7c4d7]/15 p-3">
                   {/* Thumbnail */}
                   {q.contentMediaUrl && q.contentMediaType === "image" ? (
                     <img src={q.contentMediaUrl} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />

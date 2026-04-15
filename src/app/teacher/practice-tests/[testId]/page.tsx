@@ -38,7 +38,7 @@ export default async function PracticeTestDetailPage({
       </div>
 
       {/* Questions */}
-      <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-6">
+      <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-6">
         <h2 className="font-body font-bold text-xl text-[#121c2a] mb-4">
           {t("questionsLabel")} ({test.questions.length})
         </h2>

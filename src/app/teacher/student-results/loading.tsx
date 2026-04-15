@@ -6,7 +6,7 @@ export default function Loading() {
         <div className="h-4 bg-gray-300 rounded w-64" />
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 p-6">
+      <div className="bg-white rounded-2xl border border-gray-100 p-6">
         {/* Filters */}
         <div className="flex flex-wrap gap-3 mb-6">
           <div className="h-10 bg-gray-300 rounded-lg w-64" />

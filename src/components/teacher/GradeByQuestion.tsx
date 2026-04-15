@@ -167,7 +167,7 @@ export default function GradeByQuestion({ testId, onClose }: Props) {
                 return (
                   <div
                     key={sub.studentAnswerId}
-                    className={`rounded-xl p-4 ${
+                    className={`rounded-2xl p-4 ${
                       sub.teacherOverride === null && isCueWriting
                         ? "bg-[#fef3c7]/20 border-l-3 border-l-[#f59e0b]"
                         : "bg-[#f8f9ff]"

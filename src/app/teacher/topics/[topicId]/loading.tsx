@@ -7,7 +7,7 @@ export default function Loading() {
       <div className="h-5 bg-gray-300 rounded-full w-20 mb-8" />
 
       {/* Vocabulary list */}
-      <div className="bg-white rounded-xl border border-gray-100 p-6">
+      <div className="bg-white rounded-2xl border border-gray-100 p-6">
         <div className="flex justify-between mb-6">
           <div className="h-6 bg-gray-300 rounded w-32" />
           <div className="h-9 bg-gray-300 rounded-full w-28" />

@@ -57,7 +57,7 @@ function DayPicker({
         </span>
       </button>
       {open && (
-        <div className="absolute top-full left-0 mt-1.5 w-full bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50">
+        <div className="absolute top-full left-0 mt-1.5 w-full bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50">
           {DAYS.map((d) => (
             <button
               key={d}
@@ -104,7 +104,7 @@ export default function ClassSessionEditor({ sessions, onChange }: Props) {
       {sessions.map((session, index) => (
         <div
           key={index}
-          className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 bg-white rounded-xl border border-[#c7c4d7]/20 p-3"
+          className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 bg-white rounded-2xl border border-[#c7c4d7]/20 p-3"
         >
           {/* Day dropdown */}
           <DayPicker

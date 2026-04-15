@@ -122,21 +122,21 @@ export default function ExamEntryGate({
           <p className="text-sm font-body text-[#777586] mb-6">{testTitle}</p>
 
           <div className="grid grid-cols-3 gap-3 mb-8">
-            <div className="bg-[#f8f9ff] rounded-xl p-4 text-center">
+            <div className="bg-[#f8f9ff] rounded-2xl p-4 text-center">
               <span className="material-symbols-outlined text-[18px] text-[#5e35f1] mb-1 block">timer</span>
               <p className="text-lg font-body font-bold text-[#121c2a]">
                 {sessionTimeRemaining != null ? formatDuration(sessionTimeRemaining) : "--"}
               </p>
               <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold">{t("remaining")}</p>
             </div>
-            <div className="bg-[#f8f9ff] rounded-xl p-4 text-center">
+            <div className="bg-[#f8f9ff] rounded-2xl p-4 text-center">
               <span className="material-symbols-outlined text-[18px] text-[#1b6b51] mb-1 block">check_circle</span>
               <p className="text-lg font-body font-bold text-[#121c2a]">
                 {sessionAnsweredCount ?? 0}/{questionCount}
               </p>
               <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold">{t("answered")}</p>
             </div>
-            <div className="bg-[#f8f9ff] rounded-xl p-4 text-center">
+            <div className="bg-[#f8f9ff] rounded-2xl p-4 text-center">
               <span className="material-symbols-outlined text-[18px] text-[#777586] mb-1 block">save</span>
               <p className="text-sm font-body font-bold text-[#121c2a]">
                 {sessionLastSavedAt ? formatDate(sessionLastSavedAt) : "--"}
@@ -191,24 +191,24 @@ export default function ExamEntryGate({
 
           {/* Exam info cards */}
           <div className="grid grid-cols-2 gap-3 mb-8">
-            <div className="bg-[#f8f9ff] rounded-xl p-4 text-center">
+            <div className="bg-[#f8f9ff] rounded-2xl p-4 text-center">
               <span className="material-symbols-outlined text-[20px] text-[#5e35f1] mb-1 block">quiz</span>
               <p className="text-lg font-body font-bold text-[#121c2a]">{questionCount}</p>
               <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold">{t("questions")}</p>
             </div>
-            <div className="bg-[#f8f9ff] rounded-xl p-4 text-center">
+            <div className="bg-[#f8f9ff] rounded-2xl p-4 text-center">
               <span className="material-symbols-outlined text-[20px] text-[#5e35f1] mb-1 block">timer</span>
               <p className="text-lg font-body font-bold text-[#121c2a]">{formatDuration(totalTime)}</p>
               <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold">{t("timeLimit")}</p>
             </div>
             {partsCount > 0 && (
-              <div className="bg-[#f8f9ff] rounded-xl p-4 text-center">
+              <div className="bg-[#f8f9ff] rounded-2xl p-4 text-center">
                 <span className="material-symbols-outlined text-[20px] text-[#5e35f1] mb-1 block">list</span>
                 <p className="text-lg font-body font-bold text-[#121c2a]">{partsCount}</p>
                 <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold">{t("parts")}</p>
               </div>
             )}
-            <div className="bg-[#f8f9ff] rounded-xl p-4 text-center">
+            <div className="bg-[#f8f9ff] rounded-2xl p-4 text-center">
               <span className="material-symbols-outlined text-[20px] text-[#5e35f1] mb-1 block">replay</span>
               <p className="text-lg font-body font-bold text-[#121c2a]">
                 {maxAttempts === 0 ? t("unlimited") : maxAttempts}
@@ -218,7 +218,7 @@ export default function ExamEntryGate({
           </div>
 
           {/* Rules */}
-          <div className="bg-white rounded-xl p-5 shadow-[0_10px_20px_rgba(94,53,241,0.04)] mb-8">
+          <div className="bg-white rounded-2xl p-5 shadow-[0_10px_20px_rgba(94,53,241,0.04)] mb-8">
             <h3 className="font-body font-bold text-sm text-[#121c2a] mb-3 flex items-center gap-2">
               <span className="material-symbols-outlined text-[16px] text-[#5e35f1]">info</span>
               {t("examRules")}

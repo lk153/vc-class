@@ -211,7 +211,7 @@ export default function StudentDetailModal({ student, onClose }: Props) {
 
           {/* Info Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="bg-white rounded-xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-4">
+            <div className="bg-white rounded-2xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-4">
               <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
                 {t("statusCol")}
               </p>
@@ -225,7 +225,7 @@ export default function StudentDetailModal({ student, onClose }: Props) {
                 {student.status === "ACTIVE" ? t("active") : t("inactive")}
               </span>
             </div>
-            <div className="bg-white rounded-xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-4">
+            <div className="bg-white rounded-2xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-4">
               <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-2">
                 {t("languageCol")}
               </p>
@@ -252,7 +252,7 @@ export default function StudentDetailModal({ student, onClose }: Props) {
                   </span>
                 </button>
                 {langOpen && (
-                  <div className="absolute top-full left-0 mt-1.5 w-full bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50">
+                  <div className="absolute top-full left-0 mt-1.5 w-full bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50">
                     {languages.map((lang) => (
                       <button
                         key={lang.id}
@@ -274,7 +274,7 @@ export default function StudentDetailModal({ student, onClose }: Props) {
                 )}
               </div>
             </div>
-            <div className="bg-white rounded-xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-4">
+            <div className="bg-white rounded-2xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-4">
               <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
                 {t("topics")}
               </p>
@@ -282,7 +282,7 @@ export default function StudentDetailModal({ student, onClose }: Props) {
                 {totalVisibleTopics}
               </p>
             </div>
-            <div className="bg-white rounded-xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-4">
+            <div className="bg-white rounded-2xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-4">
               <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
                 {t("joined")}
               </p>
@@ -318,7 +318,7 @@ export default function StudentDetailModal({ student, onClose }: Props) {
                 return (
                   <div
                     key={classGroup.className}
-                    className="bg-white rounded-xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] overflow-hidden"
+                    className="bg-white rounded-2xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] overflow-hidden"
                   >
                     <div className="px-5 py-3.5 border-b border-[#c7c4d7]/15 flex items-center gap-2">
                       <span className="material-symbols-outlined text-[#2a14b4] text-[18px]">school</span>
@@ -381,7 +381,7 @@ export default function StudentDetailModal({ student, onClose }: Props) {
               })}
             </div>
           ) : (
-            <div className="bg-white rounded-xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] px-5 py-8 text-center">
+            <div className="bg-white rounded-2xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] px-5 py-8 text-center">
               <span className="material-symbols-outlined text-[#777586]/30 text-3xl mb-2">menu_book</span>
               <p className="text-sm text-[#777586] font-body italic">
                 {t("noTopicsAssigned")}

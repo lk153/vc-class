@@ -357,7 +357,7 @@ export default async function TopicDetailPage({
             </div>
             <div className="space-y-3">
               {bookmarks.map((b: any) => (
-                <div key={b.id} className="flex items-center gap-3 bg-[#f8f9ff] rounded-xl p-4 border border-[#e2e8f0]">
+                <div key={b.id} className="flex items-center gap-3 bg-[#f8f9ff] rounded-2xl p-4 border border-[#e2e8f0]">
                   {b.question.contentMediaUrl && b.question.contentMediaType === "image" ? (
                     <img src={b.question.contentMediaUrl} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />
                   ) : b.question.contentMediaType === "audio" ? (

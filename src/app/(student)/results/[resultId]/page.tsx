@@ -130,7 +130,7 @@ export default async function StudentResultDetailPage({
 
       {/* Analytics */}
       {byDifficulty.length > 1 && (
-        <div className="bg-white rounded-xl p-5 shadow-[0_4px_16px_rgba(18,28,42,0.04)] mb-4">
+        <div className="bg-white rounded-2xl p-5 shadow-[0_4px_16px_rgba(18,28,42,0.04)] mb-4">
           <h3 className="text-sm font-body font-bold text-[#121c2a] mb-3 flex items-center gap-2">
             <span className="material-symbols-outlined text-[16px] text-[#2a14b4]">bar_chart</span>
             By Difficulty
@@ -152,7 +152,7 @@ export default async function StudentResultDetailPage({
       )}
 
       {typeMap.size > 1 && (
-        <div className="bg-white rounded-xl p-5 shadow-[0_4px_16px_rgba(18,28,42,0.04)] mb-4">
+        <div className="bg-white rounded-2xl p-5 shadow-[0_4px_16px_rgba(18,28,42,0.04)] mb-4">
           <h3 className="text-sm font-body font-bold text-[#121c2a] mb-3 flex items-center gap-2">
             <span className="material-symbols-outlined text-[16px] text-[#2a14b4]">category</span>
             By Question Type
@@ -174,7 +174,7 @@ export default async function StudentResultDetailPage({
 
       {/* Time distribution */}
       {totalTimeSpent > 0 && timeBySection.size > 1 && (
-        <div className="bg-white rounded-xl p-5 shadow-[0_4px_16px_rgba(18,28,42,0.04)] mb-4">
+        <div className="bg-white rounded-2xl p-5 shadow-[0_4px_16px_rgba(18,28,42,0.04)] mb-4">
           <h3 className="text-sm font-body font-bold text-[#121c2a] mb-3 flex items-center gap-2">
             <span className="material-symbols-outlined text-[16px] text-[#2a14b4]">schedule</span>
             Time Distribution
@@ -200,7 +200,7 @@ export default async function StudentResultDetailPage({
 
       {/* Attempt history */}
       {allAttempts.length > 1 && (
-        <div className="bg-white rounded-xl p-5 shadow-[0_4px_16px_rgba(18,28,42,0.04)] mb-4">
+        <div className="bg-white rounded-2xl p-5 shadow-[0_4px_16px_rgba(18,28,42,0.04)] mb-4">
           <h3 className="text-sm font-body font-bold text-[#121c2a] mb-3 flex items-center gap-2">
             <span className="material-symbols-outlined text-[16px] text-[#2a14b4]">trending_up</span>
             Attempt History
@@ -242,7 +242,7 @@ export default async function StudentResultDetailPage({
       )}
 
       {/* Answer review */}
-      <div className="bg-white rounded-xl shadow-[0_4px_16px_rgba(18,28,42,0.04)] overflow-hidden mb-4">
+      <div className="bg-white rounded-2xl shadow-[0_4px_16px_rgba(18,28,42,0.04)] overflow-hidden mb-4">
         <div className="px-5 py-3.5 border-b border-[#c7c4d7]/15">
           <h3 className="font-body font-bold text-base text-[#121c2a] flex items-center gap-2">
             <span className="material-symbols-outlined text-[#2a14b4] text-[18px]">fact_check</span>
@@ -298,7 +298,7 @@ export default async function StudentResultDetailPage({
 
       {/* Test-level comments */}
       {result.comments.length > 0 && (
-        <div className="bg-white rounded-xl p-5 shadow-[0_4px_16px_rgba(18,28,42,0.04)] mb-4">
+        <div className="bg-white rounded-2xl p-5 shadow-[0_4px_16px_rgba(18,28,42,0.04)] mb-4">
           <h3 className="font-body font-bold text-base text-[#121c2a] mb-3 flex items-center gap-2">
             <span className="material-symbols-outlined text-[#2a14b4] text-[18px]">chat</span>
             Teacher Comments

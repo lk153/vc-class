@@ -433,7 +433,7 @@ export default function PracticeSession({
         {/* Left Column: Question */}
         <section className="w-full lg:w-3/5">
           <QuestionTransition questionIndex={currentIndex} contentMediaType={currentQuestion.contentMediaType}>
-          <div className="bg-[#eff4ff] p-8 md:p-12 rounded-xl relative overflow-hidden">
+          <div className="bg-[#eff4ff] p-8 md:p-12 rounded-2xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#2a14b4]/5 rounded-full -mr-20 -mt-20 blur-3xl" />
 
             <div className="relative z-10">
@@ -492,7 +492,7 @@ export default function PracticeSession({
 
               {/* Content media */}
               {currentQuestion.contentMediaUrl && currentQuestion.contentMediaType === "image" && (
-                <div className="mb-6 rounded-xl overflow-hidden bg-[#121c2a]/5">
+                <div className="mb-6 rounded-2xl overflow-hidden bg-[#121c2a]/5">
                   <img src={currentQuestion.contentMediaUrl} alt="" className="w-full max-h-[300px] object-contain" />
                 </div>
               )}
@@ -506,7 +506,7 @@ export default function PracticeSession({
                 </div>
               )}
               {currentQuestion.contentMediaUrl && currentQuestion.contentMediaType === "video" && (
-                <div className="mb-6 rounded-xl overflow-hidden bg-[#121c2a]">
+                <div className="mb-6 rounded-2xl overflow-hidden bg-[#121c2a]">
                   <video src={currentQuestion.contentMediaUrl} controls className="w-full max-h-[300px]" />
                 </div>
               )}
@@ -521,7 +521,7 @@ export default function PracticeSession({
 
               {/* Feedback + review moment */}
               {feedback && (
-                <div className={`rounded-xl p-6 ${
+                <div className={`rounded-2xl p-6 ${
                   feedback === "correct" ? "bg-[#a6f2d1]/30 text-[#1b6b51]" : "bg-[#ffdada]/40 text-[#7b0020]"
                 }`}>
                   {feedback === "correct" ? (
@@ -600,7 +600,7 @@ export default function PracticeSession({
             /* ── Image Answer Grid ── */
             <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-3">
               {answerOptions.map((option, i) => {
-                let cardClass = "rounded-xl overflow-hidden border-2 transition-all cursor-pointer ";
+                let cardClass = "rounded-2xl overflow-hidden border-2 transition-all cursor-pointer ";
                 if (feedback) {
                   if (option.text === currentQuestion.correctAnswer) cardClass += "border-[#1b6b51] ring-2 ring-[#1b6b51]/20";
                   else if (option.text === selectedAnswer) cardClass += "border-[#7b0020] ring-2 ring-[#7b0020]/20 opacity-70";
@@ -651,7 +651,7 @@ export default function PracticeSession({
             /* ── Audio Answer List ── */
             <div className="space-y-3">
               {answerOptions.map((option, i) => {
-                let rowClass = "w-full rounded-xl p-4 flex items-center gap-3 transition-all border-2 ";
+                let rowClass = "w-full rounded-2xl p-4 flex items-center gap-3 transition-all border-2 ";
                 if (feedback) {
                   if (option.text === currentQuestion.correctAnswer) rowClass += "border-[#1b6b51]/30 bg-[#a6f2d1]/10";
                   else if (option.text === selectedAnswer) rowClass += "border-[#7b0020]/30 bg-[#ffdada]/10 opacity-70";

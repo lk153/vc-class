@@ -214,7 +214,7 @@ export default function TopicList({ topics, languages, teacherId }: Props) {
         {/* Add New Placeholder */}
         <button
           onClick={() => setShowCreate(true)}
-          className="group border-2 border-dashed border-[#c7c4d7]/50 rounded-xl p-8 flex flex-col items-center justify-center gap-4 min-h-[240px] hover:bg-white hover:border-[#2a14b4]/20 hover:shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] transition-all duration-300"
+          className="group border-2 border-dashed border-[#c7c4d7]/50 rounded-2xl p-8 flex flex-col items-center justify-center gap-4 min-h-[240px] hover:bg-white hover:border-[#2a14b4]/20 hover:shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] transition-all duration-300"
         >
           <div className="w-16 h-16 rounded-full bg-[#eff4ff] flex items-center justify-center group-hover:bg-[#e3dfff] transition-colors">
             <span className="material-symbols-outlined text-[#2a14b4] text-2xl">add</span>

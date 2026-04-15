@@ -16,7 +16,7 @@ export default function Loading() {
       {/* Stats cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="bg-white rounded-xl border border-gray-100 p-4 space-y-2">
+          <div key={i} className="bg-white rounded-2xl border border-gray-100 p-4 space-y-2">
             <div className="h-3 bg-gray-300 rounded w-16" />
             <div className="h-6 bg-gray-300 rounded w-24" />
           </div>
@@ -24,7 +24,7 @@ export default function Loading() {
       </div>
 
       {/* Answers table */}
-      <div className="bg-white rounded-xl border border-gray-100 p-6">
+      <div className="bg-white rounded-2xl border border-gray-100 p-6">
         <div className="h-6 bg-gray-300 rounded w-36 mb-6" />
         <div className="space-y-4">
           {[1, 2, 3, 4, 5].map((i) => (
@@ -40,7 +40,7 @@ export default function Loading() {
       </div>
 
       {/* Comments */}
-      <div className="bg-white rounded-xl border border-gray-100 p-6 mt-6">
+      <div className="bg-white rounded-2xl border border-gray-100 p-6 mt-6">
         <div className="h-6 bg-gray-300 rounded w-28 mb-4" />
         <div className="h-20 bg-gray-300 rounded-lg w-full" />
       </div>

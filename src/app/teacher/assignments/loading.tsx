@@ -8,7 +8,7 @@ export default function Loading() {
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Topics panel */}
-        <div className="bg-white rounded-xl border border-gray-100 p-6">
+        <div className="bg-white rounded-2xl border border-gray-100 p-6">
           <div className="h-6 bg-gray-300 rounded w-24 mb-4" />
           <div className="space-y-3">
             {[1, 2, 3, 4].map((i) => (
@@ -22,7 +22,7 @@ export default function Loading() {
         </div>
 
         {/* Classes panel */}
-        <div className="bg-white rounded-xl border border-gray-100 p-6">
+        <div className="bg-white rounded-2xl border border-gray-100 p-6">
           <div className="h-6 bg-gray-300 rounded w-24 mb-4" />
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (

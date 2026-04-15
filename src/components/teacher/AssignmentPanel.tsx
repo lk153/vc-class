@@ -162,7 +162,7 @@ export default function AssignmentPanel({ topics, classes }: Props) {
 
         {/* Classes (Right) */}
         <div className="lg:col-span-5 lg:sticky lg:top-10">
-          <div className="bg-[#eff4ff] rounded-xl p-6">
+          <div className="bg-[#eff4ff] rounded-2xl p-6">
             <div className="flex items-baseline justify-between mb-6">
               <h2 className="font-body font-bold text-2xl text-[#121c2a] flex items-center gap-2">
                 <span className="material-symbols-outlined text-[#2a14b4] text-[22px]">school</span>

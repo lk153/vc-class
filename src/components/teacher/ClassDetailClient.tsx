@@ -254,7 +254,7 @@ export default function ClassDetailClient({
             </span>
           </button>
           {statusOpen && (
-            <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50">
+            <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50">
               {statusOptions.map((s) => (
                 <button
                   key={s.value}
@@ -280,7 +280,7 @@ export default function ClassDetailClient({
 
       {/* Editable Info Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
+        <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
           <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-2">
             {t("classLanguage")}
           </p>
@@ -303,7 +303,7 @@ export default function ClassDetailClient({
               </span>
             </button>
             {langOpen && (
-              <div className="absolute top-full left-0 mt-1.5 w-full bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50">
+              <div className="absolute top-full left-0 mt-1.5 w-full bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50">
                 {languages.map((l) => (
                   <button
                     key={l.id}
@@ -325,7 +325,7 @@ export default function ClassDetailClient({
             )}
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
+        <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
           <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-2">
             {t("classLevel")}
           </p>
@@ -349,7 +349,7 @@ export default function ClassDetailClient({
                 </span>
               </button>
               {levelOpen && (
-                <div className="absolute top-full left-0 mt-1.5 w-full bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50">
+                <div className="absolute top-full left-0 mt-1.5 w-full bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50">
                   {presets.map((p) => (
                     <button
                       key={p}
@@ -379,7 +379,7 @@ export default function ClassDetailClient({
             />
           )}
         </div>
-        <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
+        <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
           <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
             {t("enrolledStudents")}
           </p>
@@ -387,7 +387,7 @@ export default function ClassDetailClient({
             {visibleEnrolled.length}<span className="text-base text-[#777586] font-normal">/{editMaxStudents}</span>
           </p>
         </div>
-        <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
+        <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
           <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
             {t("classTopics")}
           </p>
@@ -398,7 +398,7 @@ export default function ClassDetailClient({
       </div>
 
       {/* Class Sessions */}
-      <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
+      <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
         <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-3">
           {t("classSchedule")}
         </p>
@@ -407,7 +407,7 @@ export default function ClassDetailClient({
 
       {/* Duration + Max Students */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
+        <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
           <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-2">
             {t("classStartDate")}
           </p>
@@ -418,7 +418,7 @@ export default function ClassDetailClient({
             className="w-full text-sm font-body text-[#121c2a] bg-transparent border-b-2 border-transparent hover:border-[#c7c4d7]/40 focus:border-[#2a14b4] outline-none transition-colors px-0 py-0.5"
           />
         </div>
-        <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
+        <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
           <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-2">
             {t("classEndDate")}
           </p>
@@ -430,7 +430,7 @@ export default function ClassDetailClient({
           />
           <p className="text-xs text-[#777586] font-body mt-1">{weeks > 0 ? t("weeksCount", { count: weeks }) : ""}</p>
         </div>
-        <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
+        <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
           <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-2">
             {t("classMaxStudents")}
           </p>
@@ -446,7 +446,7 @@ export default function ClassDetailClient({
       </div>
 
       {/* Special Notes (editable) */}
-      <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
+      <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-5">
         <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-2">
           {t("classSpecialNotes")}
         </p>
@@ -474,7 +474,7 @@ export default function ClassDetailClient({
       )}
 
       {/* Enrolled Students */}
-      <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] overflow-hidden">
         <div className="px-6 py-4 border-b border-[#c7c4d7]/15">
           <h2 className="font-body font-bold text-xl text-[#121c2a] flex items-center gap-2">
             <span className="material-symbols-outlined text-[#2a14b4]">group</span>
@@ -519,7 +519,7 @@ export default function ClassDetailClient({
 
       {/* Add Students */}
       {availableStudents.length > 0 && (
-        <div className="bg-[#eff4ff] rounded-xl p-6">
+        <div className="bg-[#eff4ff] rounded-2xl p-6">
           <div className="flex items-baseline justify-between mb-4">
             <h3 className="font-body font-bold text-lg text-[#121c2a] flex items-center gap-2">
               <span className="material-symbols-outlined text-[#2a14b4] text-[20px]">person_add</span>
@@ -569,7 +569,7 @@ export default function ClassDetailClient({
       )}
 
       {/* Assigned Topics */}
-      <div className="bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] overflow-hidden">
         <div className="px-6 py-4 border-b border-[#c7c4d7]/15">
           <h2 className="font-body font-bold text-xl text-[#121c2a] flex items-center gap-2">
             <span className="material-symbols-outlined text-[#2a14b4]">menu_book</span>

@@ -139,7 +139,7 @@ export default function ExamReview({
 
         {/* Attention required */}
         {hasAttentionNeeded && (
-          <div className="bg-[#fef3c7]/50 rounded-xl p-4 mb-6 flex items-start gap-3">
+          <div className="bg-[#fef3c7]/50 rounded-2xl p-4 mb-6 flex items-start gap-3">
             <span className="material-symbols-outlined text-[#92400e] text-[20px] mt-0.5">warning</span>
             <div>
               <p className="text-sm font-body font-semibold text-[#92400e]">{t("attentionRequired")}</p>

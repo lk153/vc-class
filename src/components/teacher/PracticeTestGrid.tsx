@@ -32,7 +32,7 @@ function TimeLimitInput({ value, onSave, saving }: { value: number; onSave: (min
   }
 
   return (
-    <div className="flex items-center gap-3 bg-[#f8f9ff] rounded-xl px-4 py-3">
+    <div className="flex items-center gap-3 bg-[#f8f9ff] rounded-2xl px-4 py-3">
       <div className="w-9 h-9 rounded-lg bg-[#f0eef6] flex items-center justify-center shrink-0">
         <span className={`material-symbols-outlined text-[18px] ${saving ? "text-[#2a14b4] animate-spin" : "text-[#777586]"}`}>
           {saving ? "progress_activity" : "timer"}
@@ -79,7 +79,7 @@ function MaxAttemptsInput({ value, onSave, saving }: { value: number; onSave: (v
   }
 
   return (
-    <div className="flex items-center gap-3 bg-[#f8f9ff] rounded-xl px-4 py-3">
+    <div className="flex items-center gap-3 bg-[#f8f9ff] rounded-2xl px-4 py-3">
       <div className="w-9 h-9 rounded-lg bg-[#f0eef6] flex items-center justify-center shrink-0">
         <span className={`material-symbols-outlined text-[18px] ${saving ? "text-[#2a14b4] animate-spin" : "text-[#777586]"}`}>
           {saving ? "progress_activity" : "replay"}
@@ -401,7 +401,7 @@ export default function PracticeTestGrid({ tests }: Props) {
             {/* Panel — shared layoutId morphs from the card */}
             <motion.div
               layoutId={`test-card-${selectedTestId}`}
-              className="relative z-10 w-full max-w-6xl bg-[#f8f9ff] rounded-2xl shadow-xl my-auto"
+              className="relative z-10 w-full max-w-6xl bg-[#f8f9ff] rounded-2xl shadow-[0_8px_24px_3px_rgba(0,0,0,0.12),0_4px_8px_0_rgba(0,0,0,0.08)] my-auto"
               style={{ borderRadius: 16 }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
             >
@@ -485,7 +485,7 @@ export default function PracticeTestGrid({ tests }: Props) {
                       </div>
 
                       {/* Test Settings */}
-                      <div className="bg-white rounded-xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-5 space-y-5">
+                      <div className="bg-white rounded-2xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-5 space-y-5">
                         {/* ── Row 1: Mode + Timing ── */}
                         <div>
                           <p className="text-[10px] font-body font-bold uppercase tracking-widest text-[#2a14b4] mb-3 flex items-center gap-1.5">
@@ -494,7 +494,7 @@ export default function PracticeTestGrid({ tests }: Props) {
                           </p>
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             {/* Mode — read-only */}
-                            <div className="flex items-center gap-3 bg-[#f8f9ff] rounded-xl px-4 py-3">
+                            <div className="flex items-center gap-3 bg-[#f8f9ff] rounded-2xl px-4 py-3">
                               <div className="w-9 h-9 rounded-lg bg-[#e3dfff] flex items-center justify-center shrink-0">
                                 <span className="material-symbols-outlined text-[18px] text-[#2a14b4]">
                                   {detail.mode === "test" ? "assignment" : "self_improvement"}
@@ -532,7 +532,7 @@ export default function PracticeTestGrid({ tests }: Props) {
                           </p>
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             {/* Shuffle Answers */}
-                            <label className="flex items-center gap-3 cursor-pointer group bg-[#f8f9ff] rounded-xl px-4 py-3 hover:bg-[#f0eef6] transition-colors relative">
+                            <label className="flex items-center gap-3 cursor-pointer group bg-[#f8f9ff] rounded-2xl px-4 py-3 hover:bg-[#f0eef6] transition-colors relative">
                               <div className="w-9 h-9 rounded-lg bg-[#f0eef6] flex items-center justify-center shrink-0 group-hover:bg-[#e3dfff] transition-colors">
                                 <span className="material-symbols-outlined text-[18px] text-[#777586] group-hover:text-[#2a14b4] transition-colors">swap_horiz</span>
                               </div>
@@ -557,7 +557,7 @@ export default function PracticeTestGrid({ tests }: Props) {
                             </label>
 
                             {/* Shuffle Questions */}
-                            <label className="flex items-center gap-3 cursor-pointer group bg-[#f8f9ff] rounded-xl px-4 py-3 hover:bg-[#f0eef6] transition-colors relative">
+                            <label className="flex items-center gap-3 cursor-pointer group bg-[#f8f9ff] rounded-2xl px-4 py-3 hover:bg-[#f0eef6] transition-colors relative">
                               <div className="w-9 h-9 rounded-lg bg-[#f0eef6] flex items-center justify-center shrink-0 group-hover:bg-[#e3dfff] transition-colors">
                                 <span className="material-symbols-outlined text-[18px] text-[#777586] group-hover:text-[#2a14b4] transition-colors">reorder</span>
                               </div>
@@ -582,7 +582,7 @@ export default function PracticeTestGrid({ tests }: Props) {
                             </label>
 
                             {/* Instant Review */}
-                            <label className="flex items-center gap-3 cursor-pointer group bg-[#f8f9ff] rounded-xl px-4 py-3 hover:bg-[#f0eef6] transition-colors relative">
+                            <label className="flex items-center gap-3 cursor-pointer group bg-[#f8f9ff] rounded-2xl px-4 py-3 hover:bg-[#f0eef6] transition-colors relative">
                               <div className="w-9 h-9 rounded-lg bg-[#f0eef6] flex items-center justify-center shrink-0 group-hover:bg-[#e3dfff] transition-colors">
                                 <span className="material-symbols-outlined text-[18px] text-[#777586] group-hover:text-[#2a14b4] transition-colors">rate_review</span>
                               </div>

@@ -76,7 +76,7 @@ function AddWordMenu({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: -4 }}
             transition={{ type: "spring", damping: 25, stiffness: 400 }}
-            className="absolute right-0 top-full mt-2 bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 p-2 z-20 min-w-[180px]"
+            className="absolute right-0 top-full mt-2 bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 p-2 z-20 min-w-[180px]"
           >
             <button
               onClick={() => { setOpen(false); onManual(); }}
@@ -238,7 +238,7 @@ export default function VocabularyManager({ topicId, vocabulary }: Props) {
           <div
             key={vocab.id}
             onClick={() => setModal({ mode: "edit", vocab })}
-            className="group bg-white rounded-xl border border-[#c7c4d7]/20 p-5 hover:border-[#2a14b4]/15 hover:bg-[#f5f3ff] transition-colors duration-200 cursor-pointer"
+            className="group bg-white rounded-2xl border border-[#c7c4d7]/20 p-5 hover:border-[#2a14b4]/15 hover:bg-[#f5f3ff] transition-colors duration-200 cursor-pointer"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">

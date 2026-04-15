@@ -121,7 +121,7 @@ function TopicDropdown({
           </span>
         </button>
         {open && (
-          <div className="absolute top-full left-0 mt-1.5 w-full bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50 max-h-[240px] overflow-y-auto">
+          <div className="absolute top-full left-0 mt-1.5 w-full bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50 max-h-[240px] overflow-y-auto">
             {/* Select topic placeholder */}
             <button
               type="button"

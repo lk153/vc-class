@@ -58,7 +58,7 @@ export default function LocaleSwitcher() {
         </span>
       </button>
       {open && (
-        <div className="absolute top-full right-0 mt-1.5 w-auto min-w-40 bg-white rounded-xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50 no-ripple">
+        <div className="absolute top-full right-0 mt-1.5 w-auto min-w-40 bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.12)] border border-[#c7c4d7]/15 py-1.5 z-50 no-ripple">
           {locales.map((l) => (
             <button
               key={l.code}

@@ -4,7 +4,7 @@ export default function Loading() {
       <div className="h-4 bg-gray-300 rounded w-24 mb-6" />
       <div className="h-8 bg-gray-300 rounded w-48 mb-8" />
 
-      <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-6">
+      <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-6">
         {/* Name */}
         <div className="space-y-2">
           <div className="h-4 bg-gray-300 rounded w-24" />

@@ -132,7 +132,7 @@ export default function WordBank({
   return (
     <div className="space-y-4">
       {/* Word Bank chips */}
-      <div className="bg-[#f8f9ff] rounded-xl border border-[#c7c4d7]/15 p-4">
+      <div className="bg-[#f8f9ff] rounded-2xl border border-[#c7c4d7]/15 p-4">
         <div className="flex flex-wrap gap-2 justify-center">
           {wordBank.map((word, i) => {
             const available = isWordAvailable(word);

@@ -216,7 +216,7 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
 
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div className="bg-white rounded-xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-4">
+              <div className="bg-white rounded-2xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-4">
                 <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
                   {t("testNameCol")}
                 </p>
@@ -224,7 +224,7 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
                   {data.testName}
                 </p>
               </div>
-              <div className="bg-white rounded-xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-4">
+              <div className="bg-white rounded-2xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-4">
                 <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
                   {t("topicCol")}
                 </p>
@@ -232,7 +232,7 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
                   {data.topicName}
                 </p>
               </div>
-              <div className="bg-white rounded-xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-4">
+              <div className="bg-white rounded-2xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-4">
                 <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
                   {t("scoreCol")}
                 </p>
@@ -248,7 +248,7 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
                   {Math.round(data.score)}%
                 </p>
               </div>
-              <div className="bg-white rounded-xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-4">
+              <div className="bg-white rounded-2xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-4">
                 <p className="text-[10px] font-body uppercase tracking-widest text-[#777586] font-bold mb-1">
                   {t("submittedDate")}
                 </p>
@@ -269,7 +269,7 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
             )}
 
             {/* Answer Details */}
-            <div className="bg-white rounded-xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] overflow-hidden">
               <div className="px-5 py-3.5 border-b border-[#c7c4d7]/15 flex items-center justify-between">
                 <h3 className="font-body font-bold text-lg text-[#121c2a] flex items-center gap-2">
                   <span className="material-symbols-outlined text-[#2a14b4] text-[20px]">fact_check</span>
@@ -448,7 +448,7 @@ export default function ResultDetailModal({ resultId, onClose }: Props) {
             </div>
 
             {/* Teacher Feedback */}
-            <div className="bg-white rounded-xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-5">
+            <div className="bg-white rounded-2xl shadow-[0px_10px_20px_rgba(18,28,42,0.04)] p-5">
               <h3 className="font-body font-bold text-lg text-[#121c2a] mb-4 flex items-center gap-2">
                 <span className="material-symbols-outlined text-[#2a14b4] text-[20px]">chat</span>
                 {t("teacherFeedback")}

@@ -261,7 +261,7 @@ export default function MediaUploadModal({ onClose, onComplete }: Props) {
               {entries.map((entry, index) => (
                 <div
                   key={index}
-                  className="bg-white rounded-xl p-3.5 flex items-center gap-3 border border-[#c7c4d7]/15"
+                  className="bg-white rounded-2xl p-3.5 flex items-center gap-3 border border-[#c7c4d7]/15"
                 >
                   <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
                     entry.status === "done" ? "bg-[#a6f2d1]/40" :

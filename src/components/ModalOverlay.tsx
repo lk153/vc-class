@@ -65,7 +65,7 @@ export default function ModalOverlay({
 
           {/* Panel */}
           <motion.div
-            className={`relative z-10 w-full ${panelClass} bg-white rounded-2xl shadow-xl my-auto`}
+            className={`relative z-10 w-full ${panelClass} bg-white rounded-2xl shadow-[0_8px_24px_3px_rgba(0,0,0,0.12),0_4px_8px_0_rgba(0,0,0,0.08)] my-auto`}
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
