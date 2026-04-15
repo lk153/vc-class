@@ -219,6 +219,10 @@ export default function PracticeTestGrid({ tests }: Props) {
   const [filterLanguage, setFilterLanguage] = useState("");
   const [filterSearch, setFilterSearch] = useState("");
 
+  // Pagination
+  const [page, setPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
+
   // Derived: unique languages from tests
   const languages = useMemo(
     () => Array.from(new Set(tests.map((t) => t.languageName))).sort(),
@@ -236,6 +240,12 @@ export default function PracticeTestGrid({ tests }: Props) {
       return true;
     });
   }, [tests, filterStatus, filterLanguage, filterSearch]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => { setPage(1); }, [filterStatus, filterLanguage, filterSearch]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredTests.length / ITEMS_PER_PAGE));
+  const paginatedTests = filteredTests.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
   useEffect(() => {
     if (selectedTestId) {
@@ -391,8 +401,8 @@ export default function PracticeTestGrid({ tests }: Props) {
         </p>
       ) : null}
 
-      <div className="grid gap-4 sm:gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {filteredTests.map((test) => {
+      <div className="grid gap-4 sm:gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+        {paginatedTests.map((test) => {
           const statusConfig = {
             ACTIVE:   { label: "Active",   icon: "check_circle", color: "bg-[#1b6b51]/10 text-[#1b6b51]" },
             DRAFT:    { label: "Draft",    icon: "edit_note",    color: "bg-[#92400e]/10 text-[#92400e]" },
@@ -403,7 +413,7 @@ export default function PracticeTestGrid({ tests }: Props) {
           <motion.div
             key={test.id}
             onClick={() => setSelectedTestId(test.id)}
-            className={`group relative rounded-2xl p-5 cursor-pointer flex flex-col
+            className={`group relative rounded-2xl p-4 sm:p-5 cursor-pointer flex flex-col
               transition-all duration-200
               bg-[var(--color-card,#fff)]
               shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)]
@@ -454,43 +464,90 @@ export default function PracticeTestGrid({ tests }: Props) {
               {test.topicTitle}
             </p>
 
-            <div className="flex items-center justify-between pt-3 mt-4 border-t border-[#c7c4d7]/10">
-              <div className="flex items-center gap-3">
-                <span className={`inline-flex items-center gap-1 text-[9px] font-body font-bold px-2 py-0.5 rounded-full ${
-                  test.mode === "practice"
-                    ? "bg-[#e3dfff] text-[#5e35f1]"
-                    : "bg-[#dbeafe] text-[#1e40af]"
-                }`}>
-                  <span className="material-symbols-outlined text-[10px]">
-                    {test.mode === "practice" ? "self_improvement" : "assignment"}
+            <div className="flex flex-col gap-2 pt-3 mt-4 border-t border-[#c7c4d7]/10">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className={`inline-flex items-center gap-1 text-[9px] font-body font-bold px-2 py-0.5 rounded-full ${
+                    test.mode === "practice"
+                      ? "bg-[#e3dfff] text-[#5e35f1]"
+                      : "bg-[#dbeafe] text-[#1e40af]"
+                  }`}>
+                    <span className="material-symbols-outlined text-[10px]">
+                      {test.mode === "practice" ? "self_improvement" : "assignment"}
+                    </span>
+                    {test.mode === "practice" ? "Practice" : "Test"}
                   </span>
-                  {test.mode === "practice" ? "Practice" : "Test"}
-                </span>
-                <span className="flex items-center gap-1 text-xs text-[#777586] font-body">
-                  <span className="material-symbols-outlined text-[14px]">help</span>
-                  {test.questionCount} {t("questionsCount")}
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <button
-                  className="w-7 h-7 rounded-full flex items-center justify-center text-[#7b0020] bg-[#ffdada]/20 hover:bg-[#ffdada]/40 transition-all invisible group-hover:visible"
-                  onClick={(e) => { e.stopPropagation(); setDeleteTestId(test.id); }}
-                >
-                  <span className="material-symbols-outlined text-[14px]">delete</span>
-                </button>
-                <button
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-body font-bold text-white bg-[#2a14b4] transition-all invisible group-hover:visible"
-                  onClick={(e) => { e.stopPropagation(); setSelectedTestId(test.id); }}
-                >
-                  {t("viewDetails")}
-                  <span className="material-symbols-outlined text-[11px]">arrow_forward</span>
-                </button>
+                  <span className="flex items-center gap-1 text-xs text-[#777586] font-body">
+                    <span className="material-symbols-outlined text-[14px]">help</span>
+                    {test.questionCount} {t("questionsCount")}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-[#7b0020] bg-[#ffdada]/20 hover:bg-[#ffdada]/40 transition-all invisible group-hover:visible"
+                    onClick={(e) => { e.stopPropagation(); setDeleteTestId(test.id); }}
+                  >
+                    <span className="material-symbols-outlined text-[14px]">delete</span>
+                  </button>
+                  <button
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-body font-bold text-white bg-[#2a14b4] transition-all invisible group-hover:visible"
+                    onClick={(e) => { e.stopPropagation(); setSelectedTestId(test.id); }}
+                  >
+                    {t("viewDetails")}
+                    <span className="material-symbols-outlined text-[11px]">arrow_forward</span>
+                  </button>
+                </div>
               </div>
             </div>
           </motion.div>
           );
         })}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-1.5 mt-8">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[#777586] hover:bg-[#f0eef6] hover:text-[#2a14b4] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+            // Show: first, last, current ±1, and ellipsis
+            const show = p === 1 || p === totalPages || Math.abs(p - page) <= 1;
+            const prevShow = p > 1 && (p - 1 === 1 || p - 1 === totalPages || Math.abs(p - 1 - page) <= 1);
+            if (!show && !prevShow) return null;
+            if (!show && prevShow) return (
+              <span key={`e${p}`} className="w-8 h-8 flex items-center justify-center text-xs font-body text-[#777586]">…</span>
+            );
+            return (
+              <button
+                key={p}
+                onClick={() => setPage(p)}
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-body font-bold transition-all ${
+                  p === page
+                    ? "bg-[#2a14b4] text-white shadow-[0_1px_3px_rgba(42,20,180,0.3)]"
+                    : "text-[#464554] hover:bg-[#f0eef6] hover:text-[#2a14b4]"
+                }`}
+              >
+                {p}
+              </button>
+            );
+          })}
+          <button
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[#777586] hover:bg-[#f0eef6] hover:text-[#2a14b4] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+          </button>
+          <span className="ml-3 text-xs font-body text-[#777586]">
+            {(page - 1) * ITEMS_PER_PAGE + 1}–{Math.min(page * ITEMS_PER_PAGE, filteredTests.length)} of {filteredTests.length}
+          </span>
+        </div>
+      )}
 
       {/* Shared Element Modal */}
       <AnimatePresence>
