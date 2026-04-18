@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect, notFound } from "next/navigation";
 import VocabularyManager from "@/components/teacher/VocabularyManager";
+import DeleteTopicButton from "@/components/teacher/DeleteTopicButton";
 
 export default async function TeacherTopicDetailPage({
   params,
@@ -25,7 +26,7 @@ export default async function TeacherTopicDetailPage({
 
   return (
     <div>
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex items-start justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-foreground">{topic.title}</h1>
           {topic.description && (
@@ -35,6 +36,7 @@ export default async function TeacherTopicDetailPage({
             {topic.language.name}
           </span>
         </div>
+        <DeleteTopicButton topicId={topicId} topicTitle={topic.title} variant="action" />
       </div>
 
       <VocabularyManager

@@ -1,0 +1,6 @@
+question_number,content,question_type,answer_1,answer_2,answer_3,answer_4,correct_answer,timer
+1,"What is the capital of France?",MULTIPLE_CHOICE,"Paris","London","Berlin","Madrid",answer_1,30
+2,"The Earth is flat.",TRUE_FALSE,"True","False","","",answer_2,15
+3,"Complete: The cat sat on the ___.",GAP_FILL,"mat","","","","",30
+4,"What color is the sky?",MULTIPLE_CHOICE,"Green","Blue","Red","Yellow",answer_2,30
+5,"Water boils at 100 degrees Celsius.",TRUE_FALSE,"True","False","","",answer_1,15

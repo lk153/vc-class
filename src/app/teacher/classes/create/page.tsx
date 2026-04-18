@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
 import ClassSessionEditor from "@/components/teacher/ClassSessionEditor";
+import { RequiredMark, RequiredFieldsHint } from "@/components/RequiredMark";
 
 type Language = { id: string; name: string; code: string };
 
@@ -96,13 +97,14 @@ export default function CreateClassPage() {
       </Link>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] p-8">
-        <h1 className="font-body font-bold text-2xl text-[#121c2a] mb-6">
+        <h1 className="font-body font-bold text-2xl text-[#121c2a] mb-1">
           {t("createClass")}
         </h1>
+        <RequiredFieldsHint text={ct("requiredFieldsHint")} />
 
         {/* Class Name */}
         <div className="mb-6">
-          <label className={labelClass}>{t("className")} *</label>
+          <label className={labelClass}>{t("className")} <RequiredMark /></label>
           <input
             type="text"
             value={name}
@@ -116,7 +118,7 @@ export default function CreateClassPage() {
         {/* Language + Level */}
         <div className="grid gap-6 sm:grid-cols-2 mb-6">
           <div>
-            <label className={labelClass}>{t("classLanguage")} *</label>
+            <label className={labelClass}>{t("classLanguage")} <RequiredMark /></label>
             <select
               value={languageId}
               onChange={(e) => { setLanguageId(e.target.value); setLevel(""); }}
@@ -130,7 +132,7 @@ export default function CreateClassPage() {
             </select>
           </div>
           <div>
-            <label className={labelClass}>{t("classLevel")} *</label>
+            <label className={labelClass}>{t("classLevel")} <RequiredMark /></label>
             {presets.length > 0 ? (
               <select
                 value={level}
@@ -158,14 +160,14 @@ export default function CreateClassPage() {
 
         {/* Class Sessions */}
         <div className="mb-6">
-          <label className={labelClass}>{t("classSchedule")} *</label>
+          <label className={labelClass}>{t("classSchedule")} <RequiredMark /></label>
           <ClassSessionEditor sessions={sessions} onChange={setSessions} />
         </div>
 
         {/* Duration */}
         <div className="grid gap-6 sm:grid-cols-2 mb-6">
           <div>
-            <label className={labelClass}>{t("classStartDate")} *</label>
+            <label className={labelClass}>{t("classStartDate")} <RequiredMark /></label>
             <input
               type="date"
               value={startDate}
@@ -175,7 +177,7 @@ export default function CreateClassPage() {
             />
           </div>
           <div>
-            <label className={labelClass}>{t("classEndDate")} *</label>
+            <label className={labelClass}>{t("classEndDate")} <RequiredMark /></label>
             <input
               type="date"
               value={endDate}

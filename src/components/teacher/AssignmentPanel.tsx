@@ -14,15 +14,58 @@ type ClassItem = {
   studentCount: number;
   assignedTopicIds: string[];
 };
+type AssignedItem = {
+  id: string;
+  className: string;
+  classLanguageName: string;
+  topicTitle: string;
+  topicLanguageName: string;
+  assignedAt: string;
+};
 
-type Props = { topics: Topic[]; classes: ClassItem[] };
+type Props = { topics: Topic[]; classes: ClassItem[]; assigned: AssignedItem[] };
 
-export default function AssignmentPanel({ topics, classes }: Props) {
+export default function AssignmentPanel({ topics, classes, assigned }: Props) {
   const t = useTranslations("teacher");
   const router = useRouter();
   const [selectedTopics, setSelectedTopics] = useState<Set<string>>(new Set());
   const [selectedClasses, setSelectedClasses] = useState<Set<string>>(new Set());
   const [assigning, setAssigning] = useState(false);
+
+  // Pagination for the Assigned list — 9 items per page (matches Topics page)
+  const [page, setPage] = useState(1);
+  const ITEMS_PER_PAGE = 9;
+
+  // Optimistic local removal so the row disappears instantly on unassign,
+  // before router.refresh() round-trips.
+  const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
+  const [unassigningId, setUnassigningId] = useState<string | null>(null);
+
+  const visibleAssigned = assigned.filter((a) => !removedIds.has(a.id));
+  const totalPages = Math.max(1, Math.ceil(visibleAssigned.length / ITEMS_PER_PAGE));
+  const safePage = Math.min(page, totalPages);
+  const paginatedAssigned = visibleAssigned.slice(
+    (safePage - 1) * ITEMS_PER_PAGE,
+    safePage * ITEMS_PER_PAGE,
+  );
+
+  async function handleUnassign(assignmentId: string, topicTitle: string) {
+    setUnassigningId(assignmentId);
+    try {
+      const res = await fetch(`/api/teacher/assignments/${assignmentId}`, { method: "DELETE" });
+      if (!res.ok) {
+        toast.error(t("unassignFailed"));
+        return;
+      }
+      toast.success(t("unassigned", { title: topicTitle }));
+      setRemovedIds((prev) => new Set(prev).add(assignmentId));
+      router.refresh();
+    } catch {
+      toast.error(t("unassignFailed"));
+    } finally {
+      setUnassigningId(null);
+    }
+  }
 
   function toggleTopic(id: string) {
     setSelectedTopics((prev) => {
@@ -231,6 +274,132 @@ export default function AssignmentPanel({ topics, classes }: Props) {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Current Assignments — M3 two-line list, paginated 9 per page */}
+      <div className="mt-12">
+        <div className="flex items-baseline justify-between mb-6">
+          <h2 className="font-body font-bold text-2xl text-[#121c2a] flex items-center gap-2">
+            <span className="material-symbols-outlined text-[#2a14b4] text-[22px]">assignment_turned_in</span>
+            {t("assignedList")}
+          </h2>
+          <span className="text-xs font-body text-[#777586]">
+            {visibleAssigned.length} {t("assigned").toLowerCase()}
+          </span>
+        </div>
+
+        {visibleAssigned.length === 0 ? (
+          <div className="bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] px-6 py-12 text-center">
+            <span className="material-symbols-outlined text-[#c7c4d7] text-3xl mb-2 block">assignment</span>
+            <p className="text-sm font-body text-[#777586] italic">{t("noAssignmentsYet")}</p>
+          </div>
+        ) : (
+          <>
+            {/* M3 list container — one elevated surface, rows divided by subtle lines */}
+            <div className="bg-white rounded-2xl shadow-[0_1px_3px_1px_rgba(0,0,0,0.06),0_1px_2px_0_rgba(0,0,0,0.1)] overflow-hidden">
+              <ul className="divide-y divide-[#c7c4d7]/15">
+                {paginatedAssigned.map((a) => {
+                  const d = new Date(a.assignedAt);
+                  const date = `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
+                  return (
+                    <li
+                      key={a.id}
+                      className="group flex items-center gap-4 px-5 py-4 hover:bg-[#f0eef6]/40 transition-colors"
+                    >
+                      {/* Leading: topic avatar (M3 list leading element) */}
+                      <div className="w-11 h-11 rounded-2xl bg-[#e3dfff] flex items-center justify-center shrink-0">
+                        <span className="material-symbols-outlined text-[20px] text-[#2a14b4]">menu_book</span>
+                      </div>
+
+                      {/* Primary + supporting text (M3 two-line list item) */}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-body font-bold text-[15px] text-[#121c2a] truncate group-hover:text-[#2a14b4] transition-colors">
+                          {a.topicTitle}
+                        </p>
+                        <div className="flex items-center gap-1.5 mt-0.5 text-xs font-body text-[#777586]">
+                          <span className="material-symbols-outlined text-[14px] shrink-0">school</span>
+                          <span className="truncate">{a.className}</span>
+                        </div>
+                      </div>
+
+                      {/* Trailing chips: language + date */}
+                      <div className="hidden sm:flex items-center gap-2 shrink-0">
+                        <span className="text-[10px] font-body font-bold px-2.5 py-0.5 rounded-full bg-[#a6f2d1]/40 text-[#1b6b51] uppercase tracking-widest">
+                          {tLang(t, a.topicLanguageName)}
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-xs font-body text-[#777586]">
+                          <span className="material-symbols-outlined text-[14px]">event</span>
+                          {date}
+                        </span>
+                      </div>
+
+                      {/* Trailing action — M3 icon button (Danger Ghost token) */}
+                      <button
+                        type="button"
+                        onClick={() => handleUnassign(a.id, a.topicTitle)}
+                        disabled={unassigningId === a.id}
+                        aria-label={t("unassign")}
+                        title={t("unassign")}
+                        className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-[#7b0020] bg-[#ffdada]/20 hover:bg-[#ffdada]/40 transition-colors disabled:opacity-40 disabled:cursor-not-allowed sm:invisible sm:group-hover:visible"
+                      >
+                        <span className={`material-symbols-outlined text-[18px] ${unassigningId === a.id ? "animate-spin" : ""}`}>
+                          {unassigningId === a.id ? "progress_activity" : "link_off"}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            {/* Pagination — same M3 pattern as Topics / PracticeTests */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-1.5 mt-8">
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={safePage === 1}
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-[#777586] hover:bg-[#f0eef6] hover:text-[#2a14b4] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+                  const show = p === 1 || p === totalPages || Math.abs(p - safePage) <= 1;
+                  const prevShow = p > 1 && (p - 1 === 1 || p - 1 === totalPages || Math.abs(p - 1 - safePage) <= 1);
+                  if (!show && !prevShow) return null;
+                  if (!show && prevShow) return (
+                    <span key={`e${p}`} className="w-8 h-8 flex items-center justify-center text-xs font-body text-[#777586]">…</span>
+                  );
+                  return (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => setPage(p)}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-body font-bold transition-all ${
+                        p === safePage
+                          ? "bg-[#2a14b4] text-white shadow-[0_1px_3px_rgba(42,20,180,0.3)]"
+                          : "text-[#464554] hover:bg-[#f0eef6] hover:text-[#2a14b4]"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={safePage === totalPages}
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-[#777586] hover:bg-[#f0eef6] hover:text-[#2a14b4] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+                </button>
+                <span className="ml-3 text-xs font-body text-[#777586]">
+                  {(safePage - 1) * ITEMS_PER_PAGE + 1}–{Math.min(safePage * ITEMS_PER_PAGE, visibleAssigned.length)} of {visibleAssigned.length}
+                </span>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

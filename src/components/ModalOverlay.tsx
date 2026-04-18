@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 
 type Props = {
@@ -17,6 +18,10 @@ export default function ModalOverlay({
   children,
   panelClass = "max-w-2xl",
 }: Props) {
+  // Track mount so we only call createPortal on the client (document is undefined during SSR).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -33,7 +38,12 @@ export default function ModalOverlay({
     }
   }, [open, onClose]);
 
-  return (
+  // Portal to document.body so the fixed-position overlay escapes any transformed
+  // ancestor (e.g. cards with hover:-translate-y-* create a containing block that
+  // would otherwise trap position:fixed inside the card).
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <motion.div
@@ -43,6 +53,10 @@ export default function ModalOverlay({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
+          // Stop clicks from bubbling through the React tree to any ancestor
+          // (e.g. parent <Link> on a card). Portal escapes the DOM tree but
+          // React events still bubble through the component tree.
+          onClick={(e) => e.stopPropagation()}
         >
           {/* Backdrop: blur + dark overlay separated for smooth transition */}
           <motion.div
@@ -75,6 +89,7 @@ export default function ModalOverlay({
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }

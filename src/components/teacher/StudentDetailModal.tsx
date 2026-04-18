@@ -41,13 +41,44 @@ type Language = {
 type Props = {
   student: Student;
   onClose: () => void;
+  onDeleted?: () => void;
 };
 
-export default function StudentDetailModal({ student, onClose }: Props) {
+export default function StudentDetailModal({ student, onClose, onDeleted }: Props) {
   const t = useTranslations("teacher");
+  const ct = useTranslations("common");
   const router = useRouter();
   const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
   const [unassigning, setUnassigning] = useState<string | null>(null);
+  const [showDelete, setShowDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [togglingStatus, setTogglingStatus] = useState(false);
+
+  async function handleDelete() {
+    setDeleting(true);
+    try {
+      const res = await fetch("/api/teacher/students", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: [student.id] }),
+      });
+      if (!res.ok) {
+        toast.error(t("studentDeleteFailed"));
+        return;
+      }
+      toast.success(t("studentDeleteSuccess", { count: 1 }));
+      setShowDelete(false);
+      if (onDeleted) onDeleted();
+      else {
+        onClose();
+        router.refresh();
+      }
+    } catch {
+      toast.error(t("studentDeleteFailed"));
+    } finally {
+      setDeleting(false);
+    }
+  }
 
   // Editable fields
   const [editName, setEditName] = useState(student.name);
@@ -123,7 +154,9 @@ export default function StudentDetailModal({ student, onClose }: Props) {
   }
 
   async function handleToggleStatus() {
+    if (togglingStatus) return;
     const newStatus = student.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+    setTogglingStatus(true);
     try {
       const res = await fetch("/api/teacher/students", {
         method: "PATCH",
@@ -139,6 +172,8 @@ export default function StudentDetailModal({ student, onClose }: Props) {
       router.refresh();
     } catch {
       toast.error(t("statusUpdateFailed"));
+    } finally {
+      setTogglingStatus(false);
     }
   }
 
@@ -165,7 +200,7 @@ export default function StudentDetailModal({ student, onClose }: Props) {
   return (
     <ModalOverlay open={true} onClose={onClose} panelClass="max-w-3xl">
       <div className="bg-[#f8f9ff] max-h-[90vh] overflow-y-auto rounded-2xl">
-        {/* Close button */}
+        {/* Close */}
         <div className="sticky top-0 z-10 flex justify-end p-4 pb-0">
           <button
             onClick={onClose}
@@ -389,24 +424,76 @@ export default function StudentDetailModal({ student, onClose }: Props) {
             </div>
           )}
 
-          {/* Actions */}
-          <div className="flex justify-end">
+          {/* Actions — M3 dialog action row.
+              Delete (destructive, Danger Ghost red) + Deactivate/Activate
+              (reversible state toggle: neutral tonal vs. success tonal).
+              Compact sizing so both fit on one line on mobile. */}
+          <div className="flex justify-end gap-2">
             <button
+              type="button"
               onClick={handleToggleStatus}
-              className={`px-5 py-2.5 rounded-full text-sm font-body font-bold transition-all flex items-center gap-2 ${
+              disabled={togglingStatus}
+              className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs sm:text-sm font-body font-bold whitespace-nowrap transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${
                 student.status === "ACTIVE"
-                  ? "bg-[#ffdada]/30 text-[#7b0020] hover:bg-[#ffdada]/50"
-                  : "bg-[#a6f2d1]/30 text-[#1b6b51] hover:bg-[#a6f2d1]/50"
+                  ? "bg-[#f0eef6] text-[#464554] hover:bg-[#e3dfff] hover:text-[#2a14b4]"
+                  : "bg-[#a6f2d1]/40 text-[#1b6b51] hover:bg-[#a6f2d1]/70"
               }`}
             >
-              <span className="material-symbols-outlined text-[18px]">
-                {student.status === "ACTIVE" ? "person_off" : "person"}
+              <span className={`material-symbols-outlined text-[16px] ${togglingStatus ? "animate-spin" : ""}`}>
+                {togglingStatus ? "progress_activity" : student.status === "ACTIVE" ? "person_off" : "person"}
               </span>
               {student.status === "ACTIVE" ? t("deactivate") : t("activate")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowDelete(true)}
+              disabled={togglingStatus}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs sm:text-sm font-body font-bold whitespace-nowrap text-[#7b0020] bg-[#ffdada]/20 hover:bg-[#ffdada]/40 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              <span className="material-symbols-outlined text-[16px]">delete</span>
+              {t("deleteStudent")}
             </button>
           </div>
         </div>
       </div>
+
+      {/* Delete Student Confirmation */}
+      <ModalOverlay
+        open={showDelete}
+        onClose={() => !deleting && setShowDelete(false)}
+        panelClass="max-w-md"
+      >
+        <div className="p-6 md:p-8 text-center">
+          <div className="w-14 h-14 rounded-full bg-[#ffdada]/40 flex items-center justify-center mx-auto mb-5">
+            <span className="material-symbols-outlined text-[28px] text-[#7b0020]">delete_forever</span>
+          </div>
+          <h3 className="font-body font-bold text-xl text-[#121c2a] mb-2">
+            {t("studentDeleteSingleConfirmTitle")}
+          </h3>
+          <p className="text-sm font-body text-[#464554] mb-8 leading-relaxed">
+            {t("studentDeleteSingleConfirmMessage", { name: student.name })}
+          </p>
+          <div className="flex gap-3 justify-center">
+            <button
+              type="button"
+              onClick={() => setShowDelete(false)}
+              disabled={deleting}
+              className="px-6 py-2.5 rounded-full text-sm font-body font-medium text-[#464554] bg-[#f0eef6] hover:bg-[#e3dfff] hover:text-[#121c2a] transition-colors disabled:opacity-40"
+            >
+              {ct("cancel")}
+            </button>
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={deleting}
+              className="px-6 py-2.5 rounded-full text-sm font-body font-bold text-white bg-[#7b0020] hover:bg-[#5c0017] shadow-lg shadow-[#7b0020]/15 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              {deleting && <span className="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>}
+              {ct("delete")}
+            </button>
+          </div>
+        </div>
+      </ModalOverlay>
     </ModalOverlay>
   );
 }

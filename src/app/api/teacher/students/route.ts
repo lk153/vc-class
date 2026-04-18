@@ -2,6 +2,42 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+export async function DELETE(request: Request) {
+  const session = await auth();
+  if (!session?.user || session.user.role !== "TEACHER") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { ids } = await request.json();
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return NextResponse.json({ error: "No student ids provided" }, { status: 400 });
+  }
+
+  // Only allow deletion of STUDENT users who have at least one enrollment
+  // in a class owned by this teacher.
+  const deletable = await prisma.user.findMany({
+    where: {
+      id: { in: ids },
+      role: "STUDENT",
+      classEnrollments: { some: { class: { teacherId: session.user.id } } },
+    },
+    select: { id: true },
+  });
+  const deletableIds = deletable.map((u: { id: string }) => u.id);
+
+  if (deletableIds.length === 0) {
+    return NextResponse.json({ error: "No deletable students" }, { status: 404 });
+  }
+
+  // Cascade handles: ClassEnrollment, FlashcardProgress, PracticeResult,
+  // ExamAttempt, ExamAnswer, QuestionBookmark, QuestionOverride, Notification.
+  const result = await prisma.user.deleteMany({
+    where: { id: { in: deletableIds } },
+  });
+
+  return NextResponse.json({ deleted: result.count });
+}
+
 export async function PATCH(request: Request) {
   const session = await auth();
   if (!session?.user || session.user.role !== "TEACHER") {

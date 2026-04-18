@@ -5,11 +5,13 @@ import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { toast } from "sonner";
+import { RequiredMark, RequiredFieldsHint } from "@/components/RequiredMark";
 
 type Language = { id: string; code: string; name: string };
 
 export default function RegisterPage() {
   const t = useTranslations("auth");
+  const ct = useTranslations("common");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [languages, setLanguages] = useState<Language[]>([]);
@@ -60,15 +62,17 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
         <div className="bg-card rounded-2xl shadow-lg p-8">
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <h1 className="text-3xl font-bold text-foreground">{t("registerTitle")}</h1>
             <p className="text-muted mt-2">{t("registerSubtitle")}</p>
           </div>
 
+          <RequiredFieldsHint text={ct("requiredFieldsHint")} />
+
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-foreground mb-1.5">
-                {t("name")}
+                {t("name")} <RequiredMark />
               </label>
               <input
                 id="name"
@@ -81,7 +85,7 @@ export default function RegisterPage() {
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1.5">
-                {t("email")}
+                {t("email")} <RequiredMark />
               </label>
               <input
                 id="email"
@@ -95,7 +99,7 @@ export default function RegisterPage() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-foreground mb-1.5">
-                {t("password")}
+                {t("password")} <RequiredMark />
               </label>
               <input
                 id="password"

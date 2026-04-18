@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
 import ModalOverlay from "@/components/ModalOverlay";
+import { RequiredMark, RequiredFieldsHint } from "@/components/RequiredMark";
 
 type Vocab = {
   id: string;
@@ -300,6 +301,8 @@ export default function VocabularyManager({ topicId, vocabulary }: Props) {
                 </h3>
               </div>
 
+              <RequiredFieldsHint text={ct("requiredFieldsHint")} />
+
               {/* Form */}
               <form
                 onSubmit={
@@ -310,7 +313,7 @@ export default function VocabularyManager({ topicId, vocabulary }: Props) {
                 className="space-y-5"
               >
                 <div>
-                  <label className={labelClass}>{t("word")}</label>
+                  <label className={labelClass}>{t("word")} <RequiredMark /></label>
                   <input
                     name="word"
                     required
@@ -341,7 +344,7 @@ export default function VocabularyManager({ topicId, vocabulary }: Props) {
                   </div>
                 </div>
                 <div>
-                  <label className={labelClass}>{t("meaning")}</label>
+                  <label className={labelClass}>{t("meaning")} <RequiredMark /></label>
                   <textarea
                     name="meaning"
                     required

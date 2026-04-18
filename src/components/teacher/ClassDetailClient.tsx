@@ -6,6 +6,7 @@ import { tLang } from "@/lib/i18n/tLang";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import ClassSessionEditor, { parseSessions, formatSessions } from "@/components/teacher/ClassSessionEditor";
+import DeleteClassButton from "@/components/teacher/DeleteClassButton";
 
 type ClassInfo = {
   name: string;
@@ -238,6 +239,8 @@ export default function ClassDetailClient({
             {selectedLang?.name ? tLang(t, selectedLang.name) : tLang(t, classInfo.languageName)} · {editLevel} · {formatSessions(editSessions, t)}
           </p>
         </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <DeleteClassButton classId={classId} className={classInfo.name} variant="action" />
         <div ref={statusRef} className="relative no-ripple shrink-0">
           <button
             type="button"
@@ -275,6 +278,7 @@ export default function ClassDetailClient({
               ))}
             </div>
           )}
+        </div>
         </div>
       </div>
 

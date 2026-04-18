@@ -13,7 +13,7 @@ export default async function AssignmentsPage() {
 
   const t = await getTranslations("teacher");
 
-  const [topics, classes] = await Promise.all([
+  const [topics, classes, assignments] = await Promise.all([
     prisma.topic.findMany({
       where: { createdById: session.user.id },
       include: { language: true },
@@ -27,6 +27,14 @@ export default async function AssignmentsPage() {
         _count: { select: { enrollments: true } },
       },
       orderBy: { name: "asc" },
+    }),
+    prisma.topicAssignment.findMany({
+      where: { class: { teacherId: session.user.id } },
+      include: {
+        class: { include: { language: true } },
+        topic: { include: { language: true } },
+      },
+      orderBy: { assignedAt: "desc" },
     }),
   ]);
 
@@ -53,6 +61,19 @@ export default async function AssignmentsPage() {
           languageName: c.language.name,
           studentCount: c._count.enrollments,
           assignedTopicIds: c.topicAssignments.map((a: { topicId: string }) => a.topicId),
+        }))}
+        assigned={assignments.map((a: {
+          id: string;
+          assignedAt: Date;
+          class: { id: string; name: string; language: { name: string } };
+          topic: { id: string; title: string; language: { name: string } };
+        }) => ({
+          id: a.id,
+          className: a.class.name,
+          classLanguageName: a.class.language.name,
+          topicTitle: a.topic.title,
+          topicLanguageName: a.topic.language.name,
+          assignedAt: a.assignedAt.toISOString(),
         }))}
       />
     </div>

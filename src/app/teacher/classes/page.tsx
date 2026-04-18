@@ -4,6 +4,8 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
+import DeleteClassButton from "@/components/teacher/DeleteClassButton";
+import CreateClassFab from "@/components/teacher/CreateClassFab";
 
 export const metadata: Metadata = { title: "Classes" };
 import { DAY_TRANSLATION_KEYS } from "@/lib/days";
@@ -63,7 +65,7 @@ export default async function ClassesPage() {
         </div>
         <Link
           href="/teacher/classes/create"
-          className="inline-flex items-center gap-2 bg-[#2a14b4] text-white px-6 py-3 rounded-full font-body font-bold text-sm shadow-lg shadow-[#2a14b4]/20 transition-all shrink-0"
+          className="hidden sm:inline-flex items-center gap-2 bg-[#2a14b4] text-white px-6 py-3 rounded-full font-body font-bold text-sm shadow-lg shadow-[#2a14b4]/20 transition-all shrink-0"
         >
           <span className="material-symbols-outlined text-[18px]">add</span>
           {t("createClass")}
@@ -182,15 +184,21 @@ export default async function ClassesPage() {
                       {cls._count.topicAssignments} {t("topicsCount")}
                     </div>
                   </div>
-                  <span className="text-xs font-body text-[#2a14b4] opacity-0 group-hover:opacity-100 transition-opacity">
-                    {t("view")}
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <DeleteClassButton classId={cls.id} className={cls.name} variant="icon" redirectTo={null} />
+                    <span className="w-8 h-8 rounded-full bg-[#eff4ff] flex items-center justify-center group-hover:bg-[#2a14b4] group-hover:text-white text-[#464554] transition-all">
+                      <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                    </span>
+                  </div>
                 </div>
               </Link>
             );
           })}
         </div>
       )}
+
+      {/* Mobile Floating Action Button (M3 FAB) — desktop uses the header pill above */}
+      <CreateClassFab />
     </div>
   );
 }
