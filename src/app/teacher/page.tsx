@@ -31,7 +31,12 @@ export default async function TeacherDashboard() {
       },
       take: 10,
       orderBy: { completedAt: "desc" },
-      include: {
+      select: {
+        id: true,
+        score: true,
+        correctCount: true,
+        totalQuestions: true,
+        completedAt: true,
         user: { select: { name: true, email: true } },
         practiceTest: {
           select: {
@@ -72,18 +77,6 @@ export default async function TeacherDashboard() {
       barBg: "bg-[#7b0020]/10",
     },
   ];
-
-  function getScoreColor(score: number) {
-    if (score >= 90) return "text-[#1b6b51]";
-    if (score >= 70) return "text-[#2a14b4]";
-    return "text-[#7b0020]";
-  }
-
-  function getScoreDot(score: number) {
-    if (score >= 90) return "bg-[#1b6b51]";
-    if (score >= 70) return "bg-[#2a14b4]";
-    return "bg-[#7b0020]";
-  }
 
   return (
     <div>
@@ -132,78 +125,57 @@ export default async function TeacherDashboard() {
         {recentResults.length === 0 ? (
           <p className="text-sm text-[#777586] font-body">{t("noResultsYet")}</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm min-w-[650px]">
-              <thead>
-                <tr className="border-b border-[#c7c4d7]/20">
-                  <th className="text-left py-3 text-sm font-body uppercase tracking-widest text-[#464554] font-extrabold">
-                    {t("studentName")}
-                  </th>
-                  <th className="text-left py-3 text-sm font-body uppercase tracking-widest text-[#464554] font-extrabold">
-                    {t("testNameCol")}
-                  </th>
-                  <th className="text-left py-3 text-sm font-body uppercase tracking-widest text-[#464554] font-extrabold">
-                    {t("topicCol")}
-                  </th>
-                  <th className="text-left py-3 text-sm font-body uppercase tracking-widest text-[#464554] font-extrabold">
-                    {t("languageCol")}
-                  </th>
-                  <th className="text-right py-3 text-sm font-body uppercase tracking-widest text-[#464554] font-extrabold">
-                    {t("scoreCol")}
-                  </th>
-                  <th className="text-right py-3 text-sm font-body uppercase tracking-widest text-[#464554] font-extrabold">
-                    {t("submittedDate")}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#c7c4d7]/10">
-                {recentResults.map((result: any) => {
-                  const score = Math.round(result.score);
-                  const initials = (result.user.name as string)
-                    .split(" ")
-                    .map((n: string) => n[0])
-                    .join("")
-                    .slice(0, 2);
-                  return (
-                    <tr
-                      key={result.id}
-                      className="group hover:bg-[#eff4ff]/30 transition-colors"
-                    >
-                      <td className="py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-[#e3dfff] flex items-center justify-center">
-                            <span className="font-body text-sm text-[#2a14b4]">
-                              {initials}
-                            </span>
-                          </div>
-                          <div>
-                            <p className="font-body font-medium text-[#121c2a]">{result.user.name}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-4 text-[#464554] font-body">{result.practiceTest.title}</td>
-                      <td className="py-4 text-[#464554] font-body">{result.practiceTest.topic.title}</td>
-                      <td className="py-4">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#1b6b51] bg-[#a6f2d1]/40 px-3 py-1 rounded-full">
-                          {result.practiceTest.topic.language.name}
-                        </span>
-                      </td>
-                      <td className="py-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <span className={`w-2 h-2 rounded-full ${getScoreDot(score)}`} />
-                          <span className={`font-body text-lg ${getScoreColor(score)}`}>
-                            {score}%
-                          </span>
-                        </div>
-                      </td>
-                      <td className="py-4 text-right text-[#777586] font-body text-xs">
-                        {new Date(result.completedAt).toLocaleDateString()}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          <div className="space-y-3">
+            {recentResults.map((result: {
+              id: string;
+              score: number;
+              correctCount: number;
+              totalQuestions: number;
+              completedAt: Date;
+              user: { name: string; email: string };
+              practiceTest: { title: string; topic: { title: string; language: { name: string } } };
+            }) => {
+              const score = Math.round(result.score);
+              const initials = result.user.name
+                .split(" ")
+                .map((n: string) => n[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase();
+              const scoreColor =
+                score >= 80 ? "text-[#1b6b51]" : score >= 50 ? "text-[#2a14b4]" : "text-[#7b0020]";
+              const d = new Date(result.completedAt);
+              const dateStr = `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
+
+              return (
+                <Link
+                  key={result.id}
+                  href={`/teacher/student-results/${result.id}`}
+                  className="block bg-white rounded-2xl shadow-[0px_20px_40px_rgba(18,28,42,0.04)] p-4 hover:bg-[#e3dfff]/50 hover:shadow-[0px_4px_16px_rgba(18,28,42,0.08)] transition-all duration-200"
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-9 h-9 rounded-full bg-[#e3dfff] flex items-center justify-center text-xs font-bold text-[#2a14b4] shrink-0">
+                      {initials}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-body font-semibold text-sm text-[#121c2a] truncate">{result.user.name}</p>
+                      <p className="text-xs text-[#464554] font-body truncate">{result.practiceTest.title}</p>
+                    </div>
+                    <span className={`font-body font-bold text-xl shrink-0 ${scoreColor}`}>
+                      {score}%
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3 flex-wrap text-xs">
+                    <span className="text-[#464554] font-body">{result.practiceTest.topic.title}</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#1b6b51] bg-[#a6f2d1]/40 px-2.5 py-0.5 rounded-full">
+                      {result.practiceTest.topic.language.name}
+                    </span>
+                    <span className="text-[#777586] font-body">{result.correctCount}/{result.totalQuestions}</span>
+                    <span className="ml-auto text-[#777586] font-body">{dateStr}</span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         )}
       </div>
