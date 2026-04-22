@@ -8,16 +8,15 @@ test.describe("Teacher Practice Test Detail", () => {
   let listPage: PracticeTestsPage;
   let detailPage: PracticeTestDetailPage;
 
-  // Open a test's detail modal before each test. Prefer a seeded test with >3 questions
-  // so filter chips (gated on questions.length > 3) render.
+  // Open the E2E testMode test's detail modal — it has 5 questions across 3
+  // question types, so the filter chips (gated on questions.length > 3)
+  // reliably render.
   test.beforeEach(async ({ teacherPage }) => {
     listPage = new PracticeTestsPage(teacherPage);
     detailPage = new PracticeTestDetailPage(teacherPage);
     await listPage.goto();
-    const cardWithManyQs = listPage.testCards.filter({ hasText: /countryside/i }).first();
-    const hasManyQs = (await cardWithManyQs.count()) > 0;
-    if (hasManyQs) await cardWithManyQs.click();
-    else await listPage.testCards.first().click();
+    const testModeCard = listPage.testCards.filter({ hasText: /test mode/i }).first();
+    await testModeCard.click();
     // Wait for modal panel
     await teacherPage.locator(".max-w-6xl").waitFor({ state: "visible", timeout: 8_000 });
     // Wait for detail to finish loading — Settings section contains sr-only toggles

@@ -10,7 +10,7 @@ export class ResultsPage {
     this.page = page;
     this.heading = page.getByRole("heading", { level: 1 });
     this.resultRows = page.locator("a[href*='/results/'], tr, [data-testid='result-row']");
-    this.emptyState = page.locator("text=/no results|empty/i");
+    this.emptyState = page.locator("text=/no (test )?results( yet)?|empty|haven't taken/i");
   }
 
   async goto() {

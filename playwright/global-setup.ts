@@ -1,75 +1,40 @@
-import { test as setup, expect } from "@playwright/test";
+import { test as setup } from "@playwright/test";
 import path from "path";
+import { E2E_STUDENT, E2E_TEACHER } from "./workspace/identity";
+import { preflight } from "./workspace/preflight";
 
-const TEACHER_AUTH = path.join(__dirname, ".auth", "teacher.json");
-const STUDENT_AUTH = path.join(__dirname, ".auth", "student.json");
+/**
+ * Global setup — runs ONCE before any test project.
+ *
+ * For each E2E user: login → preflight → persist storage state.
+ * Preflight runs on the same authenticated context so we never persist
+ * cookies for a session the guard would reject. The whole suite aborts
+ * before any dependent project runs if preflight fails.
+ *
+ * Note: enrollment + topic assignment are NOT done here. The E2E seed
+ * (`prisma/seed.e2e.ts`, run by `make e2e-seed`) guarantees the fixture
+ * graph exists before this file runs.
+ */
 
-const TEACHER_EMAIL = process.env.E2E_TEACHER_EMAIL || "nga@teacher.com";
-const TEACHER_PASS = process.env.E2E_TEACHER_PASS || "123123";
-const STUDENT_EMAIL = process.env.E2E_STUDENT_EMAIL || "sang@stu.com";
-const STUDENT_PASS = process.env.E2E_STUDENT_PASS || "123123";
+const TEACHER_AUTH = path.join(__dirname, ".auth", "e2e-teacher.json");
+const STUDENT_AUTH = path.join(__dirname, ".auth", "e2e-student.json");
 
-/* Seed IDs for exam test prerequisites */
-const CITY_TOPIC_ID = "cmnfot7wi00037w5cnvn9n8no";
-const ENG_CLASS_ID = "cmn5vbocb00007w5cgd0uqtav";
-
-setup("authenticate teacher", async ({ page }) => {
+setup("authenticate e2e teacher + preflight", async ({ page }) => {
   await page.goto("/login");
-  await page.getByLabel(/email/i).fill(TEACHER_EMAIL);
-  await page.getByLabel(/password/i).fill(TEACHER_PASS);
+  await page.getByLabel(/email/i).fill(E2E_TEACHER.email);
+  await page.getByLabel(/password/i).fill(E2E_TEACHER.password);
   await page.getByRole("button", { name: /login|sign in/i }).click();
   await page.waitForURL(/\/teacher/, { timeout: 15_000 });
+  await preflight(page.request, "TEACHER");
   await page.context().storageState({ path: TEACHER_AUTH });
 });
 
-setup("authenticate student", async ({ page }) => {
+setup("authenticate e2e student + preflight", async ({ page }) => {
   await page.goto("/login");
-  await page.getByLabel(/email/i).fill(STUDENT_EMAIL);
-  await page.getByLabel(/password/i).fill(STUDENT_PASS);
+  await page.getByLabel(/email/i).fill(E2E_STUDENT.email);
+  await page.getByLabel(/password/i).fill(E2E_STUDENT.password);
   await page.getByRole("button", { name: /login|sign in/i }).click();
   await page.waitForURL(/\/topics/, { timeout: 15_000 });
+  await preflight(page.request, "STUDENT");
   await page.context().storageState({ path: STUDENT_AUTH });
-});
-
-setup("ensure student can access exam data", async ({ browser }) => {
-  /*
-   * The test student (sang@stu.com) may not be enrolled in the seed class
-   * or the City topic may not be assigned. Fix both:
-   * 1. Get student's user ID from their NextAuth session
-   * 2. Enroll them in the English class
-   * 3. Assign City topic to the class
-   */
-
-  // Step 1: Get student user ID from their session
-  const studentCtx = await browser.newContext({ storageState: STUDENT_AUTH });
-  const sessionRes = await studentCtx.request.get("/api/auth/session");
-  const session = await sessionRes.json();
-  const studentUserId = session?.user?.id;
-  await studentCtx.close();
-
-  if (!studentUserId) {
-    console.log("⚠ Could not get student user ID from session — exam tests may fail");
-    return;
-  }
-  console.log(`✓ Student user ID: ${studentUserId}`);
-
-  // Step 2 & 3: Use teacher context for enrollment + assignment
-  const teacherCtx = await browser.newContext({ storageState: TEACHER_AUTH });
-  const req = teacherCtx.request;
-
-  // Enroll student in the English class
-  const enrollRes = await req.post(`/api/teacher/classes/${ENG_CLASS_ID}/enroll`, {
-    data: { studentIds: [studentUserId] },
-    failOnStatusCode: false,
-  });
-  console.log(`✓ Student enrollment: ${enrollRes.status()}`);
-
-  // Assign City topic to class
-  const assignRes = await req.post("/api/teacher/assignments", {
-    data: { topicIds: [CITY_TOPIC_ID], classIds: [ENG_CLASS_ID] },
-    failOnStatusCode: false,
-  });
-  console.log(`✓ Topic assignment: ${assignRes.status()}`);
-
-  await teacherCtx.close();
 });

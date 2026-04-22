@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { LoginPage } from "../../pages/student/LoginPage";
 import { expectPath } from "../../helpers/assertions";
+import { E2E_STUDENT, E2E_TEACHER } from "../../workspace/identity";
 
 test.describe("Login Page", () => {
   let loginPage: LoginPage;
@@ -18,17 +19,17 @@ test.describe("Login Page", () => {
   });
 
   test("should login as teacher and redirect to /teacher", async ({ page }) => {
-    await loginPage.login("nga@teacher.com", "123123");
+    await loginPage.login(E2E_TEACHER.email, E2E_TEACHER.password);
     await expectPath(page, "/teacher");
   });
 
   test("should login as student and redirect to /topics", async ({ page }) => {
-    await loginPage.login("sang@stu.com", "123123");
+    await loginPage.login(E2E_STUDENT.email, E2E_STUDENT.password);
     await expectPath(page, "/topics");
   });
 
   test("should show error for invalid credentials", async ({ page }) => {
-    await loginPage.login("nga@teacher.com", "wrongpassword");
+    await loginPage.login(E2E_TEACHER.email, "wrongpassword");
     await loginPage.expectError();
   });
 

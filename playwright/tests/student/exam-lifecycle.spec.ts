@@ -1,16 +1,12 @@
 import { test, expect } from "../../fixtures/base";
 import { ExamPage } from "../../pages/student/ExamPage";
 import { waitForSave } from "../../helpers/assertions";
+import { E2E_TEST_IDS, E2E_TOPIC_IDS } from "../../workspace/fixtures";
 
-/**
- * Seed IDs (from prisma/seed.ts):
- *   cityTopic assigned to class in global-setup.ts
- *   cityMediaTest: "cmmedia0001city0test0001a" (mode: "test")
- */
-const CITY_TOPIC_ID = "cmnfot7wi00037w5cnvn9n8no";
-const CITY_TEST_ID = "cmmedia0001city0test0001a";
-
-const EXAM_URL = `/topics/${CITY_TOPIC_ID}/practice?testId=${CITY_TEST_ID}`;
+// Fixed E2E fixture IDs (see src/lib/e2e/seed.ts). The testMode fixture is a
+// 5-question, "test" mode PracticeTest owned by the E2E teacher, with the
+// E2E student enrolled via E2E_CLASS.
+const EXAM_URL = `/topics/${E2E_TOPIC_IDS.primary}/practice?testId=${E2E_TEST_IDS.testMode}`;
 
 test.describe("Student – Exam Lifecycle", () => {
   // Serial within this file: all tests share one student account + one exam attempt,

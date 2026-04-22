@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import { RegisterPage } from "../../pages/student/RegisterPage";
 import { uniqueEmail, uniqueName } from "../../helpers/seed.helper";
 import { expectPath } from "../../helpers/assertions";
+import { E2E_STUDENT } from "../../workspace/identity";
 
 test.describe("Register Page", () => {
   let registerPage: RegisterPage;
@@ -30,10 +31,10 @@ test.describe("Register Page", () => {
   });
 
   test("should show error for duplicate email", async ({ page }) => {
-    // READ-only: uses existing seed user, no data created
+    // READ-only: uses existing E2E fixture user, no data created
     await registerPage.register({
       name: "Duplicate User",
-      email: "sang@stu.com", // Existing user
+      email: E2E_STUDENT.email,
       password: "test",
     });
     await registerPage.errorMessage.first().waitFor({ state: "visible", timeout: 5_000 });

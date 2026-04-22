@@ -2,8 +2,31 @@ import { test as base, type Page, type BrowserContext, type APIRequestContext } 
 import path from "path";
 import { ApiHelper } from "../helpers/api.helper";
 
-const TEACHER_AUTH = path.join(__dirname, "..", ".auth", "teacher.json");
-const STUDENT_AUTH = path.join(__dirname, "..", ".auth", "student.json");
+const TEACHER_AUTH = path.join(__dirname, "..", ".auth", "e2e-teacher.json");
+const STUDENT_AUTH = path.join(__dirname, "..", ".auth", "e2e-student.json");
+
+/**
+ * Attach listeners that collect server-side failures the test would otherwise
+ * silently swallow:
+ *   - Any /api/* response with status >= 500
+ *   - Uncaught browser exceptions (page errors)
+ *
+ * Tests that legitimately expect a 5xx can splice/clear the `errors` array
+ * before control returns from `use()`, since the fixture reads it afterwards.
+ */
+function attachServerErrorWatcher(page: Page, errors: string[]) {
+  page.on("response", async (res) => {
+    const url = res.url();
+    if (!url.includes("/api/")) return;
+    if (res.status() < 500) return;
+    let body = "";
+    try { body = (await res.text()).slice(0, 300); } catch { /* body unavailable */ }
+    errors.push(`[${res.status()}] ${res.request().method()} ${url}${body ? `\n    body: ${body}` : ""}`);
+  });
+  page.on("pageerror", (err) => {
+    errors.push(`[pageerror] ${err.message}`);
+  });
+}
 
 /**
  * Extends Playwright's base test with:
@@ -31,9 +54,13 @@ type AuthFixtures = {
   teacherPage: Page;
   teacherContext: BrowserContext;
   teacherApi: ApiHelper;
+  /** Server-side failures (5xx + pageerror) observed during the test via `teacherPage`. */
+  teacherServerErrors: string[];
   studentPage: Page;
   studentContext: BrowserContext;
   studentApi: ApiHelper;
+  /** Server-side failures (5xx + pageerror) observed during the test via `studentPage`. */
+  studentServerErrors: string[];
 };
 
 export const test = base.extend<AuthFixtures>({
@@ -42,9 +69,21 @@ export const test = base.extend<AuthFixtures>({
     await use(ctx);
     await ctx.close();
   },
-  teacherPage: async ({ teacherContext }, use) => {
+  teacherServerErrors: async ({}, use) => {
+    const errors: string[] = [];
+    await use(errors);
+  },
+  teacherPage: async ({ teacherContext, teacherServerErrors }, use, testInfo) => {
     const page = await teacherContext.newPage();
+    attachServerErrorWatcher(page, teacherServerErrors);
     await use(page);
+    if (teacherServerErrors.length > 0) {
+      throw new Error(
+        `Test "${testInfo.titlePath.slice(1).join(" › ")}" observed ` +
+          `${teacherServerErrors.length} server error(s):\n` +
+          teacherServerErrors.map((e) => `  ${e}`).join("\n")
+      );
+    }
   },
   teacherApi: async ({ teacherContext }, use) => {
     const request = teacherContext.request;
@@ -56,9 +95,21 @@ export const test = base.extend<AuthFixtures>({
     await use(ctx);
     await ctx.close();
   },
-  studentPage: async ({ studentContext }, use) => {
+  studentServerErrors: async ({}, use) => {
+    const errors: string[] = [];
+    await use(errors);
+  },
+  studentPage: async ({ studentContext, studentServerErrors }, use, testInfo) => {
     const page = await studentContext.newPage();
+    attachServerErrorWatcher(page, studentServerErrors);
     await use(page);
+    if (studentServerErrors.length > 0) {
+      throw new Error(
+        `Test "${testInfo.titlePath.slice(1).join(" › ")}" observed ` +
+          `${studentServerErrors.length} server error(s):\n` +
+          studentServerErrors.map((e) => `  ${e}`).join("\n")
+      );
+    }
   },
   studentApi: async ({ studentContext }, use) => {
     const request = studentContext.request;

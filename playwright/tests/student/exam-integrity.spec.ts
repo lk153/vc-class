@@ -1,15 +1,8 @@
 import { test, expect } from "../../fixtures/base";
 import { ExamPage } from "../../pages/student/ExamPage";
+import { E2E_TEST_IDS, E2E_TOPIC_IDS } from "../../workspace/fixtures";
 
-/**
- * Seed IDs (from prisma/seed.ts):
- *   cityTopic assigned to class in global-setup.ts
- *   cityMediaTest: "cmmedia0001city0test0001a" (mode: "test")
- */
-const CITY_TOPIC_ID = "cmnfot7wi00037w5cnvn9n8no";
-const CITY_TEST_ID = "cmmedia0001city0test0001a";
-
-const EXAM_URL = `/topics/${CITY_TOPIC_ID}/practice?testId=${CITY_TEST_ID}`;
+const EXAM_URL = `/topics/${E2E_TOPIC_IDS.primary}/practice?testId=${E2E_TEST_IDS.testMode}`;
 
 async function startExam(studentPage: import("@playwright/test").Page) {
   await studentPage.goto(EXAM_URL);

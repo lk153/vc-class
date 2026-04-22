@@ -1,4 +1,4 @@
-.PHONY: install dev build start db db-stop db-create db-migrate db-seed db-studio db-reset setup clean e2e e2e-ui e2e-headed e2e-report
+.PHONY: install dev build start db db-stop db-create db-migrate db-seed db-studio db-reset setup clean e2e e2e-ui e2e-headed e2e-report e2e-seed
 
 # ──────────────────────────────────────────────
 # Quick start
@@ -93,6 +93,12 @@ WORKERS ?=
 e2e:
 	PW_WORKERS=$(WORKERS) $(PW) --project=chromium --project=chromium-exam
 
+## Halt-on-first-failure. Same as `e2e` but stops the whole run after the first
+## failing test (including a test that caught an /api/* 5xx via the fixture
+## error-watcher). Useful for fast-feedback investigation.
+e2e-strict:
+	PW_WORKERS=$(WORKERS) $(PW) --project=chromium --project=chromium-exam --max-failures=1
+
 ## Run serially (single worker) — useful for debugging parallel-related flakes
 e2e-serial:
 	PW_WORKERS=1 $(PW) --project=chromium --project=chromium-exam
@@ -128,3 +134,8 @@ e2e-headed-file:
 ## Open last E2E test report
 e2e-report:
 	npx playwright show-report playwright/report
+
+## Seed the E2E workspace (isTest users + fixed-ID fixture graph). Idempotent.
+## Requires E2E_ALLOW=yes — production must never set this.
+e2e-seed:
+	E2E_ALLOW=yes npx tsx prisma/seed.e2e.ts
