@@ -12,8 +12,20 @@ export async function PATCH(
   }
 
   const { sessionId } = await params;
-  const { answers, flagged, timeRemaining, currentPhaseIndex, tabSwitchCount } =
-    await request.json();
+
+  let body: {
+    answers?: Record<string, string>;
+    flagged?: string[];
+    timeRemaining?: number;
+    currentPhaseIndex?: number;
+    tabSwitchCount?: number;
+  };
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid or empty body" }, { status: 400 });
+  }
+  const { answers, flagged, timeRemaining, currentPhaseIndex, tabSwitchCount } = body;
 
   // Verify session belongs to user and is DOING
   const examSession = await prisma.examSession.findUnique({
@@ -32,13 +44,13 @@ export async function PATCH(
   const serverElapsed = Math.floor(
     (Date.now() - examSession.lastSavedAt.getTime()) / 1000
   );
-  const clientTimeDelta = examSession.timeRemaining - timeRemaining;
-  // If client claims more time remaining than server allows (clock manipulation),
-  // use server-calculated time instead but still save
-  let adjustedTimeRemaining = timeRemaining;
-  if (clientTimeDelta < 0 && serverElapsed > 2) {
-    // Client rewound the clock — cap at server-calculated remaining
-    adjustedTimeRemaining = Math.max(0, examSession.timeRemaining - serverElapsed);
+  let adjustedTimeRemaining = timeRemaining ?? examSession.timeRemaining;
+  if (timeRemaining !== undefined) {
+    const clientTimeDelta = examSession.timeRemaining - timeRemaining;
+    // Client rewound clock — cap at server-calculated remaining
+    if (clientTimeDelta < 0 && serverElapsed > 2) {
+      adjustedTimeRemaining = Math.max(0, examSession.timeRemaining - serverElapsed);
+    }
   }
 
   const now = new Date();
@@ -46,11 +58,11 @@ export async function PATCH(
   const updated = await prisma.examSession.update({
     where: { id: sessionId },
     data: {
-      answersJson: answers ?? examSession.answersJson,
-      flaggedJson: flagged ?? examSession.flaggedJson,
+      ...(answers !== undefined && { answersJson: answers }),
+      ...(flagged !== undefined && { flaggedJson: flagged }),
       timeRemaining: adjustedTimeRemaining,
-      currentPhaseIndex: currentPhaseIndex ?? examSession.currentPhaseIndex,
-      tabSwitchCount: tabSwitchCount ?? examSession.tabSwitchCount,
+      ...(currentPhaseIndex !== undefined && { currentPhaseIndex }),
+      ...(tabSwitchCount !== undefined && { tabSwitchCount }),
       lastSavedAt: now,
     },
   });
