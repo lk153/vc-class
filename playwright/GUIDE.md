@@ -55,10 +55,20 @@ make db-seed
 make dev
 ```
 
+**Seed the E2E workspace (one-time)**:
+
+The Playwright suite authenticates as two dedicated E2E users that own every row the tests create. Real users never see that data because the app already filters every query by owner. Seed those users + the baseline fixture graph:
+
+```bash
+E2E_ALLOW=yes make e2e-seed
+```
+
+This upserts `e2e-teacher@e2e.test` and `e2e-student@e2e.test` (both with `isTest=true`), one class with the student enrolled, two topics, and two practice tests — all with fixed IDs declared in [`workspace/fixtures.ts`](workspace/fixtures.ts) so tests target them deterministically.
+
 **Verify setup is complete:**
-1. Open http://localhost:18888/login in your browser
-2. Login with `nga@teacher.com` / `123123` → should redirect to `/teacher`
-3. Login with `sang@stu.com` / `123123` → should redirect to `/topics`
+1. Open http://localhost:18888/login
+2. Login with `e2e-teacher@e2e.test` / (password from `workspace/identity.ts`) → redirects to `/teacher`
+3. Login with `e2e-student@e2e.test` → redirects to `/topics`
 
 If both logins work, you're ready to run tests.
 
@@ -235,61 +245,62 @@ After a failed run, check these auto-generated files:
 
 ---
 
-## 7. Data Safety: How Tests Keep Your DB Clean
+## 7. Data Safety: Ownership-Isolated Test Workspace
 
-**Guarantee: your database is identical before and after running tests.**
+**Guarantee: no real-user row is ever read, modified, or deleted by the suite.**
 
-### How It Works (3 Layers)
+### Primary isolation: ownership, not naming
 
-```
-┌─────────────────────────────────────────────────┐
-│  Layer 1: READ-ONLY tests (majority)            │
-│  Most tests only READ existing seed data.       │
-│  They browse pages, click filters, verify UI.   │
-│  No data is created or modified.                │
-│                                                 │
-│  Layer 2: CREATE tests use E2E prefix           │
-│  Tests that create data use special naming:     │
-│  • Emails: *@e2e.test                           │
-│  • Names/Titles: "E2E ..." prefix               │
-│  This marks them for automatic cleanup.         │
-│                                                 │
-│  Layer 3: Global Teardown (safety net)          │
-│  After ALL tests complete, teardown runs:       │
-│  DELETE FROM users WHERE email LIKE '%@e2e.test'│
-│  DELETE FROM topics WHERE title LIKE 'E2E %'    │
-│  DELETE FROM classes WHERE name LIKE 'E2E %'    │
-│  DELETE FROM practice_tests WHERE title LIKE... │
-│  This catches everything, even from crashed     │
-│  tests that couldn't clean up after themselves. │
-└─────────────────────────────────────────────────┘
-```
+Every Prisma query the app already runs for teachers filters by `createdById = session.user.id`. The suite exploits that: it authenticates as two dedicated users (`e2e-teacher@e2e.test`, `e2e-student@e2e.test`, both `isTest=true`), and every row a test creates is automatically owned by one of them. Real users never see it because their queries filter by *their* ID. No shared namespace means no risk of a test touching a real row.
 
-### Test Execution Order
+### Three defensive layers
 
 ```
-1. Global Setup     → Login as teacher + student, save auth cookies
-2. Test Specs       → Run all 23 spec files
-   ├── READ tests   → Browse seed data (no changes)
-   ├── CREATE tests → Create "E2E ..." data → verify → mark for cleanup
-   └── VALIDATE     → Submit invalid data (rejected, no DB change)
-3. Global Teardown  → Delete all "E2E" data → remove auth files
+┌─────────────────────────────────────────────────────────┐
+│ Layer 1: Ownership filter (primary)                     │
+│ createdById / teacherId / userId = E2E user id          │
+│ → invisible to real users via existing Prisma filters   │
+│                                                         │
+│ Layer 2: Pre-flight guard                               │
+│ Before any spec runs, /api/e2e/me confirms the session  │
+│ is isTest=true. Misconfigured env → entire suite aborts │
+│ before mutating a row.                                  │
+│                                                         │
+│ Layer 3: Workspace reset (teardown)                     │
+│ /api/e2e/workspace/reset deletes every row whose owner  │
+│ chain reaches an isTest=true User (leaf → root, inside  │
+│ a single transaction), then re-upserts the baseline     │
+│ fixture graph. Runs even if tests crashed.              │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Test execution order
+
+```
+1. Global Setup     → Login as e2e-teacher + e2e-student
+                    → preflight: GET /api/e2e/me → abort if !isTest
+2. Test Specs       → Run all spec files
+                      ALL created rows owned by E2E users
+3. Global Teardown  → POST /api/e2e/workspace/reset
+                      (ordered delete + reseed in one transaction)
 4. Result           → DB is exactly as it was before step 1
 ```
 
-### Manual Cleanup (if something goes wrong)
+### The "E2E " prefix is still used — but only as a readable tag
 
-If tests crash mid-run and teardown didn't execute:
+`uniqueName()` in [`helpers/seed.helper.ts`](helpers/seed.helper.ts) prepends `E2E ` to every generated name. That is purely a human-readable sentinel (handy when eyeballing the DB). It is **not** the cleanup mechanism — ownership is.
+
+### Manual reset (if something goes wrong)
+
+If a run crashed and you want to force a clean slate:
 
 ```bash
-# Option 1: Call the cleanup API manually
-curl -X DELETE http://localhost:18888/api/e2e/cleanup \
-  -H "Content-Type: application/json" \
-  -d '{"secret": "e2e-cleanup-key"}'
-
-# Option 2: Reset the entire database to seed state
-make db-reset
+# Full reset: deletes every row owned by isTest=true users, then reseeds
+curl -X POST http://localhost:18888/api/e2e/workspace/reset \
+  -H "x-e2e-secret: e2e-cleanup-key"
 ```
+
+`/api/e2e/workspace/reset` refuses to run unless `E2E_ALLOW=yes` is set in the server process's environment. Production never sets it.
 
 ---
 
@@ -299,13 +310,19 @@ make db-reset
 playwright/
 │
 ├── playwright.config.ts    ← Main config: browsers, timeouts, server
-├── global-setup.ts         ← Runs FIRST: logs in, saves auth cookies
-├── global-teardown.ts      ← Runs LAST: cleans up test data from DB
+├── global-setup.ts         ← Runs FIRST: logs in as E2E users + preflight
+├── global-teardown.ts      ← Runs LAST: POST /api/e2e/workspace/reset
 ├── tsconfig.json           ← TypeScript config for test files
 ├── .gitignore              ← Ignores results, reports, auth files
 │
-├── fixtures/               ← Test setup shared across all specs
-│   ├── auth.fixture.ts     ← Pre-authenticated page fixtures
+├── workspace/              ← E2E isolation contract (LOAD-BEARING)
+│   ├── identity.ts         ← E2E_TEACHER / E2E_STUDENT (fixed IDs + creds)
+│   ├── fixtures.ts         ← E2E_CLASS_ID / E2E_TOPIC_IDS / E2E_TEST_IDS
+│   ├── reset.ts            ← client for /api/e2e/workspace/reset
+│   └── preflight.ts        ← aborts suite if session is not isTest=true
+│
+├── fixtures/               ← Playwright test.extend scaffolding
+│   ├── auth.fixture.ts     ← Pre-authenticated E2E page fixtures
 │   └── base.ts             ← Single import: `import { test, expect } from "./base"`
 │
 ├── pages/                  ← Page Object Models (POM) — one per page
@@ -349,8 +366,8 @@ playwright/
 │   └── sample-vocab.csv
 │
 └── .auth/                  ← Auto-generated auth cookies (gitignored)
-    ├── teacher.json
-    └── student.json
+    ├── e2e-teacher.json
+    └── e2e-student.json
 ```
 
 ### What is a Page Object Model (POM)?
@@ -433,12 +450,15 @@ test.describe("Teacher New Feature", () => {
 
 ### Step 4: Data Cleanup Rules
 
+Cleanup is no longer your concern for most tests — the workspace reset endpoint reclaims every row owned by the E2E users after each run. That said:
+
 | Test Type | What to Do |
 |---|---|
-| **READ-only** (browse, filter, click) | Nothing — no data created |
-| **CREATE** (new topic, user, test) | Use `uniqueName()` / `uniqueEmail()` — auto-cleaned by teardown |
-| **UPDATE** (edit existing) | Only edit seed data back to original, or use E2E-created data |
-| **DELETE** (remove something) | Only delete E2E-created data, never seed data |
+| **READ-only** (browse, filter, click) | Nothing — use fixed fixture IDs from `workspace/fixtures.ts` instead of `.first()` |
+| **CREATE** (new topic, user, test) | Use `uniqueName()` / `uniqueEmail()` — the row is owned by the E2E user automatically via `teacherApi` / `studentApi`, so teardown reclaims it |
+| **UPDATE** (edit existing) | Only touch E2E-owned rows. Never mutate baseline fixtures defined in `workspace/fixtures.ts` — other tests depend on them |
+| **DELETE** (remove something) | Only delete E2E-created rows. Baseline fixtures are re-upserted on teardown, so deleting one will cause a compensating insert on the next run (subtle churn; avoid) |
+| **Target a specific row** | Reference `E2E_CLASS_ID`, `E2E_TOPIC_IDS.primary`, etc. — never `topicCards.first()` |
 
 ### Step 5: Run Your Test
 
@@ -466,14 +486,25 @@ This means the browser closed before the test finished. Check:
 
 ### "Login failed" in global setup
 
-1. Check that the dev server is running at http://localhost:18888
-2. Verify credentials match your seed data:
-   - Teacher: `nga@teacher.com` / `123123`
-   - Student: `sang@stu.com` / `123123`
-3. If passwords changed, update `playwright/global-setup.ts` or set env vars:
+1. Check that the dev server is running at http://localhost:18888.
+2. Confirm the E2E workspace is seeded:
    ```bash
-   E2E_TEACHER_EMAIL=new@email.com E2E_TEACHER_PASS=newpass make e2e
+   E2E_ALLOW=yes make e2e-seed
    ```
+   Missing E2E users → login step fails with "Invalid credentials".
+3. Credentials live in [`workspace/identity.ts`](workspace/identity.ts) and must match what `prisma/seed.e2e.ts` upserts. They are intentionally not overridable via env var — a misconfigured env pointing at a real user is exactly the failure mode the design prevents.
+
+### "Pre-flight aborted: authenticated as a non-test user"
+
+The `preflight` step detected that the session's User row has `isTest=false`, or the email doesn't end in `@e2e.test`. Causes:
+
+- Stale `.auth/*.json` from an earlier run with different credentials — run `make e2e` again; teardown wipes them.
+- `prisma/seed.e2e.ts` wrote a User without `isTest=true` — inspect the seed file.
+- Someone manually flipped `isTest` on the E2E user to `false` in the DB — restore it.
+
+### "/api/e2e/me returned 404"
+
+The E2E endpoints aren't deployed on this environment. They live in `src/app/api/e2e/` and must be present for the suite to run. They're dev-only and gated on `E2E_ALLOW=yes`.
 
 ### Tests pass locally but fail in CI
 

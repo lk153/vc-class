@@ -2,23 +2,33 @@
  * Test data factory — generates unique names and structures for test isolation.
  *
  * CONVENTION: All E2E-created data uses the "E2E " prefix in names/titles
- * and "@e2e.test" suffix in emails. The cleanup API + global teardown
- * deletes everything matching these patterns after the test run.
+ * and "@e2e.test" suffix in emails. Cleanup is primarily driven by the
+ * ownership-isolated workspace (owner-id chain → isTest=true User), but the
+ * prefix remains a belt-and-suspenders sentinel and a readable signal when
+ * eyeballing the DB.
  *
- * This guarantees the DB is identical before and after running tests.
+ * The prefix is NOT overridable — callers pass a descriptor/suffix only, so
+ * no spec can accidentally produce a row that lacks the "E2E " marker.
  */
 
-/** Prefix for all E2E test data — used by cleanup API to find and delete */
+/** Prefix for all E2E test data — hardcoded, not overridable */
 export const E2E_PREFIX = "E2E";
 
 const ts = () => Date.now().toString(36);
 
-export function uniqueEmail(prefix = "test") {
-  return `${prefix}-${ts()}@e2e.test`;
+export function uniqueEmail(suffix = "test") {
+  return `${suffix}-${ts()}@e2e.test`;
 }
 
-export function uniqueName(prefix = E2E_PREFIX) {
-  return `${prefix} ${ts()}`;
+/**
+ * Build a unique, E2E-prefixed name.
+ *
+ * @param suffix optional descriptor inserted between the prefix and the
+ *               timestamp (e.g. uniqueName("Topic") → "E2E Topic lq3k4…").
+ *               Never replaces the prefix.
+ */
+export function uniqueName(suffix = "") {
+  return `${E2E_PREFIX} ${suffix} ${ts()}`.replace(/\s+/g, " ").trim();
 }
 
 /** Minimal CSV content for practice test import */

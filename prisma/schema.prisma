@@ -69,6 +69,7 @@ model User {
   status          AccountStatus @default(INACTIVE)
   learnLanguageId String?       @map("learn_language_id")
   learnLanguage   Language?     @relation(fields: [learnLanguageId], references: [id])
+  isTest          Boolean       @default(false) @map("is_test")
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
 
